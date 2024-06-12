@@ -19,15 +19,15 @@ namespace Todo.Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterCommand command)
         {
-            bool isRegistered = await _mediator.Send(command);
-            return isRegistered ? Ok() : BadRequest(); 
+            await _mediator.Send(command);
+            return Ok(); 
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginCommand command)
         {
             string token = await _mediator.Send(command);
-            return token is not null  ? Ok(token) : BadRequest();
+            return Ok(token);
         }
     }
 }

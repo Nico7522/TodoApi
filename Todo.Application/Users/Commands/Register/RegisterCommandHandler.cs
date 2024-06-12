@@ -18,7 +18,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, bool>
     public RegisterCommandHandler(IAuthRepository authRepository, IMapper mapper)
     {
        _authRepository = authRepository;
-        _mapper = mapper;
+       _mapper = mapper;
     }
     public async Task<bool> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
