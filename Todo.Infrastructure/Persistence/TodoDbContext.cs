@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Todo.Domain.Entities;
 using Todo.Infrastructure.Configs;
 
@@ -7,24 +8,23 @@ namespace Todo.Infrastructure.Persistence;
 
 public class TodoDbContext : IdentityDbContext<UserEntity>
 {
-    private readonly string _connectionString = "Data Source=DESKTOP-IFNFMI9;Initial Catalog=TodoDB;Integrated Security=True;Connect Timeout=60;Trust Server Certificate=True;";
+    //private readonly IConfiguration _configuration;
     public DbSet<TodoEntity> Tasks { get; set; }
 
     public TodoDbContext(DbContextOptions<TodoDbContext> options) : base(options)
     {
-        
-    }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlServer(_connectionString);
 
     }
 
-    public TodoDbContext()
-    {
-        
-    }
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //{
+    //    optionsBuilder.UseSqlServer(_configuration.GetConnectionString("TodoDB"));
+    //}
+
+    //public TodoDbContext(IConfiguration configuration)
+    //{
+    //    _configuration = configuration;
+    //}
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
