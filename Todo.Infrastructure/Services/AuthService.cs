@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using Todo.Application.Users.Commands.Register;
+using Todo.Domain.Constants;
 using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 using Todo.Domain.Security;
@@ -25,12 +29,22 @@ public class AuthService : IAuthRepository
         if (!isPasswordCorrect) return null;
 
         string token = await _jwtHelper.GenerateToken(user);
-
         return token;
     }
 
-    public Task<bool> Register()
+    public async Task<bool> Register(UserEntity entity, string password)
     {
-        throw new NotImplementedException();
+        var user = await _userManager.FindByEmailAsync(entity.Email!);
+        if (user is not null) return false;
+
+   
+        var result = await _userManager.CreateAsync(entity, password);
+        if (!result.Succeeded) return false;
+        await _userManager.AddToRoleAsync(entity, UserRole.User);
+        IList<Claim> baseClaims = await _jwtHelper.SetBaseClaims(entity);
+        var addClaimsResult = await _userManager.AddClaimsAsync(entity, baseClaims);
+        if (!addClaimsResult.Succeeded) return false;
+
+        return true;
     }
 }

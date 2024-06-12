@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Todo.Application.Users.Commands.Login;
 using Todo.Application.Users.Commands.Register;
 
 namespace Todo.Api.Controllers
@@ -20,6 +21,13 @@ namespace Todo.Api.Controllers
         {
             bool isRegistered = await _mediator.Send(command);
             return isRegistered ? Ok() : BadRequest(); 
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginCommand command)
+        {
+            string token = await _mediator.Send(command);
+            return token is not null  ? Ok(token) : BadRequest();
         }
     }
 }

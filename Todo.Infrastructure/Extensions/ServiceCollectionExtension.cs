@@ -18,7 +18,6 @@ public static class ServiceCollectionExtension
 {
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration["ConnectionStrings:TodoDB"];
         services.AddScoped<IJwtHelper, JwtHelpers>();
         services.AddScoped<IRoleSeeder, RoleSeeder>();
         services.AddScoped<IAuthRepository, AuthService>();
