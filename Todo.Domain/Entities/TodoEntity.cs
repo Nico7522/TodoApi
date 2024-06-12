@@ -11,4 +11,5 @@ public class TodoEntity
     public DateOnly ClosingDate { get; set; }
     public Piority Priority { get; set; }
     public bool IsComplete { get; set; }
+    public List<UserEntity> Users { get; set; } = [];
 }

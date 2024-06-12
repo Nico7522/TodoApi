@@ -6,4 +6,5 @@ namespace Todo.Domain.Entities;
 public class UserEntity : IdentityUser
 {
     public DateOnly Birthdate { get; set; }
+    public List<TodoEntity> Tasks { get; set; } = [];
 }

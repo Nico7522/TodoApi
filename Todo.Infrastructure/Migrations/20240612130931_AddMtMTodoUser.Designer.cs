@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Todo.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using Todo.Infrastructure.Persistence;
 namespace Todo.Infrastructure.Migrations
 {
     [DbContext(typeof(TodoDbContext))]
-    partial class TodoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240612130931_AddMtMTodoUser")]
+    partial class AddMtMTodoUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -259,7 +262,7 @@ namespace Todo.Infrastructure.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("UsersTasks", b =>
+            modelBuilder.Entity("TodoEntityUserEntity", b =>
                 {
                     b.Property<Guid>("TasksId")
                         .HasColumnType("uniqueidentifier");
@@ -271,7 +274,7 @@ namespace Todo.Infrastructure.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("UsersTasks");
+                    b.ToTable("TodoEntityUserEntity");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -325,7 +328,7 @@ namespace Todo.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("UsersTasks", b =>
+            modelBuilder.Entity("TodoEntityUserEntity", b =>
                 {
                     b.HasOne("Todo.Domain.Entities.TodoEntity", null)
                         .WithMany()
