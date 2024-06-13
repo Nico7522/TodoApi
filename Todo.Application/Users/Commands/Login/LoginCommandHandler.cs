@@ -1,19 +1,30 @@
 ﻿using MediatR;
-using Todo.Domain.Repositories;
+using Microsoft.AspNetCore.Identity;
+using Todo.Domain.Entities;
+using Todo.Domain.Exceptions;
 using Todo.Domain.Security;
 
 namespace Todo.Application.Users.Commands.Login;
 
 public class LoginCommandHandler : IRequestHandler<LoginCommand, string>
 {
-    private readonly IAuthRepository _authRepository;
-    public LoginCommandHandler(IAuthRepository authRepository)
+    private readonly UserManager<UserEntity> _userManager;
+    private readonly IJwtHelper _jwtHelper;
+    public LoginCommandHandler(UserManager<UserEntity> userManager, IJwtHelper jwtHelper)
     {
-        _authRepository = authRepository;
+        _userManager = userManager;
+        _jwtHelper = jwtHelper;
     }
     public async Task<string> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
 
-        return await _authRepository.Login(request.Email, request.Password);
+        var user = await _userManager.FindByEmailAsync(request.Email);
+        if (user is null) throw new ApiErrorException("Bad credentials", 400);
+
+        var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, request.Password);
+        if (!isPasswordCorrect) throw new ApiErrorException("Bad credentials", 400);
+
+        string token = await _jwtHelper.GenerateToken(user);
+        return token;
     }
 }

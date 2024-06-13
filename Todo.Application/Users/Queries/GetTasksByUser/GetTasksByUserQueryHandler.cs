@@ -1,19 +1,32 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
+using Microsoft.AspNetCore.Identity;
+using Todo.Application.Task.Dto;
 using Todo.Domain.Entities;
+using Todo.Domain.Exceptions;
 using Todo.Domain.Repositories;
 
 namespace Todo.Application.Users.Queries.GetTasksByUser;
 
-internal class GetTasksByUserQueryHandler : IRequestHandler<GetTasksByUserQuery, IEnumerable<TodoEntity>>
+internal class GetTasksByUserQueryHandler : IRequestHandler<GetTasksByUserQuery, IEnumerable<TodoDto>>
 {
-
+    private readonly UserManager<UserEntity> _userManager;
     private readonly IUserRepository _userRepository;
-    public GetTasksByUserQueryHandler(IUserRepository userRepository)
+    private readonly IMapper _mapper;
+    public GetTasksByUserQueryHandler(IUserRepository userRepository, IMapper mapper, UserManager<UserEntity> userManager)
     {
+        _userManager = userManager;
         _userRepository = userRepository;
+        _mapper = mapper;
     }
-    public async Task<IEnumerable<TodoEntity>> Handle(GetTasksByUserQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<TodoDto>> Handle(GetTasksByUserQuery request, CancellationToken cancellationToken)
     {
-        return await _userRepository.GetTasksByUser(request.UserId);
+        var user = await _userManager.FindByIdAsync(request.UserId);
+        if (user is null) throw new ApiErrorException("User not found", 404);
+
+        var userTasks = await _userRepository.GetTasksByUser(request.UserId);
+        var userTasksDto = userTasks.Select(t => _mapper.Map<TodoDto>(t));
+        return userTasksDto;
+
     }
 }

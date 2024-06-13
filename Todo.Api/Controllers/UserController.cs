@@ -15,11 +15,6 @@ namespace Todo.Api.Controllers
         {
             _mediator = mediator;
         }
-        [HttpGet("{userId}/tasks")]
-        public async Task<ActionResult<IEnumerable<TodoEntity>>> GetTasksByUser([FromRoute] string userId)
-        {
-            var tasks = await _mediator.Send(new GetTasksByUserQuery(userId));
-            return Ok(tasks);   
-        }
+
     }
 }
