@@ -21,6 +21,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<IJwtHelper, JwtHelpers>();
         services.AddScoped<ISeeder, Seeder>();
         services.AddScoped<IAuthRepository, AuthService>();
+        services.AddScoped<IUserRepository, UserService>();
         services.AddDbContext<TodoDbContext>(options => options.UseSqlServer(configuration["ConnectionStrings:TodoDB"]));
         services.AddIdentityCore<UserEntity>().AddRoles<IdentityRole>().AddEntityFrameworkStores<TodoDbContext>();
         services.AddAuthentication(options =>

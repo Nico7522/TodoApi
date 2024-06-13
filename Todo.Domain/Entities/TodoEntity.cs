@@ -12,7 +12,8 @@ public class TodoEntity
     public Piority Priority { get; set; }
     public bool IsComplete { get; set; }
 
-    public List<UserEntity> Users { get; set; } = [];
+    public string? UserId { get; set; }
+    public UserEntity? User { get; set; }
 
     public string? TeamId { get; set; }
     public TeamEntity? Team { get; set; }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Todo.Domain.Entities;
 using Todo.Infrastructure.Persistence;
@@ -17,22 +18,15 @@ public class Program
     .Build();
         //TodoDbContext context = new TodoDbContext(configuration);
 
-        //try
-        //{
-        //    var team = context.Teams.Include(t => t.Tasks).FirstOrDefault();
+        try
+        {
 
-        //    foreach (var task in team.Tasks)
-        //    {
-        //        Console.WriteLine(task.Title);
-        //    }
 
-        //    Console.WriteLine("ok");
+        }
+        catch (Exception)
+        {
 
-        //}
-        //catch (Exception)
-        //{
-
-        //    throw;
-        //}
+            throw;
+        }
     }
 }

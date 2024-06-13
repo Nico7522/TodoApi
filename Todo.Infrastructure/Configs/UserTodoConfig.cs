@@ -12,7 +12,7 @@ public class UserTodoConfig : IEntityTypeConfiguration<UserEntity>
     {
         builder
        .HasMany(e => e.Tasks)
-       .WithMany(e => e.Users)
-       .UsingEntity("UsersTasks");
+       .WithOne(e => e.User)
+       .HasForeignKey(e => e.UserId).IsRequired(false);
     }
 }

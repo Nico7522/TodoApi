@@ -10,7 +10,7 @@ using Todo.Domain.Security;
 
 namespace Todo.Infrastructure.Services;
 
-public class AuthService : IAuthRepository
+internal class AuthService : IAuthRepository
 {
     private readonly UserManager<UserEntity> _userManager;
     private readonly IJwtHelper _jwtHelper;
