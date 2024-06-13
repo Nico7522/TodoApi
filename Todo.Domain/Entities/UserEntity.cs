@@ -14,6 +14,6 @@ public class UserEntity : IdentityUser
     public TeamEntity? LeadedTeam { get; set; }
 
 
-    public string? TeamId { get; set; }
+    public Guid? TeamId { get; set; }
     public TeamEntity? Team { get; set; }
 }

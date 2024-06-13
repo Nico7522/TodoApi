@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Todo.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using Todo.Infrastructure.Persistence;
 namespace Todo.Infrastructure.Migrations
 {
     [DbContext(typeof(TodoDbContext))]
-    partial class TodoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240613144806_TryRemoveTeamId")]
+    partial class TryRemoveTeamId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -203,7 +206,10 @@ namespace Todo.Infrastructure.Migrations
                     b.Property<int>("Priority")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("TeamId")
+                    b.Property<string>("TeamId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("TeamId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Title")
@@ -216,7 +222,7 @@ namespace Todo.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TeamId");
+                    b.HasIndex("TeamId1");
 
                     b.HasIndex("UserId");
 
@@ -271,7 +277,10 @@ namespace Todo.Infrastructure.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("TeamId")
+                    b.Property<string>("TeamId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("TeamId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("TwoFactorEnabled")
@@ -291,7 +300,7 @@ namespace Todo.Infrastructure.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("TeamId");
+                    b.HasIndex("TeamId1");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -360,7 +369,7 @@ namespace Todo.Infrastructure.Migrations
                 {
                     b.HasOne("Todo.Domain.Entities.TeamEntity", "Team")
                         .WithMany("Tasks")
-                        .HasForeignKey("TeamId");
+                        .HasForeignKey("TeamId1");
 
                     b.HasOne("Todo.Domain.Entities.UserEntity", "User")
                         .WithMany("Tasks")
@@ -375,7 +384,7 @@ namespace Todo.Infrastructure.Migrations
                 {
                     b.HasOne("Todo.Domain.Entities.TeamEntity", "Team")
                         .WithMany("Users")
-                        .HasForeignKey("TeamId");
+                        .HasForeignKey("TeamId1");
 
                     b.Navigation("Team");
                 });

@@ -20,7 +20,6 @@ public static class ServiceCollectionExtension
     {
         services.AddScoped<IJwtHelper, JwtHelpers>();
         services.AddScoped<ISeeder, Seeder>();
-        services.AddScoped<IAuthRepository, AuthService>();
         services.AddScoped<IUserRepository, UserService>();
         services.AddScoped<ITodoRepository, TodoService>();
 

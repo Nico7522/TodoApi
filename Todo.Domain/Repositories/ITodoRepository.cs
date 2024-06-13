@@ -2,7 +2,7 @@
 
 namespace Todo.Domain.Repositories;
 
-public interface ITodoRepository
+public interface ITodoRepository : IRepositoryBase
 {
     Task<IEnumerable<TodoEntity>> GetAll();
     Task<TodoEntity?> GetById(string taskId);

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Todo.Application.Task.Commands.CompleteTask;
 using Todo.Application.Task.Dto;
 using Todo.Application.Task.Queries.GetTaskById;
 using Todo.Application.Users.Commands.AssignTaskByUser;
@@ -37,6 +38,13 @@ namespace Todo.Api.Controllers
         {
             var tasks = await _mediator.Send(new GetTasksByUserQuery(userId));
             return Ok(tasks);
+        }
+
+        [HttpPut("{taskId}/complete")]
+        public async Task<IActionResult> CompleteTask(string taskId)
+        {
+            await _mediator.Send(new CompleteTaskCommand(taskId));
+            return Ok();
         }
     }
 }

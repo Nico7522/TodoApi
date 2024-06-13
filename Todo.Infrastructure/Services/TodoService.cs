@@ -22,4 +22,9 @@ internal class TodoService : ITodoRepository
     {
         return await _dbContext.Tasks.FirstOrDefaultAsync(t => t.Id.ToString() == taskId);
     }
+
+    public async Task SaveChanges()
+    {
+        await _dbContext.SaveChangesAsync();
+    }
 }

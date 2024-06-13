@@ -5,7 +5,7 @@ using Todo.Domain.Entities;
 
 namespace Todo.Infrastructure.Configs;
 
-public class TeamTaskConfig : IEntityTypeConfiguration<TeamEntity>
+public class TeamConfig : IEntityTypeConfiguration<TeamEntity>
 {
     public void Configure(EntityTypeBuilder<TeamEntity> builder)
     {

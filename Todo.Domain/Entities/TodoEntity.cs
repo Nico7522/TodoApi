@@ -15,6 +15,6 @@ public class TodoEntity
     public string? UserId { get; set; }
     public UserEntity? User { get; set; }
 
-    public string? TeamId { get; set; }
+    public Guid? TeamId { get; set; }
     public TeamEntity? Team { get; set; }
 }

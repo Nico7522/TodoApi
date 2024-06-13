@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Todo.Domain.Entities;
 using Todo.Infrastructure.Configs;
 
@@ -32,8 +31,7 @@ public class TodoDbContext : IdentityDbContext<UserEntity>
         base.OnModelCreating(builder);
         builder.ApplyConfiguration(new UserConfig());
         builder.ApplyConfiguration(new TodoConfig());
-        builder.ApplyConfiguration(new UserTodoConfig());
-        builder.ApplyConfiguration(new TeamLeaderConfig());
+        builder.ApplyConfiguration(new TeamConfig());
 
     }
 }
