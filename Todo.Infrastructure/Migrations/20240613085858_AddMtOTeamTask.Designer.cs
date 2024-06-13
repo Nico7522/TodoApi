@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Todo.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using Todo.Infrastructure.Persistence;
 namespace Todo.Infrastructure.Migrations
 {
     [DbContext(typeof(TodoDbContext))]
-    partial class TodoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240613085858_AddMtOTeamTask")]
+    partial class AddMtOTeamTask
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -183,13 +186,13 @@ namespace Todo.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateOnly?>("ClosingDate")
+                    b.Property<DateOnly>("ClosingDate")
                         .HasColumnType("date");
 
                     b.Property<DateOnly>("CreationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("date")
-                        .HasDefaultValue(new DateOnly(2024, 6, 13));
+                        .HasDefaultValue(new DateOnly(1, 1, 1));
 
                     b.Property<string>("Description")
                         .IsRequired()

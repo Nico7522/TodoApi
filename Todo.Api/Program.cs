@@ -55,7 +55,7 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 var scope = app.Services.CreateScope();
-var seeder = scope.ServiceProvider.GetRequiredService<IRoleSeeder>();
+var seeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
 
 await seeder.Seed();
 

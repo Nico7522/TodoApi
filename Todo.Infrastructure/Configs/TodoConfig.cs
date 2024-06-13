@@ -13,7 +13,8 @@ public class TodoConfig : IEntityTypeConfiguration<TodoEntity>
         builder.Property(t => t.Id).ValueGeneratedOnAdd();
         builder.Property(t => t.Title).HasMaxLength(100).IsRequired();
         builder.Property(t => t.Description).IsRequired();
-        builder.Property(t => t.CreationDate).HasDefaultValue(new DateOnly());
+        builder.Property(t => t.CreationDate).HasDefaultValue(DateOnly.FromDateTime(DateTime.Now));
+        builder.Property(t => t.ClosingDate).HasDefaultValue(null);
         builder.Property(t => t.Priority).IsRequired();
         builder.Property(t => t.IsComplete).HasDefaultValue(false);
     }

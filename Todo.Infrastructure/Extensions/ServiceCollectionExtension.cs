@@ -19,7 +19,7 @@ public static class ServiceCollectionExtension
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IJwtHelper, JwtHelpers>();
-        services.AddScoped<IRoleSeeder, RoleSeeder>();
+        services.AddScoped<ISeeder, Seeder>();
         services.AddScoped<IAuthRepository, AuthService>();
         services.AddDbContext<TodoDbContext>(options => options.UseSqlServer(configuration["ConnectionStrings:TodoDB"]));
         services.AddIdentityCore<UserEntity>().AddRoles<IdentityRole>().AddEntityFrameworkStores<TodoDbContext>();

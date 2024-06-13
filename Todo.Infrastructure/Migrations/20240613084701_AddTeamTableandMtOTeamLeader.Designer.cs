@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Todo.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using Todo.Infrastructure.Persistence;
 namespace Todo.Infrastructure.Migrations
 {
     [DbContext(typeof(TodoDbContext))]
-    partial class TodoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240613084701_AddTeamTableandMtOTeamLeader")]
+    partial class AddTeamTableandMtOTeamLeader
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -183,13 +186,13 @@ namespace Todo.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateOnly?>("ClosingDate")
+                    b.Property<DateOnly>("ClosingDate")
                         .HasColumnType("date");
 
                     b.Property<DateOnly>("CreationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("date")
-                        .HasDefaultValue(new DateOnly(2024, 6, 13));
+                        .HasDefaultValue(new DateOnly(1, 1, 1));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -203,20 +206,12 @@ namespace Todo.Infrastructure.Migrations
                     b.Property<int>("Priority")
                         .HasColumnType("int");
 
-                    b.Property<string>("TeamId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("TeamId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("TeamId1");
 
                     b.ToTable("Tasks");
                 });
@@ -269,12 +264,6 @@ namespace Todo.Infrastructure.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TeamId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("TeamId1")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -291,8 +280,6 @@ namespace Todo.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("TeamId1");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -372,24 +359,6 @@ namespace Todo.Infrastructure.Migrations
                     b.Navigation("Leader");
                 });
 
-            modelBuilder.Entity("Todo.Domain.Entities.TodoEntity", b =>
-                {
-                    b.HasOne("Todo.Domain.Entities.TeamEntity", "Team")
-                        .WithMany("Tasks")
-                        .HasForeignKey("TeamId1");
-
-                    b.Navigation("Team");
-                });
-
-            modelBuilder.Entity("Todo.Domain.Entities.UserEntity", b =>
-                {
-                    b.HasOne("Todo.Domain.Entities.TeamEntity", "Team")
-                        .WithMany("Users")
-                        .HasForeignKey("TeamId1");
-
-                    b.Navigation("Team");
-                });
-
             modelBuilder.Entity("UsersTasks", b =>
                 {
                     b.HasOne("Todo.Domain.Entities.TodoEntity", null)
@@ -403,13 +372,6 @@ namespace Todo.Infrastructure.Migrations
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Todo.Domain.Entities.TeamEntity", b =>
-                {
-                    b.Navigation("Tasks");
-
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Todo.Domain.Entities.UserEntity", b =>

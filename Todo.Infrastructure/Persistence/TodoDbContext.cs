@@ -10,6 +10,7 @@ public class TodoDbContext : IdentityDbContext<UserEntity>
 {
     //private readonly IConfiguration _configuration;
     public DbSet<TodoEntity> Tasks { get; set; }
+    public DbSet<TeamEntity> Teams { get; set; }
 
     public TodoDbContext(DbContextOptions<TodoDbContext> options) : base(options)
     {
@@ -32,6 +33,7 @@ public class TodoDbContext : IdentityDbContext<UserEntity>
         builder.ApplyConfiguration(new UserConfig());
         builder.ApplyConfiguration(new TodoConfig());
         builder.ApplyConfiguration(new UserTodoConfig());
+        builder.ApplyConfiguration(new TeamLeaderConfig());
 
     }
 }

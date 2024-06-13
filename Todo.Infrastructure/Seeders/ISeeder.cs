@@ -1,7 +1,7 @@
 ﻿
 namespace Todo.Infrastructure.Seeders
 {
-    public interface IRoleSeeder
+    public interface ISeeder
     {
         Task Seed();
     }
