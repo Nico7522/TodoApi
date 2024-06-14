@@ -16,12 +16,12 @@ public class Program
     .AddEnvironmentVariables()
     .AddCommandLine(args)
     .Build();
-        //TodoDbContext context = new TodoDbContext(configuration);
+        TodoDbContextTest context = new TodoDbContextTest(configuration);
 
         try
         {
 
-
+       
         }
         catch (Exception)
         {
