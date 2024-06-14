@@ -1,4 +1,4 @@
-﻿namespace Todo.Api.Forms;
+﻿namespace Todo.Api.Forms.CompleteTaskForm;
 
 public class CompleteTaskForm
 {

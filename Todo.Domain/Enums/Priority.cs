@@ -1,6 +1,6 @@
 ﻿namespace Todo.Domain.Enums;
 
-public enum Piority
+public enum Priority
 {
     Low,
     Medium, 

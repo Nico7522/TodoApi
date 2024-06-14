@@ -10,7 +10,7 @@ public class TodoEntity
     public DateOnly CreationDate { get; set; }
     public DateOnly? ClosingDate { get; set; }
     public TimeOnly? Duration { get; set; }
-    public Piority Priority { get; set; }
+    public Priority Priority { get; set; }
     public bool IsComplete { get; set; }
 
     public string? UserId { get; set; }

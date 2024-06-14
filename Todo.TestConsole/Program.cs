@@ -20,8 +20,9 @@ public class Program
 
         try
         {
-
-       
+            //var tasks = context.Tasks.ToList();
+            //context.RemoveRange(tasks);
+            //context.SaveChanges();
         }
         catch (Exception)
         {
