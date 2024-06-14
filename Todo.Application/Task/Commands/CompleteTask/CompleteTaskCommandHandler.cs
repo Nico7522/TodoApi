@@ -16,7 +16,10 @@ public class CompleteTaskCommandHandler : IRequestHandler<CompleteTaskCommand, b
         var task = await _todoRepository.GetById(request.TaskId);
         if (task is null) throw new ApiErrorException("Task not found", 404);
 
+        var time = new TimeOnly().AddMinutes(request.Duration);
+
         task.IsComplete = true;
+        task.Duration = time;
         await _todoRepository.SaveChanges();
 
         return true;

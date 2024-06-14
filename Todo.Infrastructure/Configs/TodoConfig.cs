@@ -15,6 +15,7 @@ public class TodoConfig : IEntityTypeConfiguration<TodoEntity>
         builder.Property(t => t.Description).IsRequired();
         builder.Property(t => t.CreationDate).HasDefaultValue(DateOnly.FromDateTime(DateTime.Now));
         builder.Property(t => t.ClosingDate).HasDefaultValue(null);
+        builder.Property(t => t.Duration).HasDefaultValue(null);
         builder.Property(t => t.Priority).IsRequired();
         builder.Property(t => t.IsComplete).HasDefaultValue(false);
     }
