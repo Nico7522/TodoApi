@@ -20,14 +20,14 @@ internal class UpdateTaskCommandHandler : IRequestHandler<UpdateTaskCommand>
     }
     public async System.Threading.Tasks.Task Handle(UpdateTaskCommand request, CancellationToken cancellationToken)
     {
-        var task = await _todoRepository.GetById(request.Id);
+        var task = await _todoRepository.GetById(request.Id.ToString()!);
         if (task is null) throw new ApiErrorException("Task not found", 404);
 
-        var result = await _validator.ValidateAsync(request);
-        if (result.Errors.Any())
-        {
-            throw new ValidationException(result.Errors);
-        }
+        //var result = await _validator.ValidateAsync(request);
+        //if (result.Errors.Any())
+        //{
+        //    throw new ValidationException(result.Errors);
+        //}
 
         _mapper.Map(request, task);
         await _todoRepository.SaveChanges();

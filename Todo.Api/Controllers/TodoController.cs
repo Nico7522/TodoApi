@@ -38,7 +38,7 @@ namespace Todo.Api.Controllers
         }
 
         [HttpPut("{taskId}")]
-        public async Task<IActionResult> UpdateTask([FromRoute] string taskId, UpdateTaskForm form)
+        public async Task<IActionResult> UpdateTask([FromRoute] Guid taskId, UpdateTaskCommand form)
         {
             UpdateTaskCommand command = new UpdateTaskCommand();
             command.Id = taskId;
