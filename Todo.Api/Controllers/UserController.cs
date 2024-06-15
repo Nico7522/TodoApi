@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Todo.Api.Forms.AssignRoleForm;
+using Todo.Application.Users.Commands.AssignRole;
 using Todo.Application.Users.Commands.AssignTaskByUser;
 using Todo.Application.Users.Queries.GetTasksByUser;
 using Todo.Domain.Entities;
@@ -17,7 +19,7 @@ namespace Todo.Api.Controllers
             _mediator = mediator;
         }
         [HttpPut("{userId}/task/{taskId}")]
-        public async Task<ActionResult<TodoEntity?>> AssignTaskByUser([FromRoute] string userId, string taskId)
+        public async Task<ActionResult<TodoEntity?>> AssignTaskByUser([FromRoute] string userId, Guid taskId)
         {
             await _mediator.Send(new AssignTaskByUserCommand(userId, taskId));
             return Ok();
@@ -28,6 +30,13 @@ namespace Todo.Api.Controllers
         {
             var tasks = await _mediator.Send(new GetTasksByUserQuery(userId));
             return Ok(tasks);
+        }
+        [HttpPut("{userId}/assignrole")]
+        public async Task<IActionResult> AssignRole([FromRoute] string userId, [FromBody] AssignRoleForm form)
+        {
+            AssignRoleCommand command = new AssignRoleCommand(userId, form.Role);
+            await _mediator.Send(command);
+            return Ok();
         }
 
     }

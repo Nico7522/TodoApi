@@ -31,9 +31,9 @@ internal class TodoService : ITodoRepository
         throw new NotImplementedException();
     }
 
-    public async Task<TodoEntity?> GetById(string taskId)
+    public async Task<TodoEntity?> GetById(Guid taskId)
     {
-        return await _dbContext.Tasks.FirstOrDefaultAsync(t => t.Id.ToString() == taskId);
+        return await _dbContext.Tasks.FirstOrDefaultAsync(t => t.Id == taskId);
     }
 
     public async Task SaveChanges()

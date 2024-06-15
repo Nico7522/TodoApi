@@ -21,7 +21,8 @@ internal class UpdateTaskCommandHandler : IRequestHandler<UpdateTaskCommand>
     public async System.Threading.Tasks.Task Handle(UpdateTaskCommand request, CancellationToken cancellationToken)
     {
         var task = await _todoRepository.GetById(request.Id);
-        if (task is null) throw new ApiErrorException("Task not found", 404);
+        if (task is null) throw new NotFoundException("Task not found");
+
 
         var result = await _validator.ValidateAsync(request);
         if (result.Errors.Any())

@@ -5,8 +5,8 @@ namespace Todo.Application.Task.Commands.DeleteTask;
 
 public class DeleteTaskCommand : IRequest
 {
-    public string TaskId { get; init; }
-    public DeleteTaskCommand(string taskId)
+    public Guid TaskId { get; init; }
+    public DeleteTaskCommand(Guid taskId)
     {
         TaskId = taskId;
     }

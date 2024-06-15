@@ -22,7 +22,7 @@ namespace Todo.Api.Controllers
             _mediator = mediator;
         }
         [HttpGet("{taskId}")]
-        public async Task<ActionResult<TodoDto?>> GetTaskById(string taskId)
+        public async Task<ActionResult<TodoDto?>> GetTaskById(Guid taskId)
         {
             var task = await _mediator.Send(new GetTaskByIdQuery(taskId));
             return Ok(task);
@@ -30,7 +30,7 @@ namespace Todo.Api.Controllers
 
 
         [HttpPut("{taskId}/complete")]
-        public async Task<IActionResult> CompleteTask([FromRoute]string taskId, CompleteTaskForm form)
+        public async Task<IActionResult> CompleteTask([FromRoute] Guid taskId, CompleteTaskForm form)
         {
             CompleteTaskCommand command = new CompleteTaskCommand(taskId, form.Duration);
             await _mediator.Send(command);
@@ -38,7 +38,7 @@ namespace Todo.Api.Controllers
         }
 
         [HttpPut("{taskId}")]
-        public async Task<IActionResult> UpdateTask([FromRoute] string taskId, UpdateTaskForm form)
+        public async Task<IActionResult> UpdateTask([FromRoute] Guid taskId, UpdateTaskForm form)
         {
             UpdateTaskCommand command = new UpdateTaskCommand();
             command.Id = taskId;
@@ -50,7 +50,7 @@ namespace Todo.Api.Controllers
         }
 
         [HttpDelete("{taskId}")]
-        public async Task<IActionResult> DeleteTask([FromRoute] string taskId)
+        public async Task<IActionResult> DeleteTask([FromRoute] Guid taskId)
         {
             await _mediator.Send(new DeleteTaskCommand(taskId));
             return Ok();

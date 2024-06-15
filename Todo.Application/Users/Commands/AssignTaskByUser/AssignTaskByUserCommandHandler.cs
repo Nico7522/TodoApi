@@ -21,13 +21,13 @@ internal class AssignTaskByUserCommandHandler : IRequestHandler<AssignTaskByUser
     public async Task<bool> Handle(AssignTaskByUserCommand request, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByIdAsync(request.UserId);
-        if (user is null) throw new ApiErrorException("User not found", 404);
+        if (user is null) throw new NotFoundException("User not found");
 
         var task = await _todoRepository.GetById(request.TaskId);
-        if (task is null) throw new ApiErrorException("Task not found", 404);
+        if (task is null) throw new NotFoundException("Task not found");
 
         var result = await _userRepository.AssignTaskByUser(user, task);
-        if (!result) throw new ApiErrorException("Error", 400);
+        if (!result) throw new BadRequestException("A error has occured", 400);
 
 
         return true;

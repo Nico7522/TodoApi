@@ -19,10 +19,10 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, string>
     {
 
         var user = await _userManager.FindByEmailAsync(request.Email);
-        if (user is null) throw new ApiErrorException("Bad credentials", 400);
+        if (user is null) throw new BadRequestException("Bad credentials", 400);
 
         var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, request.Password);
-        if (!isPasswordCorrect) throw new ApiErrorException("Bad credentials", 400);
+        if (!isPasswordCorrect) throw new BadRequestException("Bad credentials", 400);
 
         string token = await _jwtHelper.GenerateToken(user);
         return token;

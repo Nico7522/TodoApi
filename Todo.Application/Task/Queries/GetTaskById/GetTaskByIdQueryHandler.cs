@@ -21,7 +21,7 @@ internal class GetTaskByIdQueryHandler : IRequestHandler<GetTaskByIdQuery, TodoD
     public async Task<TodoDto> Handle(GetTaskByIdQuery request, CancellationToken cancellationToken)
     {
         var task = await _todoRepository.GetById(request.TaskId);
-        if (task is null) throw new ApiErrorException("Task not found", 404);
+        if (task is null) throw new NotFoundException("Task not found");
         var taskDto = _mapper.Map<TodoDto>(task);
         return taskDto;
     }

@@ -13,16 +13,20 @@ public class ErrorHandlingMiddleware : IMiddleware
         {
             await next.Invoke(context);
         }
-        catch (ApiErrorException ex)
+        catch (NotFoundException ex)
         {
-
             context.Response.ContentType = MediaTypeNames.Application.Json;
-            context.Response.StatusCode = ex.StatusCode;
+            context.Response.StatusCode = 404;
+            await context.Response.WriteAsync(JsonSerializer.Serialize(ex.Message));
+        }
+        catch (BadRequestException ex)
+        {
+            context.Response.ContentType = MediaTypeNames.Application.Json;
+            context.Response.StatusCode = 400;
             await context.Response.WriteAsync(JsonSerializer.Serialize(ex.Message));
         }
         catch (ValidationException ex)
         {
-            //var response = new {Errors = ex.Errors, StatusCode = ex.StatusCode};
             context.Response.ContentType = MediaTypeNames.Application.Json;
             context.Response.StatusCode = 400;
             await context.Response.WriteAsync(JsonSerializer.Serialize(ex.Errors.Select(e => e.ErrorMessage)));

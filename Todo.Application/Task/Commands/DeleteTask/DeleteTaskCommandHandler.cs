@@ -16,7 +16,8 @@ internal class DeleteTaskCommandHandler : IRequestHandler<DeleteTaskCommand>
     public async System.Threading.Tasks.Task Handle(DeleteTaskCommand request, CancellationToken cancellationToken)
     {
         var task = await _todoRepository.GetById(request.TaskId);
-        if (task is null) throw new ApiErrorException("Task not found", 404);
+        if (task is null) throw new NotFoundException("Task not found");
+
         await _todoRepository.Delete(task);
     }
 }

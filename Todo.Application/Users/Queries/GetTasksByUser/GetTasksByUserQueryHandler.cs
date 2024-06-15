@@ -22,7 +22,7 @@ internal class GetTasksByUserQueryHandler : IRequestHandler<GetTasksByUserQuery,
     public async Task<IEnumerable<TodoDto>> Handle(GetTasksByUserQuery request, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByIdAsync(request.UserId);
-        if (user is null) throw new ApiErrorException("User not found", 404);
+        if (user is null) throw new NotFoundException("User not found");
 
         var userTasks = await _userRepository.GetTasksByUser(request.UserId);
         var userTasksDto = userTasks.Select(t => _mapper.Map<TodoDto>(t));

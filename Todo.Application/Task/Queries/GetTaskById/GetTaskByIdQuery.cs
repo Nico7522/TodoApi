@@ -7,8 +7,8 @@ namespace Todo.Application.Task.Queries.GetTaskById;
 
 public class GetTaskByIdQuery : IRequest<TodoDto>
 {
-    public string TaskId { get; init; }
-    public GetTaskByIdQuery(string taskId)
+    public Guid TaskId { get; init; }
+    public GetTaskByIdQuery(Guid taskId)
     {
         TaskId = taskId;
     }

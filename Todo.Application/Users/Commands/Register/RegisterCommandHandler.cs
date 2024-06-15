@@ -25,15 +25,15 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, bool>
     {
         var entity = _mapper.Map<UserEntity>(request);
         var user = await _userManager.FindByEmailAsync(request.Email!);
-        if (user is not null) throw new ApiErrorException("Bad request", 400);
+        if (user is not null) throw new BadRequestException("Bad request", 400);
 
 
         var result = await _userManager.CreateAsync(entity, request.Password);
-        if (!result.Succeeded) throw new ApiErrorException("An error has occurred", 400);
+        if (!result.Succeeded) throw new BadRequestException("An error has occurred", 400);
         await _userManager.AddToRoleAsync(entity, UserRole.User);
         IList<Claim> baseClaims = await _jwtHelper.SetBaseClaims(entity);
         var addClaimsResult = await _userManager.AddClaimsAsync(entity, baseClaims);
-        if (!addClaimsResult.Succeeded) throw new ApiErrorException("An error has occurred", 400);
+        if (!addClaimsResult.Succeeded) throw new BadRequestException("An error has occurred", 400);
 
         return true;
     }
