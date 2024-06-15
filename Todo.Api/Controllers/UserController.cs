@@ -1,10 +1,13 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Todo.Api.Forms.AssignRoleForm;
 using Todo.Application.Users.Commands.AssignRole;
 using Todo.Application.Users.Commands.AssignTaskByUser;
+using Todo.Application.Users.Commands.UnassignRole;
 using Todo.Application.Users.Queries.GetTasksByUser;
+using Todo.Domain.Constants;
 using Todo.Domain.Entities;
 
 namespace Todo.Api.Controllers
@@ -36,7 +39,17 @@ namespace Todo.Api.Controllers
         {
             AssignRoleCommand command = new AssignRoleCommand(userId, form.Role);
             await _mediator.Send(command);
-            return Ok();
+            return NoContent();
+        }
+
+        [HttpPut("{userId}/unassignrole")]
+        [Authorize(Roles = UserRole.SuperAdmin + "," + UserRole.Admin)]
+
+        public async Task<IActionResult> UnassignRole([FromRoute] string userId)
+        {
+            UnassignRoleCommand command = new UnassignRoleCommand(userId);
+            await _mediator.Send(command);
+            return NoContent();
         }
 
     }
