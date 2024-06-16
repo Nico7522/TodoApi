@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Http;
+using Todo.Application.ValidationResultExtensions;
 using Todo.Domain.Entities;
 using Todo.Domain.Exceptions;
 using Todo.Domain.Repositories;
@@ -25,12 +27,14 @@ internal class UpdateTaskCommandHandler : IRequestHandler<UpdateTaskCommand>
 
 
         var result = await _validator.ValidateAsync(request);
-        if (result.Errors.Any())
+        if(!result.IsValid)
         {
-            throw new ValidationException(result.Errors);
-        }
-
+            result.ToValidationProblem();
+        } else
+        {
         _mapper.Map(request, task);
         await _todoRepository.SaveChanges();
+        }
+
     }
 }
