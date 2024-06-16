@@ -3,6 +3,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using Todo.Application.Task.Commands.UpdateTask;
+using Todo.Application.Users;
 
 
 
@@ -15,7 +16,7 @@ public static class ServicesCollectionExtensions
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly()).AddFluentValidationAutoValidation();
         services.AddScoped<IValidator<UpdateTaskCommand>, UpdateTaskCommandValidator>();
-
+        services.AddScoped<IUserContext, UserContext>();
         services.AddHttpContextAccessor();
     }
 }

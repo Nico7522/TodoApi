@@ -35,6 +35,7 @@ namespace Todo.Api.Controllers
             return Ok(tasks);
         }
         [HttpPut("{userId}/assignrole")]
+        [Authorize(Roles = UserRole.SuperAdmin + "," + UserRole.Admin)]
         public async Task<IActionResult> AssignRole([FromRoute] string userId, [FromBody] AssignRoleForm form)
         {
             AssignRoleCommand command = new AssignRoleCommand(userId, form.Role);

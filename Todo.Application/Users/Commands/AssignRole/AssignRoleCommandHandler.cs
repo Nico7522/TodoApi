@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using Todo.Domain.Constants;
 using Todo.Domain.Entities;
 using Todo.Domain.Exceptions;
 
@@ -11,10 +12,12 @@ internal class AssignRoleCommandHandler : IRequestHandler<AssignRoleCommand>
 {
     private readonly UserManager<UserEntity> _userManager;
     private readonly IValidator<AssignRoleCommand> _validator;
-    public AssignRoleCommandHandler(UserManager<UserEntity> userManager, IValidator<AssignRoleCommand> validator)
+    private readonly IUserContext _userContext;
+    public AssignRoleCommandHandler(UserManager<UserEntity> userManager, IValidator<AssignRoleCommand> validator, IUserContext userContext)
     {
         _userManager = userManager;
         _validator = validator;
+        _userContext = userContext;
     }
 
     public async System.Threading.Tasks.Task Handle(AssignRoleCommand request, CancellationToken cancellationToken)
@@ -22,6 +25,10 @@ internal class AssignRoleCommandHandler : IRequestHandler<AssignRoleCommand>
 
         var result = _validator.Validate(request);
         if (!result.IsValid) throw new ValidationException(result.Errors);
+
+        var currentUser = _userContext.GetCurrentUser();
+
+        if (currentUser!.Role == UserRole.Admin && request.Role == UserRole.SuperAdmin) throw new BadRequestException("You can't achieve this action", 400);
 
         var user = await _userManager.FindByIdAsync(request.UserId);
         if (user is null) throw new NotFoundException("User not found");
