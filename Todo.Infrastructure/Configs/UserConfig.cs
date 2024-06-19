@@ -9,6 +9,9 @@ internal class UserConfig : IEntityTypeConfiguration<UserEntity>
     public void Configure(EntityTypeBuilder<UserEntity> builder)
     {
         builder.Property(u => u.Birthdate).IsRequired();
+        builder.Property(u => u.FirstName).IsRequired();
+        builder.Property(u => u.LastName).IsRequired();
+        builder.Property(u => u.HireDate).IsRequired();
         builder
        .HasMany(e => e.Tasks)
        .WithOne(e => e.User)

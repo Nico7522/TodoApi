@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using Todo.Api.Forms.CompleteTaskForm;
 using Todo.Api.Forms.UpdateTaskForm;
 using Todo.Application.Task.Commands.CompleteTask;
