@@ -33,9 +33,11 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, bool>
 
         var result = await _userManager.CreateAsync(entity, request.Password);
         if (!result.Succeeded) throw new BadRequestException("An error has occurred");
+
         await _userManager.AddToRoleAsync(entity, UserRole.User);
         IList<Claim> baseClaims = await _jwtHelper.SetBaseClaims(entity);
         var addClaimsResult = await _userManager.AddClaimsAsync(entity, baseClaims);
+
         if (!addClaimsResult.Succeeded) throw new BadRequestException("An error has occurred");
         await _emailSender.SendEmail(entity.Email!, "Account created", $"Welcome, to our team {entity.FirstName} {entity.LastName}");
 

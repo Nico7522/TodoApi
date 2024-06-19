@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Todo.Api.Forms.AssignRoleForm;
 using Todo.Application.Users.Commands.AssignRole;
 using Todo.Application.Users.Commands.AssignTaskByUser;
+using Todo.Application.Users.Commands.ResetPassword;
 using Todo.Application.Users.Commands.UnassignRole;
 using Todo.Application.Users.Queries.GetTasksByUser;
 using Todo.Domain.Constants;
@@ -45,11 +46,16 @@ namespace Todo.Api.Controllers
 
         [HttpPut("{userId}/unassignrole")]
         [Authorize(Roles = UserRole.SuperAdmin + "," + UserRole.Admin)]
-
         public async Task<IActionResult> UnassignRole([FromRoute] string userId)
         {
             UnassignRoleCommand command = new UnassignRoleCommand(userId);
             await _mediator.Send(command);
+            return NoContent();
+        }
+        [HttpPost("resetpassword")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordCommand command)
+        {
+            await _mediator.Send(command);  
             return NoContent();
         }
 

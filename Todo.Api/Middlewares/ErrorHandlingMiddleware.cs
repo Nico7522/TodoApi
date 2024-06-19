@@ -40,7 +40,7 @@ public class ErrorHandlingMiddleware : IMiddleware
         catch (Exception)
         {
             context.Response.StatusCode = 500;
-            await context.Response.WriteAsync("Error");
+            await context.Response.WriteAsync(JsonSerializer.Serialize("A error has occured"));
         }
     }
 }

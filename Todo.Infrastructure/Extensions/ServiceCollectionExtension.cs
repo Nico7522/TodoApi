@@ -28,7 +28,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<IEmailSender, MailJetProvider>();
 
         services.AddDbContext<TodoDbContext>(options => options.UseSqlServer(configuration["ConnectionStrings:TodoDB"]));
-        services.AddIdentityCore<UserEntity>().AddRoles<IdentityRole>().AddEntityFrameworkStores<TodoDbContext>();
+        services.AddIdentityCore<UserEntity>().AddRoles<IdentityRole>().AddEntityFrameworkStores<TodoDbContext>().AddDefaultTokenProviders();
         services.AddAuthentication(options =>
         {
             options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
