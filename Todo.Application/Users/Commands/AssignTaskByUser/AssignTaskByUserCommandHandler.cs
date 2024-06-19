@@ -27,7 +27,7 @@ internal class AssignTaskByUserCommandHandler : IRequestHandler<AssignTaskByUser
         if (task is null) throw new NotFoundException("Task not found");
 
         var result = await _userRepository.AssignTaskByUser(user, task);
-        if (!result) throw new BadRequestException("A error has occured", 400);
+        if (!result) throw new BadRequestException("A error has occured");
 
 
         return true;

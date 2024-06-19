@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Todo.Application.Email.Models;
 
-namespace Todo.Application.Email.Models
+public class EmailModel
 {
-    internal class EmailModel
-    {
-    }
+    public string EmailAddress { get; set; } = string.Empty;
+    public string Subject { get; set; } = string.Empty;
+    public string Body { get; set; } = string.Empty;
+    public IEnumerable<EmailAttachment>? Attachments { get; set; }
 }

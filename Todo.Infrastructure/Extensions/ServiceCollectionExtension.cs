@@ -4,9 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Todo.Application.Email.Interfaces;
 using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 using Todo.Domain.Security;
+using Todo.Infrastructure.Email.EmailProvider;
+using Todo.Infrastructure.Email.EmailService;
 using Todo.Infrastructure.Persistence;
 using Todo.Infrastructure.Security;
 using Todo.Infrastructure.Seeders;
@@ -22,6 +25,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<ISeeder, Seeder>();
         services.AddScoped<IUserRepository, UserService>();
         services.AddScoped<ITodoRepository, TodoService>();
+        services.AddScoped<IEmailSender, MailJetProvider>();
 
         services.AddDbContext<TodoDbContext>(options => options.UseSqlServer(configuration["ConnectionStrings:TodoDB"]));
         services.AddIdentityCore<UserEntity>().AddRoles<IdentityRole>().AddEntityFrameworkStores<TodoDbContext>();

@@ -31,6 +31,12 @@ public class ErrorHandlingMiddleware : IMiddleware
             context.Response.StatusCode = 400;
             await context.Response.WriteAsync(JsonSerializer.Serialize(ex.Errors.Select(e => e.ErrorMessage)));
         }
+        catch (ApiException ex)
+        {
+            context.Response.ContentType = MediaTypeNames.Application.Json;
+            context.Response.StatusCode = 400;
+            await context.Response.WriteAsync(JsonSerializer.Serialize(ex.Message));
+        }
         catch (Exception)
         {
             context.Response.StatusCode = 500;

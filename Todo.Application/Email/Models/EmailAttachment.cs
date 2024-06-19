@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace Todo.Application.Email.Models
 {
-    internal class EmailAttachment
+    public class EmailAttachment
     {
+        public string Name { get; set; } = string.Empty;
+        public string ContentType { get; set; } = string.Empty;
+
+        public byte[] Data = new byte[0];
     }
 }

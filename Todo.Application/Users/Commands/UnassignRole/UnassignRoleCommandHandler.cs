@@ -24,14 +24,14 @@ internal class UnassignRoleCommandHandler : IRequestHandler<UnassignRoleCommand>
         if (user is null) throw new NotFoundException("User not found");
 
         var roles = await _userManager.GetRolesAsync(user);
-        if (roles.Count() <= 0) throw new BadRequestException("User has no role", 400);
+        if (roles.Count() <= 0) throw new BadRequestException("User has no role");
 
-        if (roles.First() == UserRole.SuperAdmin) throw new BadRequestException("You can't achieve this action", 400);
+        if (roles.First() == UserRole.SuperAdmin) throw new BadRequestException("You can't achieve this action");
 
-        if(currentUser!.Role == roles.First()) throw new BadRequestException("You can't achieve this action", 400);
+        if(currentUser!.Role == roles.First()) throw new BadRequestException("You can't achieve this action");
 
         var roleDeletedResult = await _userManager.RemoveFromRolesAsync(user, roles);
-        if (!roleDeletedResult.Succeeded) throw new BadRequestException("Role has not been deleted", 400);
+        if (!roleDeletedResult.Succeeded) throw new BadRequestException("Role has not been deleted");
 
         var userClaims = await _userManager.GetClaimsAsync(user);
 
@@ -39,7 +39,7 @@ internal class UnassignRoleCommandHandler : IRequestHandler<UnassignRoleCommand>
         if(roleClaim is not null)
         {
             var deletedRoleClaimResult = await _userManager.RemoveClaimAsync(user, roleClaim);
-            if (!deletedRoleClaimResult.Succeeded) throw new BadRequestException("Error", 400);
+            if (!deletedRoleClaimResult.Succeeded) throw new BadRequestException("Error");
         }
     }
 }
