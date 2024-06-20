@@ -31,20 +31,15 @@ namespace Todo.Api.Controllers
         [HttpPut("{taskId}/complete")]
         public async Task<IActionResult> CompleteTask([FromRoute] Guid taskId, CompleteTaskForm form)
         {
-            CompleteTaskCommand command = new CompleteTaskCommand(taskId, form.Duration);
-            await _mediator.Send(command);
+            await _mediator.Send(new CompleteTaskCommand(taskId, form.Duration));
             return Ok();
         }
 
         [HttpPut("{taskId}")]
         public async Task<IActionResult> UpdateTask([FromRoute] Guid taskId, UpdateTaskForm form)
         {
-            UpdateTaskCommand command = new UpdateTaskCommand();
-            command.Id = taskId;
-            command.Description = form.Description;
-            command.Title = form.Title;
-            command.Priority = form.Priority;
-            await _mediator.Send(command);
+           
+            await _mediator.Send(new UpdateTaskCommand(taskId, form.Title, form.Description, form.Priority));
             return NoContent();
         }
 

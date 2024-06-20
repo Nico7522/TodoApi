@@ -41,8 +41,7 @@ namespace Todo.Api.Controllers
         [Authorize(Roles = UserRole.SuperAdmin + "," + UserRole.Admin)]
         public async Task<IActionResult> AssignRole([FromRoute] string userId, [FromBody] AssignRoleForm form)
         {
-            AssignRoleCommand command = new AssignRoleCommand(userId, form.Role);
-            await _mediator.Send(command);
+            await _mediator.Send(new AssignRoleCommand(userId, form.Role));
             return NoContent();
         }
 
@@ -50,8 +49,7 @@ namespace Todo.Api.Controllers
         [Authorize(Roles = UserRole.SuperAdmin + "," + UserRole.Admin)]
         public async Task<IActionResult> UnassignRole([FromRoute] string userId)
         {
-            UnassignRoleCommand command = new UnassignRoleCommand(userId);
-            await _mediator.Send(command);
+            await _mediator.Send(new UnassignRoleCommand(userId));
             return NoContent();
         }
         [HttpPost("resetpassword")]
@@ -64,8 +62,7 @@ namespace Todo.Api.Controllers
         [HttpPost("{userId}/{resetToken}/resetpasswordconfirm")]
         public async Task<IActionResult> ResetPasswordConfirm(string userId, string resetToken, [FromBody] ResetPasswordConfirmForm form)
         {
-            ResetPasswordConfirmCommand command = new ResetPasswordConfirmCommand(userId, resetToken, form.Password, form.PasswordConfirm);
-            await _mediator.Send(command);
+            await _mediator.Send(new ResetPasswordConfirmCommand(userId, resetToken, form.Password, form.PasswordConfirm));
             return NoContent();
         }
 
