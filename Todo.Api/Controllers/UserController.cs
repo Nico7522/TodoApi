@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Todo.Api.Forms.AssignRoleForm;
+using Todo.Api.Forms.ResetPasswordConfirmForm;
 using Todo.Application.Users.Commands.AssignRole;
 using Todo.Application.Users.Commands.AssignTaskByUser;
 using Todo.Application.Users.Commands.ResetPassword;
+using Todo.Application.Users.Commands.ResetPasswordConfirm;
 using Todo.Application.Users.Commands.UnassignRole;
 using Todo.Application.Users.Queries.GetTasksByUser;
 using Todo.Domain.Constants;
@@ -56,6 +58,14 @@ namespace Todo.Api.Controllers
         public async Task<IActionResult> ResetPassword(ResetPasswordCommand command)
         {
             await _mediator.Send(command);  
+            return NoContent();
+        }
+
+        [HttpPost("{userId}/{resetToken}/resetpasswordconfirm")]
+        public async Task<IActionResult> ResetPasswordConfirm(string userId, string resetToken, [FromBody] ResetPasswordConfirmForm form)
+        {
+            ResetPasswordConfirmCommand command = new ResetPasswordConfirmCommand(userId, resetToken, form.Password, form.PasswordConfirm);
+            await _mediator.Send(command);
             return NoContent();
         }
 

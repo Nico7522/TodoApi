@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
+using System.Web;
 using Todo.Application.Email.Interfaces;
 using Todo.Domain.Entities;
 using Todo.Domain.Exceptions;
@@ -21,6 +22,7 @@ internal class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordComman
         if (user is null) throw new NotFoundException("User not found");
 
         var resetToken = await _userMananger.GeneratePasswordResetTokenAsync(user);
-        await _emailSender.SendEmail(user.Email!, "Reset your password", $"You can reset your password from this url http://localhost:4200/{user.Id}/{resetToken}");
+        var encodedResetToken = HttpUtility.UrlEncode(resetToken);
+        await _emailSender.SendEmail(user.Email!, "Reset your password", $"You can reset your password from this url http://localhost:4200/{user.Id}/{encodedResetToken}");
     }
 }
