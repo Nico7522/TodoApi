@@ -4,7 +4,7 @@ using Todo.Application.Team.Dto;
 using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 
-namespace Todo.Application.Team.GetAllTeams;
+namespace Todo.Application.Team.Queries.GetAllTeams;
 
 internal class GetAllTeamQueryHandler : IRequestHandler<GetAllTeamQuery, IEnumerable<TeamDto>>
 {
