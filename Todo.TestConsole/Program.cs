@@ -20,14 +20,13 @@ public class Program
 
         try
         {
-            var task = context.Tasks.AsNoTracking().Include(t => t.User).Where(t => !t.IsComplete).ToList();
-            foreach (var t in task)
+            var team = context.Teams.FirstOrDefault(t => t.Id.ToString() == "aeb460ae-7c2c-4b7a-1a3a-08dc8c4c02a9");
+            var task = context.Tasks.FirstOrDefault(t => t.Id.ToString() == "046b88e6-0320-4db7-7dd7-08dc8c80cbbc");
+            if (team is not null && task is not null)
             {
-                Console.WriteLine(t.Title);
-                if(t.User != null)
-                {
-                    Console.WriteLine(t.User.FirstName);
-                }
+                team.Tasks.Add(task);
+                context.SaveChanges();
+                Console.WriteLine("ok");
             }
         }
         catch (Exception)

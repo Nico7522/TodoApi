@@ -25,6 +25,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<ISeeder, Seeder>();
         services.AddScoped<IUserRepository, UserService>();
         services.AddScoped<ITodoRepository, TodoService>();
+        services.AddScoped<ITeamRepository, TeamService>();
         services.AddScoped<IEmailSender, MailJetProvider>();
 
         services.AddDbContext<TodoDbContext>(options => options.UseSqlServer(configuration["ConnectionStrings:TodoDB"]));

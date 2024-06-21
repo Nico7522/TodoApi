@@ -16,6 +16,9 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
             .WithMessage(Helpers.SetRequiredErrorMessage("Password"))
             .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$")
             .WithMessage("Password not match the requirement");
+        RuleFor(c => c.Password)
+            .Equal(c => c.PasswordConfirm)
+            .WithMessage("Password not match");
         RuleFor(f => f.FirstName)
             .NotEmpty()
             .WithMessage(Helpers.SetRequiredErrorMessage("First name"));

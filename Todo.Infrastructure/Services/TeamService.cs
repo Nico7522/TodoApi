@@ -12,9 +12,14 @@ internal class TeamService : ITeamRepository
     {
         _dbContext = dbContext;
     }
-    public async Task<IEnumerable<TeamEntity>> GetAll()
+    public async Task<IEnumerable<TeamEntity>> GetAll(bool isActive)
     {
-        return await _dbContext.Teams.AsNoTracking().ToListAsync();
+        return await _dbContext.Teams
+            .AsNoTracking()
+            .Include(t => t.Leader)
+            .Include(t => t.Tasks)
+            .Where(t => t.IsActive == isActive)
+            .ToListAsync();
     }
 
     public Task SaveChanges()
