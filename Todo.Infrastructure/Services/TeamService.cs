@@ -18,6 +18,7 @@ internal class TeamService : ITeamRepository
             .AsNoTracking()
             .Include(t => t.Leader)
             .Include(t => t.Tasks)
+            .Include(t => t.Users)
             .Where(t => t.IsActive == isActive)
             .ToListAsync();
     }

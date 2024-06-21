@@ -21,10 +21,10 @@ public class Program
         try
         {
             var team = context.Teams.FirstOrDefault(t => t.Id.ToString() == "aeb460ae-7c2c-4b7a-1a3a-08dc8c4c02a9");
-            var task = context.Tasks.FirstOrDefault(t => t.Id.ToString() == "046b88e6-0320-4db7-7dd7-08dc8c80cbbc");
-            if (team is not null && task is not null)
+            var user = context.Users.FirstOrDefault(t => t.Id == "0d186c59-c16c-4b3a-bbe2-2ebbdcf0c898");
+            if (team is not null && user is not null)
             {
-                team.Tasks.Add(task);
+                team.Users.Add(user);
                 context.SaveChanges();
                 Console.WriteLine("ok");
             }

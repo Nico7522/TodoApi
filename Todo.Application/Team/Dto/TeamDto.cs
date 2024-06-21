@@ -11,5 +11,6 @@ public class TeamDto
     public bool IsActive { get; set; }
     public UserDto? Leader { get; set; }
     public ICollection<TodoDto> Tasks { get; set; } = new List<TodoDto>();
+    public ICollection<UserDto> Users { get; set; } = new List<UserDto>();
 
 }
