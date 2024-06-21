@@ -20,9 +20,15 @@ public class Program
 
         try
         {
-            //var tasks = context.Tasks.ToList();
-            //context.RemoveRange(tasks);
-            //context.SaveChanges();
+            var task = context.Tasks.AsNoTracking().Include(t => t.User).Where(t => !t.IsComplete).ToList();
+            foreach (var t in task)
+            {
+                Console.WriteLine(t.Title);
+                if(t.User != null)
+                {
+                    Console.WriteLine(t.User.FirstName);
+                }
+            }
         }
         catch (Exception)
         {

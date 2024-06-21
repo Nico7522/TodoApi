@@ -26,14 +26,14 @@ internal class TodoService : ITodoRepository
         await _dbContext.SaveChangesAsync();
     }
 
-    public Task<IEnumerable<TodoEntity>> GetAll()
+    public async Task<IEnumerable<TodoEntity>> GetAllActive()
     {
-        throw new NotImplementedException();
+        return await _dbContext.Tasks.AsNoTracking().Include(t => t.User).Where(t => !t.IsComplete).ToListAsync();  
     }
 
     public async Task<TodoEntity?> GetById(Guid taskId)
     {
-        return await _dbContext.Tasks.FirstOrDefaultAsync(t => t.Id == taskId);
+        return await _dbContext.Tasks.Include(t => t.User).FirstOrDefaultAsync(t => t.Id == taskId);
     }
 
     public async Task SaveChanges()

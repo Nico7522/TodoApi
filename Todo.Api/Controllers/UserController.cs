@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Todo.Api.Forms.AssignRoleForm;
 using Todo.Api.Forms.ResetPasswordConfirmForm;
+using Todo.Application.Task.Dto;
 using Todo.Application.Users.Commands.AssignRole;
 using Todo.Application.Users.Commands.AssignTaskByUser;
 using Todo.Application.Users.Commands.ResetPassword;
@@ -32,7 +33,7 @@ namespace Todo.Api.Controllers
         }
 
         [HttpGet("{userId}/tasks")]
-        public async Task<ActionResult<IEnumerable<TodoEntity>>> GetTasksByUser([FromRoute] string userId)
+        public async Task<ActionResult<IEnumerable<TodoDto>>> GetTasksByUser([FromRoute] string userId)
         {
             var tasks = await _mediator.Send(new GetTasksByUserQuery(userId));
             return Ok(tasks);

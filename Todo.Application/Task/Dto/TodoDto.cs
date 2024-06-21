@@ -1,4 +1,5 @@
-﻿using Todo.Domain.Enums;
+﻿using Todo.Application.Users.Dto;
+using Todo.Domain.Enums;
 
 namespace Todo.Application.Task.Dto;
 
@@ -11,4 +12,5 @@ public class TodoDto
     public DateOnly? ClosingDate { get; set; }
     public Priority Priority { get; set; }
     public bool IsComplete { get; set; }
+    public UserDto? User { get; set; } 
 }

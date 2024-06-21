@@ -14,7 +14,7 @@ internal class TeamService : ITeamRepository
     }
     public async Task<IEnumerable<TeamEntity>> GetAll()
     {
-        return await _dbContext.Teams.ToListAsync();
+        return await _dbContext.Teams.AsNoTracking().ToListAsync();
     }
 
     public Task SaveChanges()

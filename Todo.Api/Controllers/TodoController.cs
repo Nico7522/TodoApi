@@ -7,7 +7,9 @@ using Todo.Application.Task.Commands.CreateTask;
 using Todo.Application.Task.Commands.DeleteTask;
 using Todo.Application.Task.Commands.UpdateTask;
 using Todo.Application.Task.Dto;
+using Todo.Application.Task.Queries.GetAllActiveTasks;
 using Todo.Application.Task.Queries.GetTaskById;
+using Todo.Domain.Entities;
 
 namespace Todo.Api.Controllers
 {
@@ -20,6 +22,13 @@ namespace Todo.Api.Controllers
         {
             _mediator = mediator;
         }
+        [HttpGet("active")]
+        public async Task<ActionResult<IEnumerable<TodoDto>>> GetAllActive()
+        {
+            var task = await _mediator.Send(new GetAllActiveTasksQuery());
+            return Ok(task);
+        }
+
         [HttpGet("{taskId}")]
         public async Task<ActionResult<TodoDto?>> GetTaskById(Guid taskId)
         {

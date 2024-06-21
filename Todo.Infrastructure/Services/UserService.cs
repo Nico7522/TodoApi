@@ -20,8 +20,8 @@ internal class UserService : IUserRepository
         return true;
     }
 
-    public async Task<IEnumerable<TodoEntity>> GetTasksByUser(string userId)
+    public async Task<UserEntity?> GetTasksByUser(string userId)
     {
-        return await _dbContext.Tasks.Where(t => t.UserId == userId).ToListAsync();
+        return await _dbContext.Users.AsNoTracking().Include(u => u.Tasks).FirstOrDefaultAsync(u => u.Id == userId);
     }
 }
