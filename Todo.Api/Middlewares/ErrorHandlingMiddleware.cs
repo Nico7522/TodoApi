@@ -37,10 +37,14 @@ public class ErrorHandlingMiddleware : IMiddleware
             context.Response.StatusCode = 400;
             await context.Response.WriteAsync(JsonSerializer.Serialize(ex.Message));
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            string errorMessage = "";
+            context.Response.ContentType = MediaTypeNames.Application.Json;
             context.Response.StatusCode = 500;
-            await context.Response.WriteAsync(JsonSerializer.Serialize("A error has occured"));
+            if(ex.InnerException != null && ex.InnerException.Message.Contains("Account")) errorMessage = ex.InnerException.Message;
+            else errorMessage = "Server error, please try later";
+            await context.Response.WriteAsync(JsonSerializer.Serialize(errorMessage));
         }
     }
 }

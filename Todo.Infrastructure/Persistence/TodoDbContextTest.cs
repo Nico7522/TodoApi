@@ -28,6 +28,8 @@ public class TodoDbContextTest : IdentityDbContext<UserEntity>
         builder.ApplyConfiguration(new UserConfig());
         builder.ApplyConfiguration(new TodoConfig());
         builder.ApplyConfiguration(new TeamConfig());
+        builder.Entity<UserEntity>().ToTable("AspNetUsers", t => t.HasTrigger("SANoDeleteTrigger"));
+
 
     }
 }

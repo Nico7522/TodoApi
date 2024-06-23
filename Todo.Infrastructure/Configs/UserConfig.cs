@@ -17,5 +17,6 @@ internal class UserConfig : IEntityTypeConfiguration<UserEntity>
        .WithOne(e => e.User)
        .HasForeignKey(e => e.UserId).IsRequired(false);
         builder.HasOne(e => e.LeadedTeam).WithOne(e => e.Leader).HasForeignKey<TeamEntity>(e => e.LeaderId).IsRequired(false);
+        builder.ToTable("AspNetUsers", t => t.HasTrigger("SANoDeleteTrigger"));
     }
 }

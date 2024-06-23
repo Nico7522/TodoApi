@@ -7,6 +7,7 @@ using Todo.Api.Forms.ResetPasswordConfirmForm;
 using Todo.Application.Task.Dto;
 using Todo.Application.Users.Commands.AssignRole;
 using Todo.Application.Users.Commands.AssignTaskByUser;
+using Todo.Application.Users.Commands.DeleteUser;
 using Todo.Application.Users.Commands.ResetPassword;
 using Todo.Application.Users.Commands.ResetPasswordConfirm;
 using Todo.Application.Users.Commands.UnassignRole;
@@ -39,7 +40,7 @@ namespace Todo.Api.Controllers
             return Ok(tasks);
         }
         [HttpPut("{userId}/assignrole")]
-        [Authorize(Roles = UserRole.SuperAdmin + "," + UserRole.Admin)]
+        //[Authorize(Roles = UserRole.SuperAdmin + "," + UserRole.Admin)]
         public async Task<IActionResult> AssignRole([FromRoute] string userId, [FromBody] AssignRoleForm form)
         {
             await _mediator.Send(new AssignRoleCommand(userId, form.Role));
@@ -64,6 +65,13 @@ namespace Todo.Api.Controllers
         public async Task<IActionResult> ResetPasswordConfirm(string userId, string resetToken, [FromBody] ResetPasswordConfirmForm form)
         {
             await _mediator.Send(new ResetPasswordConfirmCommand(userId, resetToken, form.Password, form.PasswordConfirm));
+            return NoContent();
+        }
+
+        [HttpDelete("{userId}")]
+        public async Task<IActionResult> Delete([FromRoute] string userId)
+        {
+            await _mediator.Send(new DeleteUserCommand(userId));
             return NoContent();
         }
 

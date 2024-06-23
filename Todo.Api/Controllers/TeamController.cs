@@ -3,6 +3,8 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Todo.Application.Team.Commands.AddUser;
+using Todo.Application.Team.Commands.CloseTeam;
 using Todo.Application.Team.Commands.CreateTeam;
 using Todo.Application.Team.Dto;
 using Todo.Application.Team.Queries.GetAllTeams;
@@ -42,6 +44,20 @@ namespace Todo.Api.Controllers
         {
             var teamId = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetTeamById), new { teamId }, null);
+        }
+
+        [HttpPut("{teamId}/close")]
+        public async Task<IActionResult> CloseTeam([FromRoute] Guid teamId)
+        {
+            await _mediator.Send(new CloseTeamCommand(teamId));
+            return Ok();
+        }
+
+        [HttpPost("{teamId}/user/{userId}")]
+        public async Task<IActionResult> AddUser([FromRoute] Guid teamId, [FromRoute] string userId)
+        {
+            await _mediator.Send(new AddUserCommand(teamId, userId));
+            return Ok();
         }
     }
 }

@@ -40,8 +40,8 @@ internal class TeamService : ITeamRepository
                 .FirstOrDefaultAsync(t => t.Id == id);
     }
 
-    public Task SaveChanges()
+    public async Task SaveChanges()
     {
-        throw new NotImplementedException();
+        await _dbContext.SaveChangesAsync();
     }
 }

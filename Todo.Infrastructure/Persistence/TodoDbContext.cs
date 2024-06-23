@@ -32,6 +32,7 @@ public class TodoDbContext : IdentityDbContext<UserEntity>
         builder.ApplyConfiguration(new UserConfig());
         builder.ApplyConfiguration(new TodoConfig());
         builder.ApplyConfiguration(new TeamConfig());
+        
 
     }
 }
