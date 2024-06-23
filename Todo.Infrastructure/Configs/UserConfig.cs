@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Todo.Domain.Entities;
 
 namespace Todo.Infrastructure.Configs;
@@ -16,7 +17,7 @@ internal class UserConfig : IEntityTypeConfiguration<UserEntity>
        .HasMany(e => e.Tasks)
        .WithOne(e => e.User)
        .HasForeignKey(e => e.UserId).IsRequired(false);
-        builder.HasOne(e => e.LeadedTeam).WithOne(e => e.Leader).HasForeignKey<TeamEntity>(e => e.LeaderId).IsRequired(false);
+        builder.HasOne(e => e.LeadedTeam).WithOne(e => e.Leader).HasForeignKey<TeamEntity>(e => e.LeaderId).IsRequired(false).OnDelete(DeleteBehavior.SetNull);
         builder.ToTable("AspNetUsers", t => t.HasTrigger("SANoDeleteTrigger"));
     }
 }

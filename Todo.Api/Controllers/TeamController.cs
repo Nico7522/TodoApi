@@ -4,8 +4,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Todo.Application.Team.Commands.AddUser;
+using Todo.Application.Team.Commands.AssignLeader;
 using Todo.Application.Team.Commands.CloseTeam;
 using Todo.Application.Team.Commands.CreateTeam;
+using Todo.Application.Team.Commands.DeleteUser;
+using Todo.Application.Team.Commands.UnassignLeader;
 using Todo.Application.Team.Dto;
 using Todo.Application.Team.Queries.GetAllTeams;
 using Todo.Application.Team.Queries.GetTeamById;
@@ -57,6 +60,27 @@ namespace Todo.Api.Controllers
         public async Task<IActionResult> AddUser([FromRoute] Guid teamId, [FromRoute] string userId)
         {
             await _mediator.Send(new AddUserCommand(teamId, userId));
+            return Ok();
+        }
+
+        [HttpDelete("{teamId}/user/{userId}")]
+        public async Task<IActionResult> DeleteUser([FromRoute] Guid teamId, [FromRoute] string userId)
+        {
+            await _mediator.Send(new DeleteUserCommand(teamId, userId));
+            return Ok();
+        }
+
+        [HttpPut("{teamId}/user/{userId}/assignleader")]
+        public async Task<IActionResult> AssignLeader([FromRoute] Guid teamId, [FromRoute] string userId)
+        {
+            await _mediator.Send(new AssignLeaderCommand(teamId, userId));
+            return Ok();
+        }
+
+        [HttpPut("{teamId}/unassignleader")]
+        public async Task<IActionResult> UnassignLeader([FromRoute] Guid teamId)
+        {
+            await _mediator.Send(new UnassignLeaderCommand(teamId));
             return Ok();
         }
     }
