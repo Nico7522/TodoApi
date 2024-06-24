@@ -37,6 +37,13 @@ public class ErrorHandlingMiddleware : IMiddleware
             context.Response.StatusCode = 400;
             await context.Response.WriteAsync(JsonSerializer.Serialize(ex.Message));
         }
+
+        catch (ForbidException ex)
+        {
+            context.Response.ContentType = MediaTypeNames.Application.Json;
+            context.Response.StatusCode = 403;
+            await context.Response.WriteAsync(JsonSerializer.Serialize(ex.Message));
+        }
         catch (Exception ex)
         {
             string errorMessage = "";

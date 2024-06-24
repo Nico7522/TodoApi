@@ -13,15 +13,5 @@ internal class UserService : IUserRepository
     {
         _dbContext = dbContext;
     }
-    public async Task<bool> AssignTaskByUser(UserEntity user, TodoEntity task)
-    {
-        task.User = user;
-        await _dbContext.SaveChangesAsync();
-        return true;
-    }
 
-    public async Task<UserEntity?> GetTasksByUser(string userId)
-    {
-        return await _dbContext.Users.AsNoTracking().Include(u => u.Tasks).FirstOrDefaultAsync(u => u.Id == userId);
-    }
 }

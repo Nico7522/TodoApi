@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Todo.Domain.AuthorizationInterfaces;
 using Todo.Domain.Entities;
 using Todo.Domain.Exceptions;
 using Todo.Domain.Repositories;
@@ -12,11 +13,13 @@ internal class AddUserCommandHandler : IRequestHandler<AddUserCommand>
 
     private readonly ITeamRepository _teamRepository;
     private readonly UserManager<UserEntity> _userManager;
+    private readonly ITeamAuthorizationService _teamAuthorizationService;
 
-    public AddUserCommandHandler(ITeamRepository teamRepository, UserManager<UserEntity> userManager)
+    public AddUserCommandHandler(ITeamRepository teamRepository, UserManager<UserEntity> userManager, ITeamAuthorizationService teamAuthorizationService)
     {
         _teamRepository = teamRepository;
         _userManager = userManager;
+        _teamAuthorizationService = teamAuthorizationService;
     }
     public async System.Threading.Tasks.Task Handle(AddUserCommand request, CancellationToken cancellationToken)
     {
@@ -25,6 +28,8 @@ internal class AddUserCommandHandler : IRequestHandler<AddUserCommand>
 
         var user = await _userManager.Users.Include(u => u.Team).FirstOrDefaultAsync(u => u.Id == request.UserId);
         if (user is null) throw new NotFoundException("User not found");
+
+        if (!_teamAuthorizationService.Authorize(team, Domain.Enums.RessourceOperation.Create)) throw new ForbidException("Your not authorized");
 
         if (user.Team != null && user.Team.Id == team.Id) throw new BadRequestException("User already in team");
 

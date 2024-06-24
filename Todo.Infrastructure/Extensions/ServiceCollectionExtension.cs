@@ -5,9 +5,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Todo.Application.Email.Interfaces;
+using Todo.Domain.AuthorizationInterfaces;
 using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 using Todo.Domain.Security;
+using Todo.Infrastructure.Authorization.Service;
 using Todo.Infrastructure.Email.EmailProvider;
 using Todo.Infrastructure.Email.EmailService;
 using Todo.Infrastructure.Persistence;
@@ -27,6 +29,8 @@ public static class ServiceCollectionExtension
         services.AddScoped<ITodoRepository, TodoService>();
         services.AddScoped<ITeamRepository, TeamService>();
         services.AddScoped<IEmailSender, MailJetProvider>();
+        services.AddScoped<ITeamAuthorizationService, TeamAuthorizationService>();
+
 
         services.AddDbContext<TodoDbContext>(options => options.UseSqlServer(configuration["ConnectionStrings:TodoDB"]));
         services.AddIdentityCore<UserEntity>().AddRoles<IdentityRole>().AddEntityFrameworkStores<TodoDbContext>().AddDefaultTokenProviders();

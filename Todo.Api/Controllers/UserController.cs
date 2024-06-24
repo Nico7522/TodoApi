@@ -11,6 +11,7 @@ using Todo.Application.Users.Commands.DeleteUser;
 using Todo.Application.Users.Commands.ResetPassword;
 using Todo.Application.Users.Commands.ResetPasswordConfirm;
 using Todo.Application.Users.Commands.UnassignRole;
+using Todo.Application.Users.Commands.UnassignTaskByUser;
 using Todo.Application.Users.Queries.GetTasksByUser;
 using Todo.Domain.Constants;
 using Todo.Domain.Entities;
@@ -26,10 +27,17 @@ namespace Todo.Api.Controllers
         {
             _mediator = mediator;
         }
-        [HttpPut("{userId}/task/{taskId}")]
+        [HttpPost("{userId}/task/{taskId}")]
         public async Task<ActionResult<TodoEntity?>> AssignTaskByUser([FromRoute] string userId, Guid taskId)
         {
             await _mediator.Send(new AssignTaskByUserCommand(userId, taskId));
+            return Ok();
+        }
+
+        [HttpDelete("{userId}/task/{taskId}")]
+        public async Task<ActionResult<TodoEntity?>> UnassignTaskByUser([FromRoute] string userId, [FromRoute] Guid taskId)
+        {
+            await _mediator.Send(new UnassignTaskByUserCommand(userId, taskId));
             return Ok();
         }
 
