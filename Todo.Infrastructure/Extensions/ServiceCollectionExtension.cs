@@ -30,7 +30,8 @@ public static class ServiceCollectionExtension
         services.AddScoped<ITodoRepository, TodoService>();
         services.AddScoped<ITeamRepository, TeamService>();
         services.AddScoped<IEmailSender, MailJetProvider>();
-        services.AddScoped<ITeamAuthorizationService, TeamAuthorizationService>();
+        services.AddScoped<IAuthorization<TeamEntity>, TeamAuthorization>();
+        services.AddScoped<IAuthorization<TodoEntity>, TaskAuthorization>();
 
 
         services.AddDbContext<TodoDbContext>(options => options.UseSqlServer(configuration["ConnectionStrings:TodoDB"]));

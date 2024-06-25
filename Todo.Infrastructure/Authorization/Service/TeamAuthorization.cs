@@ -6,14 +6,14 @@ using Todo.Domain.Enums;
 
 namespace Todo.Infrastructure.Authorization.Service;
 
-public class TeamAuthorizationService : ITeamAuthorizationService
+public class TeamAuthorization : IAuthorization<TeamEntity>
 {
     private readonly IUserContext _userContext;
-    public TeamAuthorizationService(IUserContext userContext)
+    public TeamAuthorization(IUserContext userContext)
     {
         _userContext = userContext;
     }
-    public bool Authorize(TeamEntity team, RessourceOperation operation, object? data)
+    public bool Authorize(TeamEntity entity, RessourceOperation operation, object? data)
     {
         var user = _userContext.GetCurrentUser();
         var role = user!.Role;
@@ -36,7 +36,7 @@ public class TeamAuthorizationService : ITeamAuthorizationService
 
         if (role == UserRole.User) return false;
         if (role == UserRole.Admin || role == UserRole.SuperAdmin) return true;
-        if (role == UserRole.Leader && user.Id == team.LeaderId) return true;
+        if (role == UserRole.Leader && user.Id == entity.LeaderId) return true;
 
 
         return false;

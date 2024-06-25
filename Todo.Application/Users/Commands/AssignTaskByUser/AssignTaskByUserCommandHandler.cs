@@ -25,6 +25,8 @@ internal class AssignTaskByUserCommandHandler : IRequestHandler<AssignTaskByUser
         var task = await _todoRepository.GetById(request.TaskId);
         if (task is null) throw new NotFoundException("Task not found");
 
+        if (task.UserId != null || task.TeamId != null) throw new BadRequestException("Task is already assigned");
+
         user.Tasks.Add(task);
         await _todoRepository.SaveChanges();
     }

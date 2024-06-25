@@ -13,9 +13,9 @@ internal class AddUserCommandHandler : IRequestHandler<AddUserCommand>
 
     private readonly ITeamRepository _teamRepository;
     private readonly UserManager<UserEntity> _userManager;
-    private readonly ITeamAuthorizationService _teamAuthorizationService;
+    private readonly IAuthorization<TeamEntity> _teamAuthorizationService;
 
-    public AddUserCommandHandler(ITeamRepository teamRepository, UserManager<UserEntity> userManager, ITeamAuthorizationService teamAuthorizationService)
+    public AddUserCommandHandler(ITeamRepository teamRepository, UserManager<UserEntity> userManager, IAuthorization<TeamEntity> teamAuthorizationService)
     {
         _teamRepository = teamRepository;
         _userManager = userManager;
