@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,8 @@ namespace Todo.Application.Team.Commands.AssignLeader
             if (user is null) throw new NotFoundException("User not found");
 
             if (team.LeaderId == user.Id) throw new BadRequestException("User is already leader of this team");
+
+            if (user.TeamId != null) throw new BadRequestException("User is already in a team");
 
             team.LeaderId = user.Id;
             if(user.TeamId != team.Id) team.Users.Add(user);

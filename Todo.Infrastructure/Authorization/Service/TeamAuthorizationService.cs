@@ -13,19 +13,30 @@ public class TeamAuthorizationService : ITeamAuthorizationService
     {
         _userContext = userContext;
     }
-    public bool Authorize(TeamEntity team, RessourceOperation operation)
+    public bool Authorize(TeamEntity team, RessourceOperation operation, object? data)
     {
         var user = _userContext.GetCurrentUser();
         var role = user!.Role;
-
-        if (operation == RessourceOperation.Create || operation == RessourceOperation.Update || operation == RessourceOperation.Delete)
-        {
-            if (role == UserRole.User) return false;
-            if (role == UserRole.Admin || role == UserRole.SuperAdmin) return true;
-            if (role == UserRole.Leader && user.Id == team.LeaderId) return true;
-        }
+        Console.WriteLine("ici");
 
         if (operation == RessourceOperation.Read) return true;
+
+        if (operation == RessourceOperation.Delete)
+        {
+            if (data != null)
+            {
+                var userIdToRemove = data;
+                if (role == UserRole.Leader && user.Id == userIdToRemove.ToString()) return false;
+            }
+            else
+            {
+                return false;
+            }
+        };
+
+        if (role == UserRole.User) return false;
+        if (role == UserRole.Admin || role == UserRole.SuperAdmin) return true;
+        if (role == UserRole.Leader && user.Id == team.LeaderId) return true;
 
 
         return false;

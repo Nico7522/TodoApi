@@ -1,6 +1,7 @@
 ﻿
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Todo.Domain.AuthorizationInterfaces;
 using Todo.Domain.Entities;
 using Todo.Domain.Exceptions;
 using Todo.Domain.Repositories;
@@ -11,11 +12,13 @@ internal class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand>
 {
     private readonly ITeamRepository _teamRepository;
     private readonly UserManager<UserEntity> _userManager;
+    private readonly ITeamAuthorizationService _teamAuthorizationService;
 
-    public DeleteUserCommandHandler(ITeamRepository teamRepository, UserManager<UserEntity> userManager)
+    public DeleteUserCommandHandler(ITeamRepository teamRepository, UserManager<UserEntity> userManager, ITeamAuthorizationService teamAuthorizationService)
     {
         _teamRepository = teamRepository;
         _userManager = userManager;
+        _teamAuthorizationService = teamAuthorizationService;
     }
     public async System.Threading.Tasks.Task Handle(DeleteUserCommand request, CancellationToken cancellationToken)
     {
@@ -24,6 +27,11 @@ internal class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand>
 
         var user = await _userManager.FindByIdAsync(request.UserId);
         if (user is null) throw new NotFoundException("User not found");
+
+
+        if (!_teamAuthorizationService.Authorize(team, Domain.Enums.RessourceOperation.Delete, user.Id)) throw new ForbidException("Your not authorized");
+    
+
 
         if (user.TeamId != team.Id) throw new BadRequestException("User is not in team");
 

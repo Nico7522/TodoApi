@@ -29,7 +29,7 @@ internal class AddUserCommandHandler : IRequestHandler<AddUserCommand>
         var user = await _userManager.Users.Include(u => u.Team).FirstOrDefaultAsync(u => u.Id == request.UserId);
         if (user is null) throw new NotFoundException("User not found");
 
-        if (!_teamAuthorizationService.Authorize(team, Domain.Enums.RessourceOperation.Create)) throw new ForbidException("Your not authorized");
+        if (!_teamAuthorizationService.Authorize(team, Domain.Enums.RessourceOperation.Create, null)) throw new ForbidException("Your not authorized");
 
         if (user.Team != null && user.Team.Id == team.Id) throw new BadRequestException("User already in team");
 
