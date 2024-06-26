@@ -18,21 +18,14 @@ public class TaskAuthorization : IAuthorization<TodoEntity>
         var user = _userContext.GetCurrentUser();
         var role = user!.Role;
 
+        if (role == UserRole.SuperAdmin || role == UserRole.Admin) return true;
+
         if (operation == RessourceOperation.Update)
         {
-            if (role == UserRole.SuperAdmin || role == UserRole.Admin) return true;
 
-            if (data != null)
-            {
-                var taskUserId = data.ToString();
-                if (taskUserId != user.Id) return false;
+            if(user.Id == entity.UserId) return true;
 
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         return false;

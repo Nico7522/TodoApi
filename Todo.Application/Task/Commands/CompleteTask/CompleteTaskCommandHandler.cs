@@ -21,7 +21,7 @@ public class CompleteTaskCommandHandler : IRequestHandler<CompleteTaskCommand, b
         var task = await _todoRepository.GetById(request.TaskId);
         if (task is null) throw new NotFoundException("Task not found");
 
-        if (!_authorization.Authorize(task, Domain.Enums.RessourceOperation.Update, task.UserId)) throw new ForbidException("Your not authorized");
+        if (!_authorization.Authorize(task, Domain.Enums.RessourceOperation.Update, null)) throw new ForbidException("Your not authorized");
 
         var time = new TimeOnly().AddMinutes(request.Duration);
 

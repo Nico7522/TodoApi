@@ -3,8 +3,10 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Todo.Application.Team.Commands.AddTask;
 using Todo.Application.Team.Commands.AddUser;
 using Todo.Application.Team.Commands.AssignLeader;
+using Todo.Application.Team.Commands.CloseTask;
 using Todo.Application.Team.Commands.CloseTeam;
 using Todo.Application.Team.Commands.CreateTeam;
 using Todo.Application.Team.Commands.DeleteUser;
@@ -81,6 +83,21 @@ namespace Todo.Api.Controllers
         public async Task<IActionResult> UnassignLeader([FromRoute] Guid teamId)
         {
             await _mediator.Send(new UnassignLeaderCommand(teamId));
+            return Ok();
+        }
+
+        [HttpPost("{teamId}/task/{taskId}")]
+        public async Task<IActionResult> AddTask([FromRoute] Guid teamId, [FromRoute] Guid taskId)
+        {
+            await _mediator.Send(new AddTaskCommand(taskId, teamId));
+            return Ok();
+        }
+
+
+        [HttpPut("{teamId}/task/{taskId}")]
+        public async Task<IActionResult> CloseTask([FromRoute] Guid teamId, [FromRoute] Guid taskId)
+        {
+            await _mediator.Send(new CloseTaskCommand(teamId, taskId));
             return Ok();
         }
     }

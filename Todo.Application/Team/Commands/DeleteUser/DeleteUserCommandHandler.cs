@@ -1,10 +1,10 @@
-﻿
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Todo.Domain.AuthorizationInterfaces;
 using Todo.Domain.Entities;
 using Todo.Domain.Exceptions;
 using Todo.Domain.Repositories;
+using Todo.Domain.Enums;
 
 namespace Todo.Application.Team.Commands.DeleteUser;
 
@@ -28,8 +28,8 @@ internal class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand>
         var user = await _userManager.FindByIdAsync(request.UserId);
         if (user is null) throw new NotFoundException("User not found");
 
-
-        if (!_teamAuthorizationService.Authorize(team, Domain.Enums.RessourceOperation.Delete, user.Id)) throw new ForbidException("Your not authorized");
+        if (!_teamAuthorizationService.Authorize(team, RessourceOperation.Delete, null)) throw new ForbidException("Your not authorized");
+        if (team.LeaderId == user.Id) throw new ForbidException("Your not authorized");
     
 
 

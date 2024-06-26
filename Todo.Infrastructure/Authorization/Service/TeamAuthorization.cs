@@ -17,27 +17,18 @@ public class TeamAuthorization : IAuthorization<TeamEntity>
     {
         var user = _userContext.GetCurrentUser();
         var role = user!.Role;
-        Console.WriteLine("ici");
+
+        if(role == UserRole.SuperAdmin && role == UserRole.Admin) return true;
 
         if (operation == RessourceOperation.Read) return true;
 
-        if (operation == RessourceOperation.Delete)
+
+        if(operation == RessourceOperation.Create || operation == RessourceOperation.Delete || operation == RessourceOperation.Update)
         {
-            if (data != null)
-            {
-                var userIdToRemove = data;
-                if (role == UserRole.Leader && user.Id == userIdToRemove.ToString()) return false;
-            }
-            else
-            {
-                return false;
-            }
-        };
+            if (role == UserRole.Leader && user.Id == entity.LeaderId) return true;
 
-        if (role == UserRole.User) return false;
-        if (role == UserRole.Admin || role == UserRole.SuperAdmin) return true;
-        if (role == UserRole.Leader && user.Id == entity.LeaderId) return true;
-
+            return false;
+        }
 
         return false;
 
