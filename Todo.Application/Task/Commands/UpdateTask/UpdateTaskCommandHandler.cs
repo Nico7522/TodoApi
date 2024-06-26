@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using MediatR;
+using Todo.Domain.AuthorizationInterfaces;
 using Todo.Domain.Entities;
 using Todo.Domain.Exceptions;
 using Todo.Domain.Repositories;
@@ -12,11 +13,14 @@ internal class UpdateTaskCommandHandler : IRequestHandler<UpdateTaskCommand>
     private readonly IMapper _mapper;
     private readonly ITodoRepository _todoRepository;
     private readonly IValidator<UpdateTaskCommand> _validator;
-    public UpdateTaskCommandHandler(IMapper mapper, ITodoRepository todoRepository, IValidator<UpdateTaskCommand> validator)
+
+    private readonly IAuthorization<TodoEntity> _authorization;
+    public UpdateTaskCommandHandler(IMapper mapper, ITodoRepository todoRepository, IValidator<UpdateTaskCommand> validator, IAuthorization<TodoEntity> authorization)
     {
         _mapper = mapper;
         _todoRepository = todoRepository;
         _validator = validator;
+        _authorization = authorization;
     }
     public async System.Threading.Tasks.Task Handle(UpdateTaskCommand request, CancellationToken cancellationToken)
     {

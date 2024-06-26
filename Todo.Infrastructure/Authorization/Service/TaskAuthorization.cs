@@ -23,7 +23,8 @@ public class TaskAuthorization : IAuthorization<TodoEntity>
         if (operation == RessourceOperation.Update)
         {
 
-            if(user.Id == entity.UserId) return true;
+            if(entity.TeamId == user.Te) return true;
+
 
             return false;
         }

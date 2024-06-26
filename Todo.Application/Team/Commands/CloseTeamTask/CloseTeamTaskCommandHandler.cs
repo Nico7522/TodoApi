@@ -5,22 +5,29 @@ using Todo.Domain.Entities;
 using Todo.Domain.Exceptions;
 using Todo.Domain.Repositories;
 using Todo.Domain.Enums;
+using Todo.Application.Users;
+using Todo.Domain.Constants;
 
 namespace Todo.Application.Team.Commands.CloseTask;
 
-internal class CloseTaskCommandHandler : IRequestHandler<CloseTaskCommand>
+internal class CloseTeamTaskCommandHandler : IRequestHandler<CloseTeamTaskCommand>
 {
     private readonly ITodoRepository _todoRepository;
     private readonly ITeamRepository _teamRepository;
     private readonly IAuthorization<TeamEntity> _authorization;
-    public CloseTaskCommandHandler(ITodoRepository todoRepository, ITeamRepository teamRepository, IAuthorization<TeamEntity> authorization)
+    private IUserContext _userContext;
+    public CloseTeamTaskCommandHandler(ITodoRepository todoRepository, ITeamRepository teamRepository, IAuthorization<TeamEntity> authorization, IUserContext userContext)
     {
         _todoRepository = todoRepository;
         _teamRepository = teamRepository;
         _authorization = authorization;
+        _userContext = userContext;
     }
-    public async System.Threading.Tasks.Task Handle(CloseTaskCommand request, CancellationToken cancellationToken)
+    public async System.Threading.Tasks.Task Handle(CloseTeamTaskCommand request, CancellationToken cancellationToken)
     {
+
+        var currentUser = _userContext.GetCurrentUser();
+
         var team = await _teamRepository.GetById(request.TeamId);
         if (team is null) throw new NotFoundException("Task not found");
 
@@ -29,7 +36,12 @@ internal class CloseTaskCommandHandler : IRequestHandler<CloseTaskCommand>
 
         if (task.TeamId != team.Id) throw new BadRequestException("Task not in team");
 
-        if (!_authorization.Authorize(team, RessourceOperation.Update, null)) throw new ForbidException("Your not authorized");
+        if (currentUser!.Role == UserRole.Leader || currentUser.Role == UserRole.User)
+        {
+            var userId = team.Users.FirstOrDefault(u => u.Id == currentUser!.Id);
+            if (userId is null) throw new ForbidException("Your not authorized");
+        }
+
 
 
         task.IsComplete = true;

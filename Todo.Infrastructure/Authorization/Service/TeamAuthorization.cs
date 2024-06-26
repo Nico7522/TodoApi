@@ -18,13 +18,15 @@ public class TeamAuthorization : IAuthorization<TeamEntity>
         var user = _userContext.GetCurrentUser();
         var role = user!.Role;
 
-        if(role == UserRole.SuperAdmin && role == UserRole.Admin) return true;
+        if(role == UserRole.SuperAdmin || role == UserRole.Admin) return true;
 
         if (operation == RessourceOperation.Read) return true;
 
 
         if(operation == RessourceOperation.Create || operation == RessourceOperation.Delete || operation == RessourceOperation.Update)
         {
+            var userId = entity.Users.FirstOrDefault(u => u.Id == user.Id);
+            if (userId is null) return false;
             if (role == UserRole.Leader && user.Id == entity.LeaderId) return true;
 
             return false;
