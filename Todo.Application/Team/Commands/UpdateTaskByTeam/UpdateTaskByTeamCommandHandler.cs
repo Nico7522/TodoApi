@@ -1,4 +1,5 @@
 ﻿
+using AutoMapper;
 using MediatR;
 using Todo.Application.Users;
 using Todo.Domain.Constants;
@@ -7,19 +8,21 @@ using Todo.Domain.Repositories;
 
 namespace Todo.Application.Team.Commands.UpdateTeamTask;
 
-internal class UpdateTeamTaskCommandHandler : IRequestHandler<UpdateTeamTaskCommand>
+internal class UpdateTaskByTeamCommandHandler : IRequestHandler<UpdateTaskByTeamCommand>
 {
     private readonly ITeamRepository _teamRepository;
     private readonly ITodoRepository _todoRepository;
     private readonly IUserContext _userContext;
+    private readonly IMapper _mapper;
 
-    public UpdateTeamTaskCommandHandler(ITeamRepository teamRepository, ITodoRepository todoRepository, IUserContext userContext)
+    public UpdateTaskByTeamCommandHandler(ITeamRepository teamRepository, ITodoRepository todoRepository, IUserContext userContext, IMapper mapper)
     {
         _teamRepository = teamRepository;
         _todoRepository = todoRepository;
         _userContext = userContext;
+        _mapper = mapper;
     }
-    public async System.Threading.Tasks.Task Handle(UpdateTeamTaskCommand request, CancellationToken cancellationToken)
+    public async System.Threading.Tasks.Task Handle(UpdateTaskByTeamCommand request, CancellationToken cancellationToken)
     {
         var currentUser = _userContext.GetCurrentUser();
 
@@ -29,6 +32,8 @@ internal class UpdateTeamTaskCommandHandler : IRequestHandler<UpdateTeamTaskComm
         var task = await _todoRepository.GetById(request.TaskId);
         if (task is null) throw new NotFoundException("Task not found");
 
+        if (task.TeamId != team.Id) throw new BadRequestException("Task not in team");
+
         if(currentUser!.Role == UserRole.Leader)
         {
             if (team.LeaderId != currentUser.Id) throw new ForbidException("Your not authorized");
@@ -36,6 +41,9 @@ internal class UpdateTeamTaskCommandHandler : IRequestHandler<UpdateTeamTaskComm
 
 
         // TODO: faire les modifs
+
+        _mapper.Map(request, task);
+        await _todoRepository.SaveChanges();
 
 
     }

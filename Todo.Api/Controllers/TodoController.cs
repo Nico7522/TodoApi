@@ -5,12 +5,11 @@ using Todo.Api.Forms.UpdateTaskForm;
 using Todo.Application.Task.Commands.CompleteTask;
 using Todo.Application.Task.Commands.CreateTask;
 using Todo.Application.Task.Commands.DeleteTask;
+using Todo.Application.Task.Commands.UnassignTask;
 using Todo.Application.Task.Commands.UpdateTask;
 using Todo.Application.Task.Dto;
 using Todo.Application.Task.Queries.GetAllActiveTasks;
 using Todo.Application.Task.Queries.GetTaskById;
-using Todo.Domain.Entities;
-
 namespace Todo.Api.Controllers
 {
     [Route("api/[controller]")]
@@ -65,5 +64,13 @@ namespace Todo.Api.Controllers
             var taskId = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetTaskById), new { taskId }, null);
         }
+
+        [HttpPut("{taskId}/unassign")]
+        public async Task<IActionResult> UnassignTask([FromRoute] Guid taskId)
+        {
+            await _mediator.Send(new UnassignTaskCommand(taskId));
+            return NoContent();
+        }
+
     }
 }

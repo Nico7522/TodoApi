@@ -1,12 +1,9 @@
-﻿using AutoMapper.Configuration.Annotations;
+﻿
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
 namespace Todo.Application.Task.Commands.CompleteTask;
 
-public class CompleteTaskCommand : IRequest<bool>
+public class CompleteTaskCommand : IRequest
 {
     public Guid TaskId { get; init; }
     public int Duration { get; init; }
@@ -16,5 +13,4 @@ public class CompleteTaskCommand : IRequest<bool>
         TaskId = taskId;
         Duration = duration;
     }
-
 }

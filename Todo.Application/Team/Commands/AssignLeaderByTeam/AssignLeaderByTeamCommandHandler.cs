@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Todo.Application.Users;
 using Todo.Domain.Entities;
 using Todo.Domain.Exceptions;
 using Todo.Domain.Repositories;
@@ -14,19 +15,23 @@ namespace Todo.Application.Team.Commands.AssignLeader
 {
 
 
-    internal class AssignLeaderCommandHandler : IRequestHandler<AssignLeaderCommand>
+    internal class AssignLeaderByTeamCommandHandler : IRequestHandler<AssignLeaderByTeamCommand>
     {
 
         private readonly ITeamRepository _teamRepository;
         private readonly UserManager<UserEntity> _userManager;
 
-        public AssignLeaderCommandHandler(ITeamRepository teamRepository, UserManager<UserEntity> userManager)
+        public AssignLeaderByTeamCommandHandler(
+            ITeamRepository teamRepository, 
+            UserManager<UserEntity> userManager
+           )
         {
             _teamRepository = teamRepository;
             _userManager = userManager;
         }
-        public async System.Threading.Tasks.Task Handle(AssignLeaderCommand request, CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task Handle(AssignLeaderByTeamCommand request, CancellationToken cancellationToken)
         {
+
             var team = await _teamRepository.GetById(request.TeamId);
             if (team is null) throw new NotFoundException("Team not found");
 
@@ -36,6 +41,8 @@ namespace Todo.Application.Team.Commands.AssignLeader
             if (team.LeaderId == user.Id) throw new BadRequestException("User is already leader of this team");
 
             if (user.TeamId != null) throw new BadRequestException("User is already in a team");
+
+            if (team.LeaderId != null) throw new BadRequestException("Team has already a leader");
 
             team.LeaderId = user.Id;
             if(user.TeamId != team.Id) team.Users.Add(user);

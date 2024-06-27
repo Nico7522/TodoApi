@@ -10,20 +10,20 @@ using Todo.Domain.Constants;
 
 namespace Todo.Application.Team.Commands.CloseTask;
 
-internal class CloseTeamTaskCommandHandler : IRequestHandler<CloseTeamTaskCommand>
+internal class CompleteTaskByTeamCommandHandler : IRequestHandler<CompleteTaskByTeamCommand>
 {
     private readonly ITodoRepository _todoRepository;
     private readonly ITeamRepository _teamRepository;
     private readonly IAuthorization<TeamEntity> _authorization;
     private IUserContext _userContext;
-    public CloseTeamTaskCommandHandler(ITodoRepository todoRepository, ITeamRepository teamRepository, IAuthorization<TeamEntity> authorization, IUserContext userContext)
+    public CompleteTaskByTeamCommandHandler(ITodoRepository todoRepository, ITeamRepository teamRepository, IAuthorization<TeamEntity> authorization, IUserContext userContext)
     {
         _todoRepository = todoRepository;
         _teamRepository = teamRepository;
         _authorization = authorization;
         _userContext = userContext;
     }
-    public async System.Threading.Tasks.Task Handle(CloseTeamTaskCommand request, CancellationToken cancellationToken)
+    public async System.Threading.Tasks.Task Handle(CompleteTaskByTeamCommand request, CancellationToken cancellationToken)
     {
 
         var currentUser = _userContext.GetCurrentUser();

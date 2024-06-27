@@ -1,8 +1,7 @@
-﻿using AutoMapper;
-using MediatR;
-using Microsoft.AspNetCore.Http;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+using Todo.Api.Forms.UpdateTaskByTeamForm;
 using Todo.Application.Team.Commands.AddTask;
 using Todo.Application.Team.Commands.AddUser;
 using Todo.Application.Team.Commands.AssignLeader;
@@ -11,11 +10,12 @@ using Todo.Application.Team.Commands.CloseTeam;
 using Todo.Application.Team.Commands.CreateTeam;
 using Todo.Application.Team.Commands.DeleteUser;
 using Todo.Application.Team.Commands.UnassignLeader;
+using Todo.Application.Team.Commands.UpdateTeamTask;
 using Todo.Application.Team.Dto;
 using Todo.Application.Team.Queries.GetAllTeams;
 using Todo.Application.Team.Queries.GetTeamById;
-using Todo.Domain.Entities;
-using Todo.Domain.Repositories;
+using Todo.Domain.Constants;
+
 
 namespace Todo.Api.Controllers
 {
@@ -59,46 +59,55 @@ namespace Todo.Api.Controllers
         }
 
         [HttpPost("{teamId}/user/{userId}")]
-        public async Task<IActionResult> AddUser([FromRoute] Guid teamId, [FromRoute] string userId)
+        public async Task<IActionResult> AssignUserByTeam([FromRoute] Guid teamId, [FromRoute] string userId)
         {
-            await _mediator.Send(new AddUserCommand(teamId, userId));
+            await _mediator.Send(new AssignUserByTeamCommand(teamId, userId));
             return Ok();
         }
 
         [HttpDelete("{teamId}/user/{userId}")]
         public async Task<IActionResult> DeleteUser([FromRoute] Guid teamId, [FromRoute] string userId)
         {
-            await _mediator.Send(new DeleteUserCommand(teamId, userId));
+            await _mediator.Send(new UnassignUserFromTeamCommand(teamId, userId));
             return Ok();
         }
 
         [HttpPut("{teamId}/user/{userId}/assignleader")]
-        public async Task<IActionResult> AssignLeader([FromRoute] Guid teamId, [FromRoute] string userId)
+        [Authorize(Roles = UserRole.SuperAdmin)]
+        public async Task<IActionResult> AssignLeaderByTeam([FromRoute] Guid teamId, [FromRoute] string userId)
         {
-            await _mediator.Send(new AssignLeaderCommand(teamId, userId));
+            await _mediator.Send(new AssignLeaderByTeamCommand(teamId, userId));
             return Ok();
         }
 
         [HttpPut("{teamId}/unassignleader")]
-        public async Task<IActionResult> UnassignLeader([FromRoute] Guid teamId)
+        public async Task<IActionResult> UnassignLeaderFromTeam([FromRoute] Guid teamId)
         {
-            await _mediator.Send(new UnassignLeaderCommand(teamId));
+            await _mediator.Send(new UnassignLeaderByTeamCommand(teamId));
             return Ok();
         }
 
         [HttpPost("{teamId}/task/{taskId}")]
         public async Task<IActionResult> AddTask([FromRoute] Guid teamId, [FromRoute] Guid taskId)
         {
-            await _mediator.Send(new AddTaskCommand(taskId, teamId));
+            await _mediator.Send(new AssignTaskByTeamCommand(taskId, teamId));
             return Ok();
         }
-
 
         [HttpPut("{teamId}/task/{taskId}")]
-        public async Task<IActionResult> CloseTask([FromRoute] Guid teamId, [FromRoute] Guid taskId)
+        public async Task<IActionResult> UpdateTaskByTeam([FromRoute] Guid taskId, [FromRoute] Guid teamId, [FromBody] UpdateTaskByTeamForm form)
         {
-            await _mediator.Send(new CloseTaskCommand(teamId, taskId));
+            await _mediator.Send(new UpdateTaskByTeamCommand(taskId, teamId, form.Title, form.Description, form.Priority));
             return Ok();
         }
+
+        [HttpPut("{teamId}/task/{taskId}/complete")]
+        public async Task<IActionResult> CompleteTaskByTeam([FromRoute] Guid teamId, [FromRoute] Guid taskId)
+        {
+            await _mediator.Send(new CompleteTaskByTeamCommand(teamId, taskId));
+            return Ok();
+        }
+ 
+
     }
 }

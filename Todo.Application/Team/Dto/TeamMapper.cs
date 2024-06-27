@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Todo.Application.Task.Dto;
+using Todo.Application.Team.Commands.UpdateTeamTask;
 using Todo.Application.Users.Dto;
 using Todo.Domain.Entities;
 
@@ -16,5 +17,9 @@ public class TeamMapper : Profile
                 dst.Users = src.Users.Count > 0 && src.Users != null ? context.Mapper.Map<ICollection<UserEntity>, ICollection<UserDto>>(src.Users) : [];
 
             });
+
+        CreateMap<UpdateTaskByTeamCommand, TodoEntity>()
+            .ForMember(src => src.Id, dst => dst.Ignore())
+            .ForMember(src => src.TeamId, dst => dst.Ignore());
     }
 }

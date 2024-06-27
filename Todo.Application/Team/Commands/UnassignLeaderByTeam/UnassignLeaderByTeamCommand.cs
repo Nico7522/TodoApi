@@ -2,10 +2,10 @@
 
 namespace Todo.Application.Team.Commands.UnassignLeader;
 
-public class UnassignLeaderCommand : IRequest
+public class UnassignLeaderByTeamCommand : IRequest
 {
     public Guid TeamId { get; init; }
-    public UnassignLeaderCommand(Guid teamId)
+    public UnassignLeaderByTeamCommand(Guid teamId)
     {
         TeamId = teamId;
     }

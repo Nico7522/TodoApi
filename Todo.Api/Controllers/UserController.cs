@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Todo.Api.Forms.AssignRoleForm;
 using Todo.Api.Forms.ResetPasswordConfirmForm;
@@ -11,7 +10,6 @@ using Todo.Application.Users.Commands.DeleteUser;
 using Todo.Application.Users.Commands.ResetPassword;
 using Todo.Application.Users.Commands.ResetPasswordConfirm;
 using Todo.Application.Users.Commands.UnassignRole;
-using Todo.Application.Users.Commands.UnassignTaskByUser;
 using Todo.Application.Users.Queries.GetTasksByUser;
 using Todo.Domain.Constants;
 using Todo.Domain.Entities;
@@ -31,13 +29,6 @@ namespace Todo.Api.Controllers
         public async Task<ActionResult<TodoEntity?>> AssignTaskByUser([FromRoute] string userId, Guid taskId)
         {
             await _mediator.Send(new AssignTaskByUserCommand(userId, taskId));
-            return Ok();
-        }
-
-        [HttpDelete("{userId}/task/{taskId}")]
-        public async Task<ActionResult<TodoEntity?>> UnassignTaskByUser([FromRoute] string userId, [FromRoute] Guid taskId)
-        {
-            await _mediator.Send(new UnassignTaskByUserCommand(userId, taskId));
             return Ok();
         }
 
@@ -82,6 +73,9 @@ namespace Todo.Api.Controllers
             await _mediator.Send(new DeleteUserCommand(userId));
             return NoContent();
         }
+
+   
+
 
     }
 }
