@@ -2,7 +2,10 @@
 using AutoMapper;
 using MediatR;
 using Todo.Application.Users;
+using Todo.Domain.AuthorizationInterfaces;
 using Todo.Domain.Constants;
+using Todo.Domain.Entities;
+using Todo.Domain.Enums;
 using Todo.Domain.Exceptions;
 using Todo.Domain.Repositories;
 
@@ -14,13 +17,19 @@ internal class UpdateTaskByTeamCommandHandler : IRequestHandler<UpdateTaskByTeam
     private readonly ITodoRepository _todoRepository;
     private readonly IUserContext _userContext;
     private readonly IMapper _mapper;
+    private readonly IAuthorization<TeamEntity> _authorization;
 
-    public UpdateTaskByTeamCommandHandler(ITeamRepository teamRepository, ITodoRepository todoRepository, IUserContext userContext, IMapper mapper)
+    public UpdateTaskByTeamCommandHandler(ITeamRepository teamRepository, 
+        ITodoRepository todoRepository, 
+        IUserContext userContext, 
+        IMapper mapper,
+        IAuthorization<TeamEntity> authorization)
     {
         _teamRepository = teamRepository;
         _todoRepository = todoRepository;
         _userContext = userContext;
         _mapper = mapper;
+        _authorization = authorization;
     }
     public async System.Threading.Tasks.Task Handle(UpdateTaskByTeamCommand request, CancellationToken cancellationToken)
     {
@@ -34,10 +43,12 @@ internal class UpdateTaskByTeamCommandHandler : IRequestHandler<UpdateTaskByTeam
 
         if (task.TeamId != team.Id) throw new BadRequestException("Task not in team");
 
-        if(currentUser!.Role == UserRole.Leader)
-        {
-            if (team.LeaderId != currentUser.Id) throw new ForbidException("Your not authorized");
-        }
+        if (!_authorization.Authorize(team, RessourceOperation.Update, null)) throw new ForbidException("Your not authorized");
+
+        //if (currentUser!.Role == UserRole.Leader)
+        //{
+        //    if (team.LeaderId != currentUser.Id) throw new ForbidException("Your not authorized");
+        //}
 
 
         // TODO: faire les modifs

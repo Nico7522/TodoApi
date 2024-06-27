@@ -36,11 +36,13 @@ internal class CompleteTaskByTeamCommandHandler : IRequestHandler<CompleteTaskBy
 
         if (task.TeamId != team.Id) throw new BadRequestException("Task not in team");
 
-        if (currentUser!.Role == UserRole.Leader || currentUser.Role == UserRole.User)
-        {
-            var userId = team.Users.FirstOrDefault(u => u.Id == currentUser!.Id);
-            if (userId is null) throw new ForbidException("Your not authorized");
-        }
+        if(!_authorization.Authorize(team, RessourceOperation.Update, null)) throw new ForbidException("Your not authorized");
+
+        //if (currentUser!.Role == UserRole.Leader || currentUser.Role == UserRole.User)
+        //{
+        //    var userId = team.Users.FirstOrDefault(u => u.Id == currentUser!.Id);
+        //    if (userId is null) throw new ForbidException("Your not authorized");
+        //}
 
 
 

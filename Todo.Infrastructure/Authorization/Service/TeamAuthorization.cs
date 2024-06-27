@@ -22,12 +22,22 @@ public class TeamAuthorization : IAuthorization<TeamEntity>
 
         if (operation == RessourceOperation.Read) return true;
 
-
-        if(operation == RessourceOperation.Create || operation == RessourceOperation.Delete || operation == RessourceOperation.Update)
+        if (operation == RessourceOperation.Create)
         {
-            var userId = entity.Users.FirstOrDefault(u => u.Id == user.Id);
-            if (userId is null) return false;
+            if (role == UserRole.Leader && user.Id == entity.LeaderId) return true; 
+
+
+
+            return false;
+        }
+
+        if (operation == RessourceOperation.Update)
+        {
             if (role == UserRole.Leader && user.Id == entity.LeaderId) return true;
+
+            var userId = entity.Users.FirstOrDefault(u => u.Id == user.Id);
+            if (userId is not null) return true;
+
 
             return false;
         }

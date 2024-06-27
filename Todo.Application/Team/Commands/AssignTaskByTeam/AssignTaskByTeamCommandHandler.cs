@@ -33,11 +33,14 @@ internal class AssignTaskByTeamCommandHandler : IRequestHandler<AssignTaskByTeam
         var team = await _teamRepository.GetById(request.TeamId);
         if (team is null) throw new NotFoundException("Team not found");
 
+        if (!_authorization.Authorize(team, Domain.Enums.RessourceOperation.Create, null)) throw new ForbidException("Your not authorized");
+
         if (task.TeamId == team.Id) throw new BadRequestException("Task already in team");
 
         if (task.TeamId != null || task.UserId != null) throw new BadRequestException("Task already assigned");
 
-        if (currentUser!.Role == UserRole.Leader && currentUser.Id != team.LeaderId) throw new ForbidException("Your not authorized");
+
+
 
         team.Tasks.Add(task);
         await _todoRepository.SaveChanges();

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 using Todo.Application.Users;
 using Todo.Domain.AuthorizationInterfaces;
 using Todo.Domain.Entities;
@@ -44,10 +45,11 @@ internal class AssignUserByTeamCommandHandler : IRequestHandler<AssignUserByTeam
             if (user.Team.Id != team.Id && user.Team.IsActive) throw new BadRequestException("User already in another team");
         }
 
-        if (team.LeaderId != currentUser!.Id) throw new ForbidException("Your not authorized");
+
+        if (!_teamAuthorizationService.Authorize(team, Domain.Enums.RessourceOperation.Create, null)) throw new ForbidException("Your not authorized");
 
 
-            
+
         team.Users.Add(user);
         await _teamRepository.SaveChanges();
     }
