@@ -1,9 +1,7 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Todo.Application.Users;
 using Todo.Domain.AuthorizationInterfaces;
-using Todo.Domain.Constants;
 using Todo.Domain.Entities;
 using Todo.Domain.Enums;
 using Todo.Domain.Exceptions;
@@ -43,15 +41,9 @@ internal class UpdateTaskByTeamCommandHandler : IRequestHandler<UpdateTaskByTeam
 
         if (task.TeamId != team.Id) throw new BadRequestException("Task not in team");
 
-        if (!_authorization.Authorize(team, RessourceOperation.Update, null)) throw new ForbidException("Your not authorized");
+        if (!_authorization.Authorize(team, RessourceOperation.Update)) throw new ForbidException("Your not authorized");
 
-        //if (currentUser!.Role == UserRole.Leader)
-        //{
-        //    if (team.LeaderId != currentUser.Id) throw new ForbidException("Your not authorized");
-        //}
-
-
-        // TODO: faire les modifs
+   
 
         _mapper.Map(request, task);
         await _todoRepository.SaveChanges();

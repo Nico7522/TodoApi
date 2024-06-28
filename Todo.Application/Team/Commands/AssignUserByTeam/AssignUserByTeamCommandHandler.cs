@@ -1,8 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Net;
-using Todo.Application.Users;
 using Todo.Domain.AuthorizationInterfaces;
 using Todo.Domain.Entities;
 using Todo.Domain.Exceptions;
@@ -16,22 +14,17 @@ internal class AssignUserByTeamCommandHandler : IRequestHandler<AssignUserByTeam
     private readonly ITeamRepository _teamRepository;
     private readonly UserManager<UserEntity> _userManager;
     private readonly IAuthorization<TeamEntity> _teamAuthorizationService;
-    private readonly IUserContext _userContext;
 
     public AssignUserByTeamCommandHandler(ITeamRepository teamRepository, 
         UserManager<UserEntity> userManager, 
-        IAuthorization<TeamEntity> teamAuthorizationService,
-        IUserContext userContext)
+        IAuthorization<TeamEntity> teamAuthorizationService)
     {
         _teamRepository = teamRepository;
         _userManager = userManager;
         _teamAuthorizationService = teamAuthorizationService;
-        _userContext = userContext;
     }
     public async System.Threading.Tasks.Task Handle(AssignUserByTeamCommand request, CancellationToken cancellationToken)
     {
-        var currentUser = _userContext.GetCurrentUser();
-
         var team = await _teamRepository.GetById(request.TeamId);
         if (team is null) throw new NotFoundException("Team not found");
 
@@ -39,7 +32,7 @@ internal class AssignUserByTeamCommandHandler : IRequestHandler<AssignUserByTeam
         if (user is null) throw new NotFoundException("User not found");
 
 
-        if (!_teamAuthorizationService.Authorize(team, Domain.Enums.RessourceOperation.Create, null)) throw new ForbidException("Your not authorized");
+        if (!_teamAuthorizationService.Authorize(team, Domain.Enums.RessourceOperation.Create)) throw new ForbidException("Your not authorized");
 
         if (user.Team != null && user.Team.Id == team.Id) throw new BadRequestException("User already in team");
 
@@ -47,10 +40,6 @@ internal class AssignUserByTeamCommandHandler : IRequestHandler<AssignUserByTeam
         {
             if (user.Team.Id != team.Id && user.Team.IsActive) throw new BadRequestException("User already in another team");
         }
-
-
-
-
 
         team.Users.Add(user);
         await _teamRepository.SaveChanges();

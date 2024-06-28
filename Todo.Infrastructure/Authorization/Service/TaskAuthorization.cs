@@ -14,7 +14,7 @@ public class TaskAuthorization : IAuthorization<TodoEntity>
     {
         _userContext = userContext;
     }
-    public bool Authorize(TodoEntity entity, RessourceOperation operation, object? data)
+    public bool Authorize(TodoEntity entity, RessourceOperation operation)
     {
         var user = _userContext.GetCurrentUser();
         var role = user!.Role;

@@ -13,7 +13,7 @@ public class TeamAuthorization : IAuthorization<TeamEntity>
     {
         _userContext = userContext;
     }
-    public bool Authorize(TeamEntity entity, RessourceOperation operation, object? data)
+    public bool Authorize(TeamEntity entity, RessourceOperation operation)
     {
         var user = _userContext.GetCurrentUser();
         var role = user!.Role;

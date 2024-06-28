@@ -1,23 +1,18 @@
-﻿
-using MediatR;
-using Microsoft.AspNetCore.Identity;
-using Todo.Domain.Entities;
+﻿using MediatR;
 using Todo.Domain.Exceptions;
 using Todo.Domain.Repositories;
 
 namespace Todo.Application.Team.Commands.UnassignLeader;
 
-internal class UnassignLeaderByTeamCommandHandler : IRequestHandler<UnassignLeaderByTeamCommand>
+internal class UnassignLeaderFromTeamCommandHandler : IRequestHandler<UnassignLeaderFromTeamCommand>
 {
     private readonly ITeamRepository _teamRepository;
-    private readonly UserManager<UserEntity> _userManager;
 
-    public UnassignLeaderByTeamCommandHandler(ITeamRepository teamRepository, UserManager<UserEntity> userManager)
+    public UnassignLeaderFromTeamCommandHandler(ITeamRepository teamRepository)
     {
         _teamRepository = teamRepository;
-        _userManager = userManager;
     }
-    public async System.Threading.Tasks.Task Handle(UnassignLeaderByTeamCommand request, CancellationToken cancellationToken)
+    public async System.Threading.Tasks.Task Handle(UnassignLeaderFromTeamCommand request, CancellationToken cancellationToken)
     {
         var team = await _teamRepository.GetById(request.TeamId);
         if (team is null) throw new NotFoundException("Team not found");

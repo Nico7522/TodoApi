@@ -83,7 +83,7 @@ namespace Todo.Api.Controllers
         [HttpPut("{teamId}/unassignleader")]
         public async Task<IActionResult> UnassignLeaderFromTeam([FromRoute] Guid teamId)
         {
-            await _mediator.Send(new UnassignLeaderByTeamCommand(teamId));
+            await _mediator.Send(new UnassignLeaderFromTeamCommand(teamId));
             return Ok();
         }
 

@@ -5,5 +5,5 @@ namespace Todo.Domain.AuthorizationInterfaces;
 
 public interface IAuthorization<T> where T : class
 {
-    bool Authorize(T entity, RessourceOperation operation, object? data);
+    bool Authorize(T entity, RessourceOperation operation);
 }
