@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using MediatR;
-using Todo.Application.Users;
 using Todo.Domain.AuthorizationInterfaces;
 using Todo.Domain.Entities;
 using Todo.Domain.Enums;
@@ -13,26 +13,24 @@ internal class UpdateTaskByTeamCommandHandler : IRequestHandler<UpdateTaskByTeam
 {
     private readonly ITeamRepository _teamRepository;
     private readonly ITodoRepository _todoRepository;
-    private readonly IUserContext _userContext;
     private readonly IMapper _mapper;
     private readonly IAuthorization<TeamEntity> _authorization;
+    private readonly IValidator<UpdateTaskByTeamCommand> _validator;
 
     public UpdateTaskByTeamCommandHandler(ITeamRepository teamRepository, 
         ITodoRepository todoRepository, 
-        IUserContext userContext, 
         IMapper mapper,
-        IAuthorization<TeamEntity> authorization)
+        IAuthorization<TeamEntity> authorization,
+        IValidator<UpdateTaskByTeamCommand> validator)
     {
         _teamRepository = teamRepository;
         _todoRepository = todoRepository;
-        _userContext = userContext;
         _mapper = mapper;
         _authorization = authorization;
+        _validator = validator;
     }
     public async System.Threading.Tasks.Task Handle(UpdateTaskByTeamCommand request, CancellationToken cancellationToken)
     {
-        var currentUser = _userContext.GetCurrentUser();
-
         var team = await _teamRepository.GetById(request.TeamId);
         if (team is null) throw new NotFoundException("Team not found");
 
@@ -43,11 +41,13 @@ internal class UpdateTaskByTeamCommandHandler : IRequestHandler<UpdateTaskByTeam
 
         if (!_authorization.Authorize(team, RessourceOperation.Update)) throw new ForbidException("Your not authorized");
 
-   
+        var result = await _validator.ValidateAsync(request);
+        if (result.Errors.Any())
+        {
+            throw new ValidationException(result.Errors);
+        }
 
         _mapper.Map(request, task);
         await _todoRepository.SaveChanges();
-
-
     }
 }
