@@ -42,6 +42,13 @@ public class TeamAuthorization : IAuthorization<TeamEntity>
             return false;
         }
 
+        if(operation == RessourceOperation.Delete)
+        {
+            if (role == UserRole.Leader && user.Id == entity.LeaderId) return true;
+
+            return false;
+        }
+
         return false;
 
     }

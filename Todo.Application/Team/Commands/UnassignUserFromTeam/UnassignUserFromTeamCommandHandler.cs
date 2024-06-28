@@ -37,11 +37,10 @@ internal class UnassignUserFromTeamCommandHandler : IRequestHandler<UnassignUser
         var user = await _userManager.FindByIdAsync(request.UserId);
         if (user is null) throw new NotFoundException("User not found");
 
-        if (currentUser!.Role == UserRole.Leader)
-        {
-            if (team.LeaderId == user.Id) throw new ForbidException("Your not authorized");
+        if (!_teamAuthorizationService.Authorize(team, RessourceOperation.Delete, null)) throw new ForbidException("Your not authorized");
 
-        }
+        if (user.Id == team.LeaderId) throw new BadRequestException("You cannot remove yourself from your team");
+
         if (user.TeamId != team.Id) throw new BadRequestException("User is not in team");
 
 
