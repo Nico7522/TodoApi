@@ -10,7 +10,8 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
             .NotEmpty()
             .WithMessage(Helpers.SetRequiredErrorMessage("Email"))
             .EmailAddress()
-            .WithMessage("Email is not valid");
+            .WithMessage("Email is not valid")
+            .Matches(@"^[\w -\.] +@([\w -] +\.) + [\w -]{ 2,4}$").WithMessage("Email is not valid");
         RuleFor(f => f.Password)
             .NotEmpty()
             .WithMessage(Helpers.SetRequiredErrorMessage("Password"))
@@ -36,5 +37,6 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
         RuleFor(f => f.HireDate)
           .NotEmpty()
           .WithMessage(Helpers.SetRequiredErrorMessage("Hiredate"));
+        RuleFor(r => new {r.BirthDate, r.HireDate}).Must(x => x.HireDate > x.HireDate).WithMessage("Wrong hire date");
     }
 }
