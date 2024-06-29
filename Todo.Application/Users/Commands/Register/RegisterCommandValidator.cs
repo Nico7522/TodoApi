@@ -11,11 +11,11 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
             .WithMessage(Helpers.SetRequiredErrorMessage("Email"))
             .EmailAddress()
             .WithMessage("Email is not valid")
-            .Matches(@"^[\w -\.] +@([\w -] +\.) + [\w -]{ 2,4}$").WithMessage("Email is not valid");
+            .Matches(@"^[\w -\.]+@([\w-]+\.)+[\w-]{2,4}$").WithMessage("Email is not valid");
         RuleFor(f => f.Password)
             .NotEmpty()
             .WithMessage(Helpers.SetRequiredErrorMessage("Password"))
-            .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$")
+            .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&=#])[A-Za-z\d@$!%*?&=#]{8,}$")
             .WithMessage("Password not match the requirement");
         RuleFor(c => c.Password)
             .Equal(c => c.PasswordConfirm)
@@ -37,6 +37,6 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
         RuleFor(f => f.HireDate)
           .NotEmpty()
           .WithMessage(Helpers.SetRequiredErrorMessage("Hiredate"));
-        RuleFor(r => new {r.BirthDate, r.HireDate}).Must(x => x.HireDate > x.HireDate).WithMessage("Wrong hire date");
+        RuleFor(r => new {r.BirthDate, r.HireDate}).Must(x => x.HireDate > x.BirthDate).WithMessage("Wrong hire date");
     }
 }

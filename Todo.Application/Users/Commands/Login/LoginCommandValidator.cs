@@ -11,11 +11,12 @@ public class LoginCommandValidator : AbstractValidator<LoginCommand>
             .NotEmpty()
             .WithMessage(Helpers.SetRequiredErrorMessage("Email"))
             .EmailAddress()
-            .WithMessage("Email is not valid");
+            .WithMessage("Email is not valid")
+            .Matches(@"^[\w -\.]+@([\w-]+\.)+[\w-]{2,4}$").WithMessage("Email is not valid");
         RuleFor(f => f.Password)
             .NotEmpty()
             .WithMessage(Helpers.SetRequiredErrorMessage("Password"))
-            .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$")
+            .Matches(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&=#])[A-Za-z\d@$!%*?&=#]{8,}$")
             .WithMessage("Password not match the requirement");
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Xunit;
 using FluentValidation.TestHelper;
+using Todo.Application.Users.Commands.Login;
 
 namespace Todo.Application.Users.Commands.Register.Tests;
 
@@ -31,6 +32,66 @@ public class RegisterCommandValidatorTests
 
         result.ShouldNotHaveAnyValidationErrors();
 
+    }
+
+    [Fact()]
+    public void Validator_ForValidRegisterCommand_ShouldNotHaveValidationErrorHireDate()
+    {
+        // arrange
+        var registerCommand = new RegisterCommand()
+        {
+            FirstName = "Jean",
+            LastName = "Pierre",
+            BirthDate = new DateOnly(2000, 2, 1),
+            Password = "@Password12345",
+            PasswordConfirm = "@Password12345",
+            HireDate = new DateOnly(2020, 2, 1),
+            Email = "test@gmail.com",
+            PhoneNumber = "491419255"
+        };
+
+        var validator = new RegisterCommandValidator();
+
+        // act
+
+        var result = validator.TestValidate(registerCommand);
+
+        // assert
+
+        result.ShouldNotHaveAnyValidationErrors();
+
+    }
+
+
+    [Theory()]
+    [InlineData("@Test12345")]
+    [InlineData("!Test12345")]
+    [InlineData("=Test12345")]
+    [InlineData("#Test12345")]
+    public void Validator_ForValidRegisterCommand_ShouldNotHaveValidationErrorForPassword(string password)
+    {
+        // arrange
+
+        var registerCommand = new RegisterCommand()
+        {
+            FirstName = "Jean",
+            LastName = "Pierre",
+            BirthDate = new DateOnly(1999, 2, 1),
+            Password = password,
+            PasswordConfirm = password,
+            HireDate = new DateOnly(2021, 2, 1),
+            Email = "test@gmail.com",
+            PhoneNumber = "491414141"
+        };
+        var validator = new RegisterCommandValidator();
+
+        // act
+
+        var result = validator.TestValidate(registerCommand);
+
+        // assert
+
+        result.ShouldNotHaveAnyValidationErrors();
     }
 
     [Fact()]
@@ -89,8 +150,10 @@ public class RegisterCommandValidatorTests
 
     }
 
-    [Fact()]
-    public void Validator_ForInvalidRegisterCommand_ShouldHaveValidationErrorForEmail()
+    [Theory()]
+    [InlineData("testgmail.com")]
+    [InlineData("test@gmailcom")]
+    public void Validator_ForInvalidRegisterCommand_ShouldHaveValidationErrorForEmail(string email)
     {
         // arrange
         var registerCommand = new RegisterCommand()
@@ -101,7 +164,7 @@ public class RegisterCommandValidatorTests
             Password = "@Password12345",
             PasswordConfirm = "@Password12345",
             HireDate = new DateOnly(2021, 2, 1),
-            Email = "test@gmailcom",
+            Email = email,
             PhoneNumber = "491419255"
         };
 
