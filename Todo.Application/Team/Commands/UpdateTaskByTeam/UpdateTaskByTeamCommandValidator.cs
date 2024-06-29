@@ -7,6 +7,9 @@ public class UpdateTaskByTeamCommandValidator : AbstractValidator<UpdateTaskByTe
 {
     public UpdateTaskByTeamCommandValidator()
     {
+        RuleFor(form => form.TaskId).NotEmpty().WithMessage("Task id is required");
+        RuleFor(form => form.TeamId).NotEmpty().WithMessage("Team id is required");
+
         RuleFor(form => form.Title).NotEmpty().WithMessage("Title is required").MaximumLength(100);
         RuleFor(form => form.Description).NotEmpty().WithMessage("Description is required").MaximumLength(300);
         RuleFor(form => form.Priority).NotNull().WithMessage("Priority is empty");

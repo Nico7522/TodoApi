@@ -13,6 +13,7 @@ public class AssignRoleCommandValidator : AbstractValidator<AssignRoleCommand>
     };
     public AssignRoleCommandValidator()
     {
+        RuleFor(form => form.UserId).NotEmpty().WithMessage("Required field");
         RuleFor(form => form.Role).NotEmpty().WithMessage("Required field").Must(r => _roles.Contains(r)).WithMessage("Bad role");
     }
 }
