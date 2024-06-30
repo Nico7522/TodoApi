@@ -7,10 +7,10 @@ using Todo.Domain.Entities;
 
 namespace Todo.Application.Task.Dto;
 
-public class TodoMapper : Profile
+public class TodoProfile : Profile
 {
 
-    public TodoMapper()
+    public TodoProfile()
     {
         CreateMap<TodoEntity, TodoDto>().AfterMap((src, dst, context) => {
             dst.User = src.User != null

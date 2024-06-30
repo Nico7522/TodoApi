@@ -1,13 +1,12 @@
 ﻿using AutoMapper;
 using Todo.Application.Users.Commands.Register;
-using Todo.Application.Users.Dto;
 using Todo.Domain.Entities;
 
-namespace Todo.Application.Users.Mappers;
+namespace Todo.Application.Users.Dto;
 
-internal class UserMapper : Profile
+public class UserProfile : Profile
 {
-    public UserMapper()
+    public UserProfile()
     {
         CreateMap<UserEntity, UserDto>();
         CreateMap<RegisterCommand, UserEntity>().ForMember(d => d.UserName, opt => opt.MapFrom(src => src.Email));

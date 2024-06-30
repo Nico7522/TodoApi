@@ -6,9 +6,9 @@ using Todo.Domain.Entities;
 
 namespace Todo.Application.Team.Dto;
 
-public class TeamMapper : Profile
+public class TeamProfile : Profile
 {
-    public TeamMapper()
+    public TeamProfile()
     {
         CreateMap<TeamEntity, TeamDto>()
             .AfterMap((src, dst, context) => {
