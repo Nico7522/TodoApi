@@ -10,7 +10,7 @@ public class TeamDto
     public string Name { get; set; } = default!;
     public bool IsActive { get; set; }
     public UserDto? Leader { get; set; }
-    public ICollection<TodoDto> Tasks { get; set; } = new List<TodoDto>();
+    public ICollection<TaskDto> Tasks { get; set; } = new List<TaskDto>();
     public ICollection<UserDto> Users { get; set; } = new List<UserDto>();
 
 }

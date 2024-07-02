@@ -11,5 +11,6 @@ public class UserDto
     public string PhoneNumber { get; set; } = default!;
     public DateOnly HireDate { get; set; }
     public DateOnly Birthdate { get; set; }
-    public ICollection<TodoDto> Tasks { get; set;  } = new List<TodoDto>();
+    public ICollection<TaskForUserDto> Tasks { get; set; } = new List<TaskForUserDto>();
+    public Guid TeamId { get; set; }
 }

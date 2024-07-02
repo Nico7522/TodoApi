@@ -6,7 +6,7 @@ using Todo.Domain.Repositories;
 
 namespace Todo.Application.Task.Queries.GetAllActiveTasks;
 
-internal class GetAllActiveTasksQueryHandler : IRequestHandler<GetAllActiveTasksQuery, IEnumerable<TodoDto>>
+internal class GetAllActiveTasksQueryHandler : IRequestHandler<GetAllActiveTasksQuery, IEnumerable<TaskDto>>
 {
     private readonly ITodoRepository _todoRepository;
 
@@ -16,10 +16,10 @@ internal class GetAllActiveTasksQueryHandler : IRequestHandler<GetAllActiveTasks
         _todoRepository = todoRepository;   
         _mapper = mapper;
     }
-    public async System.Threading.Tasks.Task<IEnumerable<TodoDto>> Handle(GetAllActiveTasksQuery request, CancellationToken cancellationToken)
+    public async System.Threading.Tasks.Task<IEnumerable<TaskDto>> Handle(GetAllActiveTasksQuery request, CancellationToken cancellationToken)
     {
         var activeTasks = await _todoRepository.GetAllActive();
-        var TasksDto = _mapper.Map<IEnumerable<TodoDto>>(activeTasks);
+        var TasksDto = _mapper.Map<IEnumerable<TaskDto>>(activeTasks);
         return TasksDto;
     }
 }

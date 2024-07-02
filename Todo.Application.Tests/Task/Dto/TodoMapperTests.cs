@@ -16,7 +16,7 @@ public class TodoMapperTests
 
         var configuration = new MapperConfiguration(cfg =>
         {
-            cfg.AddProfile<TodoProfile>();
+            cfg.AddProfile<TaskProfile>();
             cfg.AddProfile<UserProfile>();
         });
 
@@ -47,7 +47,7 @@ public class TodoMapperTests
 
         // act
 
-        var taskDto = _mapper.Map<TodoDto>(taskEntity);
+        var taskDto = _mapper.Map<TaskDto>(taskEntity);
 
         // assert
 
@@ -80,7 +80,7 @@ public class TodoMapperTests
 
         // act
 
-        var taskDto = _mapper.Map<TodoDto>(taskEntity);
+        var taskDto = _mapper.Map<TaskDto>(taskEntity);
 
         // assert
 

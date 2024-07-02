@@ -22,14 +22,14 @@ namespace Todo.Api.Controllers
             _mediator = mediator;
         }
         [HttpGet("active")]
-        public async Task<ActionResult<IEnumerable<TodoDto>>> GetAllActive()
+        public async Task<ActionResult<IEnumerable<TaskDto>>> GetAllActive()
         {
             var task = await _mediator.Send(new GetAllActiveTasksQuery());
             return Ok(task);
         }
 
         [HttpGet("{taskId}")]
-        public async Task<ActionResult<TodoDto?>> GetTaskById(Guid taskId)
+        public async Task<ActionResult<TaskDto?>> GetTaskById(Guid taskId)
         {
             var task = await _mediator.Send(new GetTaskByIdQuery(taskId));
             return Ok(task);

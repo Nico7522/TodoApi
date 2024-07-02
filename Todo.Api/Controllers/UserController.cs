@@ -10,8 +10,9 @@ using Todo.Application.Users.Commands.DeleteUser;
 using Todo.Application.Users.Commands.ResetPassword;
 using Todo.Application.Users.Commands.ResetPasswordConfirm;
 using Todo.Application.Users.Commands.UnassignRole;
-using Todo.Application.Users.Queries.GetTasksByUser;
+using Todo.Application.Users.Dto;
 using Todo.Application.Users.Queries.GetTasksNumberByUser;
+using Todo.Application.Users.Queries.GetUserById;
 using Todo.Domain.Constants;
 using Todo.Domain.Entities;
 
@@ -26,19 +27,21 @@ namespace Todo.Api.Controllers
         {
             _mediator = mediator;
         }
+
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<UserDto>> GetUserById([FromRoute] string userId)
+        {
+            var user = await _mediator.Send(new GetUserByIdQuery(userId));
+            return Ok(user);
+        }
+
         [HttpPost("{userId}/task/{taskId}")]
         public async Task<ActionResult<TodoEntity?>> AssignTaskByUser([FromRoute] string userId, Guid taskId)
         {
             await _mediator.Send(new AssignTaskByUserCommand(userId, taskId));
             return Ok();
         }
-
-        [HttpGet("{userId}/tasks")]
-        public async Task<ActionResult<IEnumerable<TodoDto>>> GetTasksByUser([FromRoute] string userId)
-        {
-            var tasks = await _mediator.Send(new GetTasksByUserQuery(userId));
-            return Ok(tasks);
-        }
+ 
         [HttpPut("{userId}/assignrole")]
         //[Authorize(Roles = UserRole.SuperAdmin + "," + UserRole.Admin)]
         public async Task<IActionResult> AssignRole([FromRoute] string userId, [FromBody] AssignRoleForm form)

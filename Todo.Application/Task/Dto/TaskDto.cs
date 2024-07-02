@@ -3,7 +3,7 @@ using Todo.Domain.Enums;
 
 namespace Todo.Application.Task.Dto;
 
-public class TodoDto
+public class TaskDto
 {
     public Guid Id { get; set; }
     public string Title { get; set; } = default!;
@@ -12,5 +12,6 @@ public class TodoDto
     public DateOnly? ClosingDate { get; set; }
     public Priority Priority { get; set; }
     public bool IsComplete { get; set; }
-    public UserDto? User { get; set; } 
+    public string? UserId { get; set; }
+    public Guid TeamId { get; set; }
 }

@@ -21,7 +21,7 @@ namespace Todo.Application.Users.Dto.Tests
             var configuration = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<UserProfile>();
-                cfg.AddProfile<TodoProfile>();
+                cfg.AddProfile<TaskProfile>();
 
             });
 

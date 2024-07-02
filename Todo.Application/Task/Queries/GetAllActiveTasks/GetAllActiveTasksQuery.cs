@@ -4,6 +4,6 @@ using Todo.Domain.Entities;
 
 namespace Todo.Application.Task.Queries.GetAllActiveTasks;
 
-public class GetAllActiveTasksQuery : IRequest<IEnumerable<TodoDto>>
+public class GetAllActiveTasksQuery : IRequest<IEnumerable<TaskDto>>
 {
 }
