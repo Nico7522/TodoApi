@@ -11,6 +11,7 @@ using Todo.Application.Users.Commands.ResetPassword;
 using Todo.Application.Users.Commands.ResetPasswordConfirm;
 using Todo.Application.Users.Commands.UnassignRole;
 using Todo.Application.Users.Queries.GetTasksByUser;
+using Todo.Application.Users.Queries.GetTasksNumberByUser;
 using Todo.Domain.Constants;
 using Todo.Domain.Entities;
 
@@ -72,6 +73,13 @@ namespace Todo.Api.Controllers
         {
             await _mediator.Send(new DeleteUserCommand(userId));
             return NoContent();
+        }
+
+        [HttpGet("{userId}/tasksnumber")]
+        public async Task<IActionResult> GetTasksNumberByUser([FromRoute] string userId)
+        {
+            var tasksNumber = await _mediator.Send(new GetTasksNumberByUserQuery(userId));
+            return Ok(tasksNumber);
         }
 
    

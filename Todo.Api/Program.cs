@@ -13,6 +13,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
+//builder.Services.AddControllers().AddJsonOptions(options =>
+//{
+//    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+//});
 builder.Services.AddSwaggerGen(options => {
     options.MapType<DateOnly>(() => new OpenApiSchema
     {

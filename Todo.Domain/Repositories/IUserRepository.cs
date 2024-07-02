@@ -5,4 +5,5 @@ namespace Todo.Domain.Repositories;
 
 public interface IUserRepository
 {
+    Task<int> GetTaskNumberByUser();
 }

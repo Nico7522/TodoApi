@@ -12,11 +12,12 @@ public class TodoProfile : Profile
 
     public TodoProfile()
     {
-        CreateMap<TodoEntity, TodoDto>().AfterMap((src, dst, context) => {
-            dst.User = src.User != null
-            ? context.Mapper.Map<UserEntity, UserDto>(src.User)
-            : null;
-        });
+        CreateMap<TodoEntity, TodoDto>();
+        //    .AfterMap((src, dst, context) => {
+        //    dst.User = src.User != null
+        //    ? context.Mapper.Map<UserEntity, UserDto>(src.User)
+        //    : null;
+        //});
         CreateMap<CreateTaskCommand, TodoEntity>();
 
         CreateMap<UpdateTaskCommand, TodoEntity>();

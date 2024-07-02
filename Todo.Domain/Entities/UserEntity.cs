@@ -11,8 +11,6 @@ public class UserEntity : IdentityUser
     public DateOnly Birthdate { get; set; }
 
     public ICollection<TodoEntity> Tasks { get; } = new List<TodoEntity>();
-
-
     public TeamEntity? LeadedTeam { get; set; }
 
 

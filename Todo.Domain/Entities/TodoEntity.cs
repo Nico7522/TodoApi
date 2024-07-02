@@ -1,4 +1,5 @@
-﻿using Todo.Domain.Enums;
+﻿using System.Text.Json.Serialization;
+using Todo.Domain.Enums;
 
 namespace Todo.Domain.Entities;
 

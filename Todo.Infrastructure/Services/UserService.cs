@@ -14,4 +14,8 @@ internal class UserService : IUserRepository
         _dbContext = dbContext;
     }
 
+    public Task<int> GetTaskNumberByUser()
+    {
+        throw new NotImplementedException();
+    }
 }
