@@ -12,6 +12,7 @@ public class TaskProfile : Profile
     {
         CreateMap<TodoEntity, TaskDto>();
         CreateMap<TodoEntity, TaskForUserDto>();
+        CreateMap<TodoEntity, TaskForTeamDto>();
         CreateMap<CreateTaskCommand, TodoEntity>();
         CreateMap<UpdateTaskCommand, TodoEntity>();
     }

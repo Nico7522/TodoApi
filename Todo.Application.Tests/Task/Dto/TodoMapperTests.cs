@@ -24,7 +24,7 @@ public class TodoMapperTests
 
     }
     [Fact()]
-    public void CreateMap_ForTodoEntityToTodoDto_MapsCorrectly()
+    public void CreateMap_ForTodoEntityToTodoDtoWithUserId_MapsCorrectly()
     {
         // arrange
 
@@ -34,15 +34,6 @@ public class TodoMapperTests
             Description = "Test",
             Priority = Domain.Enums.Priority.Low,
             UserId = "dsqd-qdsqsd44-qsd",
-            User = new UserEntity()
-            {
-                Id = "dsqd-qdsqsd44-qsd",
-                FirstName = "Test",
-                LastName = "Test",
-                Birthdate = new DateOnly(2000,01,01),
-                HireDate = new DateOnly(2010,01,01),
-                Email = "test@gmail.com",
-            }
         };
 
         // act
@@ -56,16 +47,11 @@ public class TodoMapperTests
         taskDto.Description.Should().Be(taskEntity.Description);
         taskDto.Priority.Should().Be(taskEntity.Priority);
         taskDto.Id.Should().Be(taskEntity.Id);
-        taskDto.User!.Id.Should().Be(taskEntity.User.Id);
-        taskDto.User!.Email.Should().Be(taskEntity.User.Email);
-        taskDto.User.FirstName.Should().Be(taskEntity.User.FirstName);
-        taskDto.User.LastName.Should().Be(taskEntity.User.LastName);
-        taskDto.User.Birthdate.Should().Be(taskEntity.User.Birthdate);
-        taskDto.User.HireDate.Should().Be(taskEntity.User.HireDate);
+        taskDto.UserId.Should().Be(taskEntity.UserId);
     }
 
     [Fact()]
-    public void CreateMap_ForTodoEntityToTodoDto_MapsCorrectlyWithUserNull()
+    public void CreateMap_ForTodoEntityToTodoDtoWithTeamId_MapsCorrectly()
     {
         // arrange
 
@@ -74,8 +60,7 @@ public class TodoMapperTests
             Title = "Test",
             Description = "Test",
             Priority = Domain.Enums.Priority.Low,
-            UserId = "dsqd-qdsqsd44-qsd",
-           
+            TeamId = new Guid(),
         };
 
         // act
@@ -89,7 +74,8 @@ public class TodoMapperTests
         taskDto.Description.Should().Be(taskEntity.Description);
         taskDto.Priority.Should().Be(taskEntity.Priority);
         taskDto.Id.Should().Be(taskEntity.Id);
-        taskDto.User.Should().BeNull();
+        taskDto.TeamId.Should().Be((Guid)taskEntity.TeamId);
+        taskDto.UserId.Should().BeNull();
     }
 
     [Fact()]

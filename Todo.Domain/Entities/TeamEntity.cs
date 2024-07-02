@@ -7,6 +7,6 @@ public class TeamEntity
     public string? LeaderId { get; set; }
     public bool IsActive { get; set; }
     public UserEntity? Leader { get; set; }
-    public ICollection<UserEntity> Users { get; } = new List<UserEntity>();
-    public ICollection<TodoEntity> Tasks { get; } = new List<TodoEntity>();
+    public ICollection<UserEntity> Users { get; set; } = new List<UserEntity>();
+    public ICollection<TodoEntity> Tasks { get; set; } = new List<TodoEntity>();
 }

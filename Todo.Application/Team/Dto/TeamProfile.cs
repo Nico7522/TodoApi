@@ -12,10 +12,8 @@ public class TeamProfile : Profile
     {
         CreateMap<TeamEntity, TeamDto>()
             .AfterMap((src, dst, context) => {
-                dst.Leader = src.Leader != null ? context.Mapper.Map<UserEntity, UserDto>(src.Leader) : null;
-                dst.Tasks = src.Tasks.Count > 0 && src.Tasks != null ? context.Mapper.Map<ICollection<TodoEntity>, ICollection<TaskDto>>(src.Tasks) : [];
-                dst.Users = src.Users.Count > 0 && src.Users != null ? context.Mapper.Map<ICollection<UserEntity>, ICollection<UserDto>>(src.Users) : [];
-
+                dst.Tasks = src.Tasks.Count > 0 && src.Tasks != null ? context.Mapper.Map<ICollection<TodoEntity>, ICollection<TaskForTeamDto>>(src.Tasks) : [];
+                dst.Users = src.Users.Count > 0 && src.Users != null ? context.Mapper.Map<ICollection<UserEntity>, ICollection<UserForTeamDto>>(src.Users) : [];
             });
 
         CreateMap<UpdateTaskByTeamCommand, TodoEntity>()

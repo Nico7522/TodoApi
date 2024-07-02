@@ -10,7 +10,7 @@ public class UserEntity : IdentityUser
     public DateOnly HireDate { get; set; }
     public DateOnly Birthdate { get; set; }
 
-    public ICollection<TodoEntity> Tasks { get; } = new List<TodoEntity>();
+    public ICollection<TodoEntity> Tasks { get; set; } = new List<TodoEntity>();
     public TeamEntity? LeadedTeam { get; set; }
 
 

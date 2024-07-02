@@ -9,8 +9,8 @@ public class TeamDto
     public Guid Id { get; set; }
     public string Name { get; set; } = default!;
     public bool IsActive { get; set; }
-    public UserDto? Leader { get; set; }
-    public ICollection<TaskDto> Tasks { get; set; } = new List<TaskDto>();
-    public ICollection<UserDto> Users { get; set; } = new List<UserDto>();
+    public string? LeaderId { get; set; }
+    public ICollection<TaskForTeamDto> Tasks { get; set; } = new List<TaskForTeamDto>();
+    public ICollection<UserForTeamDto> Users { get; set; } = new List<UserForTeamDto>();
 
 }
