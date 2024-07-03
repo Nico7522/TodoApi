@@ -17,8 +17,11 @@ public class TaskAuthorizationTests
         _userContextMock = new Mock<IUserContext>();
         _todoAuthorization = new TaskAuthorization(_userContextMock.Object);
     }
-    [Fact()]
-    public void Authorize_ForAuthorizedUserAction_ShouldReturnTrue()
+
+    [Theory()]
+    [InlineData(UserRole.User)]
+    [InlineData(UserRole.Leader)]
+    public void Authorize_ForAuthorizedUserOrLeaderAction_ShouldReturnTrue(string role)
     {
         // arrange
 
@@ -30,7 +33,7 @@ public class TaskAuthorizationTests
             UserId = "id"
         };
 
-        var currentUser = new CurrentUser("id", "test@gmail.com", UserRole.User);
+        var currentUser = new CurrentUser("id", "test@gmail.com", role);
         _userContextMock.Setup(u => u.GetCurrentUser()).Returns(currentUser);
 
         // act
@@ -38,12 +41,14 @@ public class TaskAuthorizationTests
         var result = _todoAuthorization.Authorize(todoEntity, Domain.Enums.RessourceOperation.Update);
 
         // assert
-
+        
         result.Should().Be(true);
     }
 
-    [Fact()]
-    public void Authorize_ForUnauthorizedUserAction_ShouldReturnFalse()
+    [Theory()]
+    [InlineData(UserRole.User)]
+    [InlineData(UserRole.Leader)]
+    public void Authorize_ForUnauthorizedUserOrLeaderAction_ShouldReturnFalse(string role)
     {
         // arrange
 
@@ -55,7 +60,7 @@ public class TaskAuthorizationTests
             UserId = "id"
         };
 
-        var currentUser = new CurrentUser("id2", "test@gmail.com", UserRole.User);
+        var currentUser = new CurrentUser("id2", "test@gmail.com", role);
         _userContextMock.Setup(u => u.GetCurrentUser()).Returns(currentUser);
 
         // act
@@ -66,4 +71,33 @@ public class TaskAuthorizationTests
 
         result.Should().Be(false);
     }
+
+    [Theory()]
+    [InlineData(UserRole.Admin)]
+    [InlineData(UserRole.SuperAdmin)]
+    public void Authorize_ForAuthorizedAdminAndSuperAdminAction_ShouldReturnTrue(string role)
+    {
+        // arrange
+
+        var todoEntity = new TodoEntity()
+        {
+            Id = Guid.NewGuid(),
+            Title = "Test",
+            Description = "Test",
+            UserId = "id"
+        };
+
+        var currentUser = new CurrentUser("id2", "test@gmail.com", role);
+        _userContextMock.Setup(u => u.GetCurrentUser()).Returns(currentUser);
+
+        // act
+
+        var result = _todoAuthorization.Authorize(todoEntity, Domain.Enums.RessourceOperation.Update);
+
+        // assert
+
+        result.Should().Be(true);
+    }
+
+
 }
