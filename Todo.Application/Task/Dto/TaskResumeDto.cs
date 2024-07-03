@@ -1,8 +1,9 @@
-﻿using Todo.Domain.Enums;
+﻿
+using Todo.Domain.Enums;
 
 namespace Todo.Application.Task.Dto;
 
-public class TaskForUserDto
+public class TaskResumeDto
 {
     public Guid Id { get; set; }
     public string Title { get; set; } = default!;

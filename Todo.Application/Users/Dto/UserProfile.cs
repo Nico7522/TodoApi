@@ -14,11 +14,11 @@ public class UserProfile : Profile
 
         .AfterMap((src, dst, context) =>
         {
-            dst.Tasks = src.Tasks.Count > 0 && src.Tasks != null ? context.Mapper.Map<ICollection<TodoEntity>, ICollection<TaskForUserDto>>(src.Tasks) : [];
+            dst.Tasks = src.Tasks.Count > 0 && src.Tasks != null ? context.Mapper.Map<ICollection<TodoEntity>, ICollection<TaskResumeDto>>(src.Tasks) : [];
         });
         CreateMap<RegisterCommand, UserEntity>().ForMember(d => d.UserName, opt => opt.MapFrom(src => src.Email));
 
-        CreateMap<UserEntity, UserForTeamDto>();
+        CreateMap<UserEntity, UserResumeDto>();
 
     }
 }

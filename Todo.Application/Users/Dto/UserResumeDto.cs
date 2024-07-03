@@ -1,7 +1,7 @@
 ﻿
 namespace Todo.Application.Users.Dto;
 
-public class UserForTeamDto
+public class UserResumeDto
 {
     public string Id { get; set; } = default!;
     public string Email { get; set; } = default!;

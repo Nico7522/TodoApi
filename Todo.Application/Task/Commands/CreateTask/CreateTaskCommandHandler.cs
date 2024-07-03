@@ -5,7 +5,7 @@ using Todo.Domain.Repositories;
 
 namespace Todo.Application.Task.Commands.CreateTask;
 
-internal class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, string>
+public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, string>
 {
     IMapper _mapper;
     ITodoRepository _todoRepository;

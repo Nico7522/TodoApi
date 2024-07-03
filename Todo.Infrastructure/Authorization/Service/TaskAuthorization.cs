@@ -3,7 +3,6 @@ using Todo.Domain.Enums;
 using Todo.Domain.AuthorizationInterfaces;
 using Todo.Application.Users;
 using Todo.Domain.Constants;
-using Todo.Domain.Exceptions;
 
 namespace Todo.Infrastructure.Authorization.Service;
 
@@ -23,13 +22,10 @@ public class TaskAuthorization : IAuthorization<TodoEntity>
 
         if (operation == RessourceOperation.Update)
         {
-            // Update task for team
-            if (entity.Team?.LeaderId != user.Id) throw new ForbidException("Your not authorized");
+            // Update task for user and team
+            if (entity.UserId != user.Id) return false;
 
-            
-
-
-            return false;
+            return true;
         }
 
         return false;
