@@ -6,7 +6,7 @@ using Todo.Domain.Repositories;
 
 namespace Todo.Application.Task.Commands.UpdateTask;
 
-internal class UpdateTaskCommandHandler : IRequestHandler<UpdateTaskCommand>
+public class UpdateTaskCommandHandler : IRequestHandler<UpdateTaskCommand>
 {
     private readonly IMapper _mapper;
     private readonly ITodoRepository _todoRepository;

@@ -13,12 +13,10 @@ public class CompleteTaskCommandHandlerTests
 {
     private readonly Mock<ITodoRepository> _todoRepositoryMock;
     private readonly CompleteTaskCommandHandler _handler;
-    private readonly Mock<IUserContext> _userContextMock;
     private readonly Mock<IAuthorization<TodoEntity>> _authorizationMock;
     public CompleteTaskCommandHandlerTests()
     {
         _todoRepositoryMock = new Mock<ITodoRepository>();
-        _userContextMock = new Mock<IUserContext>();
         _authorizationMock = new Mock<IAuthorization<TodoEntity>>();
         _handler = new CompleteTaskCommandHandler(_todoRepositoryMock.Object, _authorizationMock.Object);
     }

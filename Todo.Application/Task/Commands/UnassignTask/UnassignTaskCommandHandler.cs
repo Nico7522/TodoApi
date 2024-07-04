@@ -4,7 +4,7 @@ using Todo.Domain.Repositories;
 
 namespace Todo.Application.Task.Commands.UnassignTask;
 
-internal class UnassignTaskCommandHandler : IRequestHandler<UnassignTaskCommand>
+public class UnassignTaskCommandHandler : IRequestHandler<UnassignTaskCommand>
 {
     private readonly ITodoRepository _todoRepository;
 

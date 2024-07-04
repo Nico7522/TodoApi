@@ -294,4 +294,55 @@ public class TeamAuthorizationTests
 
         result.Should().Be(false);
     }
+
+    [Fact()]
+    public void Authorize_ForDeleteOperationWithLeaderRoleAndValidId_ShouldReturnTrue()
+    {
+        // arrange
+
+
+        var teamEntity = new TeamEntity()
+        {
+            Id = Guid.NewGuid(),
+            Name = "Test",
+            LeaderId = "id",
+        };
+
+        var currentUser = new CurrentUser("id", "test@gmail.com", UserRole.Leader);
+        _userContextMock.Setup(u => u.GetCurrentUser()).Returns(currentUser);
+
+        // act
+
+        var result = _teamAuthorization.Authorize(teamEntity, RessourceOperation.Delete);
+
+        // assert
+
+        result.Should().Be(true);
+    }
+
+
+    [Fact()]
+    public void Authorize_ForDeleteOperationWithLeaderRoleAndInalidId_ShouldReturnFalse()
+    {
+        // arrange
+
+
+        var teamEntity = new TeamEntity()
+        {
+            Id = Guid.NewGuid(),
+            Name = "Test",
+            LeaderId = "id",
+        };
+
+        var currentUser = new CurrentUser("id2", "test@gmail.com", UserRole.Leader);
+        _userContextMock.Setup(u => u.GetCurrentUser()).Returns(currentUser);
+
+        // act
+
+        var result = _teamAuthorization.Authorize(teamEntity, RessourceOperation.Delete);
+
+        // assert
+
+        result.Should().Be(false);
+    }
 }

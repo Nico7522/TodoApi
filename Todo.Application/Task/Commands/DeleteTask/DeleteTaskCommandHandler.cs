@@ -4,7 +4,7 @@ using Todo.Domain.Repositories;
 
 namespace Todo.Application.Task.Commands.DeleteTask;
 
-internal class DeleteTaskCommandHandler : IRequestHandler<DeleteTaskCommand>
+public class DeleteTaskCommandHandler : IRequestHandler<DeleteTaskCommand>
 {
     private readonly ITodoRepository _todoRepository;
 
