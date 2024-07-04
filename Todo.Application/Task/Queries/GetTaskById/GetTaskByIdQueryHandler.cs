@@ -1,15 +1,12 @@
-﻿
-
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Todo.Application.Task.Dto;
-using Todo.Domain.Entities;
 using Todo.Domain.Exceptions;
 using Todo.Domain.Repositories;
 
 namespace Todo.Application.Task.Queries.GetTaskById;
 
-internal class GetTaskByIdQueryHandler : IRequestHandler<GetTaskByIdQuery, TaskDto>
+public class GetTaskByIdQueryHandler : IRequestHandler<GetTaskByIdQuery, TaskDto>
 {
     private readonly ITodoRepository _todoRepository;
     private readonly IMapper _mapper;

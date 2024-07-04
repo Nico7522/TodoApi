@@ -19,7 +19,7 @@ public class UnassignTaskCommandHandlerTests
     }
 
     [Fact()]
-    public async System.Threading.Tasks.Task Handle_WithValidRequest_ShouldUnassignTaskCorrectly()
+    public async AsyncTask Handle_WithValidRequest_ShouldUnassignTaskCorrectly()
     {
         // arrange
         var taskId = Guid.NewGuid();
@@ -63,7 +63,7 @@ public class UnassignTaskCommandHandlerTests
     }
 
     [Fact()]
-    public async System.Threading.Tasks.Task Handle_WithNoExistingTask_ShouldThrowNotFoundException()
+    public async AsyncTask Handle_WithNoExistingTask_ShouldThrowNotFoundException()
     {
         // arrange
         var taskId = Guid.NewGuid();

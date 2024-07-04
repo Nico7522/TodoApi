@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
 using MediatR;
 using Todo.Application.Task.Dto;
-using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 
 namespace Todo.Application.Task.Queries.GetAllActiveTasks;
 
-internal class GetAllActiveTasksQueryHandler : IRequestHandler<GetAllActiveTasksQuery, IEnumerable<TaskDto>>
+public class GetAllActiveTasksQueryHandler : IRequestHandler<GetAllActiveTasksQuery, IEnumerable<TaskDto>>
 {
     private readonly ITodoRepository _todoRepository;
 
