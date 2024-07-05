@@ -6,7 +6,7 @@ using Todo.Domain.Repositories;
 
 namespace Todo.Application.Team.Commands.AddTask;
 
-internal class AssignTaskByTeamCommandHandler : IRequestHandler<AssignTaskByTeamCommand>
+public class AssignTaskByTeamCommandHandler : IRequestHandler<AssignTaskByTeamCommand>
 {
     private readonly ITodoRepository _todoRepository;
     private readonly ITeamRepository _teamRepository;
