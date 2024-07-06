@@ -29,6 +29,8 @@ public class AssignTaskByTeamCommandHandler : IRequestHandler<AssignTaskByTeamCo
         var team = await _teamRepository.GetById(request.TeamId);
         if (team is null) throw new NotFoundException("Team not found");
 
+        if (!team.IsActive) throw new BadRequestException("Team is not active");
+
         if (!_authorization.Authorize(team, Domain.Enums.RessourceOperation.Create)) throw new ForbidException("Your not authorized");
 
         if (task.TeamId == team.Id) throw new BadRequestException("Task already in team");

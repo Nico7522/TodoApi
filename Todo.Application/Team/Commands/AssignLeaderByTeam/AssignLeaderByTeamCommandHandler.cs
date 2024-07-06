@@ -24,6 +24,8 @@ public class AssignLeaderByTeamCommandHandler : IRequestHandler<AssignLeaderByTe
         var team = await _teamRepository.GetById(request.TeamId);
         if (team is null) throw new NotFoundException("Team not found");
 
+        if (!team.IsActive) throw new BadRequestException("Team is not active");
+
         var user = await _userManager.FindByIdAsync(request.UserId);
         if (user is null) throw new NotFoundException("User not found");
 

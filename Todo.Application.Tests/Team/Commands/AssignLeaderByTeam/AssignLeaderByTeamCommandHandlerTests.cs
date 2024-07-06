@@ -69,6 +69,43 @@ public class AssignLeaderByTeamCommandHandlerTests
     }
 
     [Fact()]
+    public async TaskAsync Handle_ForNoActiveTeam_ShouldThrowBadExceptionException()
+    {
+        // arrange
+
+        var team = new TeamEntity()
+        {
+            Id = _teamId,
+            LeaderId = null,
+            Users = new List<UserEntity>(),
+            IsActive = false
+        };
+
+        var user = new UserEntity() { Id = "id", TeamId = null };
+
+        _teamRepositoryMock.Setup(r => r.GetById(team.Id)).ReturnsAsync(team);
+        _userManagerMock.Setup(m => m.FindByIdAsync(_leaderId)).ReturnsAsync(user);
+        var command = new AssignLeaderByTeamCommand(_teamId, _leaderId);
+
+        // act
+
+        Func<TaskAsync> act = async () => await _handler.Handle(command, CancellationToken.None);
+
+        // assert
+
+        await act.Should().ThrowAsync<BadRequestException>().WithMessage("Team is not active");
+
+        _teamRepositoryMock.Verify(r => r.GetById(team.Id), Times.Once());
+        _userManagerMock.Verify(m => m.FindByIdAsync(_leaderId), Times.Never());
+        _teamRepositoryMock.Verify(m => m.SaveChanges(), Times.Never());
+
+        team.LeaderId.Should().Be(null);
+        team.Users.Should().BeEmpty();
+        user.TeamId.Should().Be(null);
+    }
+
+
+    [Fact()]
     public async TaskAsync Handle_ForNoExistingUser_ShouldThrowNotFoundException()
     {
         // arrange

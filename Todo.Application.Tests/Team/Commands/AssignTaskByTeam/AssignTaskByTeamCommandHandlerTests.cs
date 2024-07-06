@@ -102,6 +102,43 @@ public class AssignTaskByTeamCommandHandlerTests
     }
 
     [Fact()]
+    public async TaskAsync Handle_ForNoActiveTeam_ShouldThrowBadRequestException()
+    {
+        // arrange
+        var task = new TodoEntity()
+        {
+            Id = _taskId,
+            Title = "Title",
+            Description = "Description",
+            Priority = Domain.Enums.Priority.High,
+            Team = null,
+            TeamId = null
+        };
+
+        var team = new TeamEntity() { Id = _teamId, Name = "team", Tasks = new List<TodoEntity>(), IsActive = false };
+
+        _teamRepositoryMock.Setup(r => r.GetById(team.Id)).ReturnsAsync(team);
+        _taskRepositoryMock.Setup(r => r.GetById(task.Id)).ReturnsAsync(task);
+        _teamAuthorizationMock.Setup(a => a.Authorize(team, Domain.Enums.RessourceOperation.Create)).Returns(true);
+
+        var command = new AssignTaskByTeamCommand(_taskId, _teamId);
+
+        // act
+
+        Func<TaskAsync> act = async () => await _handler.Handle(command, CancellationToken.None);
+
+        // assert
+        await act.Should().ThrowAsync<BadRequestException>().WithMessage("Team is not active");
+        _teamRepositoryMock.Verify(r => r.GetById(team.Id), Times.Once());
+        _taskRepositoryMock.Verify(r => r.SaveChanges(), Times.Never());
+        _taskRepositoryMock.Verify(r => r.GetById(task.Id), Times.Once());
+        _teamAuthorizationMock.Verify(a => a.Authorize(team, Domain.Enums.RessourceOperation.Create), Times.Never());
+
+        team.Tasks.Should().HaveCount(0);
+
+    }
+
+    [Fact()]
     public async TaskAsync Handle_NoExistingTask_ShouldThrowNotFoundException()
     {
         // arrange

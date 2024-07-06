@@ -5,7 +5,7 @@ using Todo.Infrastructure.Persistence;
 
 namespace Todo.Infrastructure.Services;
 
-internal class TodoService : ITodoRepository
+public class TodoService : ITodoRepository
 {
     private readonly TodoDbContext _dbContext;
     public TodoService(TodoDbContext dbContext)
