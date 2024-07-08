@@ -1,11 +1,9 @@
-﻿
-using MediatR;
+﻿using MediatR;
 using Todo.Domain.Exceptions;
 using Todo.Domain.Repositories;
 
 namespace Todo.Application.Team.Commands.CloseTeam;
-
-internal class CloseTeamCommandHandler : IRequestHandler<CloseTeamCommand>
+public class CloseTeamCommandHandler : IRequestHandler<CloseTeamCommand>
 {
     private readonly ITeamRepository _teamRepository;
     public CloseTeamCommandHandler(ITeamRepository teamRepository)
@@ -16,6 +14,8 @@ internal class CloseTeamCommandHandler : IRequestHandler<CloseTeamCommand>
     {
         var team = await _teamRepository.GetById(request.TeamId);
         if (team is null) throw new NotFoundException("Team not found");
+
+        if (!team.IsActive) throw new BadRequestException("Team is already inactive");
 
         team.IsActive = false;
         await _teamRepository.SaveChanges();

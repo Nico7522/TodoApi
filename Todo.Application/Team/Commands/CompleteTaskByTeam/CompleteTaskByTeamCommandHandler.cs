@@ -7,7 +7,7 @@ using Todo.Domain.Enums;
 
 namespace Todo.Application.Team.Commands.CloseTask;
 
-internal class CompleteTaskByTeamCommandHandler : IRequestHandler<CompleteTaskByTeamCommand>
+public class CompleteTaskByTeamCommandHandler : IRequestHandler<CompleteTaskByTeamCommand>
 {
     private readonly ITodoRepository _todoRepository;
     private readonly ITeamRepository _teamRepository;
@@ -23,12 +23,13 @@ internal class CompleteTaskByTeamCommandHandler : IRequestHandler<CompleteTaskBy
     public async System.Threading.Tasks.Task Handle(CompleteTaskByTeamCommand request, CancellationToken cancellationToken)
     {
 
-
         var team = await _teamRepository.GetById(request.TeamId);
-        if (team is null) throw new NotFoundException("Task not found");
+        if (team is null) throw new NotFoundException("Team not found");
 
         var task = await _todoRepository.GetById(request.TaskId);
         if (task is null) throw new NotFoundException("Task not found");
+
+        if (task.IsComplete) throw new BadRequestException("Task is already complete");
 
         if (task.TeamId != team.Id) throw new BadRequestException("Task not in team");
 

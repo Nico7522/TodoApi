@@ -1,21 +1,12 @@
 ﻿using FluentAssertions;
-using Mailjet.Client.Resources;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MockQueryable.Moq;
 using Moq;
-using Moq.EntityFrameworkCore;
-using Todo.Application.Tests;
 using Todo.Domain.AuthorizationInterfaces;
 using Todo.Domain.Entities;
 using Todo.Domain.Exceptions;
 using Todo.Domain.Repositories;
-using Todo.Infrastructure.Persistence;
 using Xunit;
 using TaskAsync = System.Threading.Tasks.Task;
 

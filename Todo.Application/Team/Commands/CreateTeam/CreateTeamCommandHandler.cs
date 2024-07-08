@@ -4,7 +4,7 @@ using Todo.Domain.Repositories;
 
 namespace Todo.Application.Team.Commands.CreateTeam;
 
-internal class CreateTeamCommandHandler : IRequestHandler<CreateTeamCommand, Guid>
+public class CreateTeamCommandHandler : IRequestHandler<CreateTeamCommand, Guid>
 {
     private readonly ITeamRepository _teamRepository;
     public CreateTeamCommandHandler(ITeamRepository teamRepository)
@@ -13,7 +13,7 @@ internal class CreateTeamCommandHandler : IRequestHandler<CreateTeamCommand, Gui
     }
     public async Task<Guid> Handle(CreateTeamCommand request, CancellationToken cancellationToken)
     {
-        TeamEntity newTeam = new TeamEntity() { Name = request.Name};
+        TeamEntity newTeam = new TeamEntity() { Name = request.Name };
         var id = await _teamRepository.Create(newTeam);
         return id;
     }
