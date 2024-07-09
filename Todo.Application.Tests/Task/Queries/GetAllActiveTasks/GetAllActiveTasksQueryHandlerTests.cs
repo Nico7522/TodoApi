@@ -38,7 +38,7 @@ public class GetAllActiveTasksQueryHandlerTests
 
         };
 
-        ICollection<TodoEntity> todoEntities = new List<TodoEntity>() { task1, task2};
+        ICollection<TodoEntity> todoEntities = new List<TodoEntity>() { task1, task2 };
         _todoRepositoryMock.Setup(r => r.GetAllActive()).ReturnsAsync(todoEntities);
 
         var query = new GetAllActiveTasksQuery();

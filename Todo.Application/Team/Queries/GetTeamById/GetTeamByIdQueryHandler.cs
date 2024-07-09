@@ -1,5 +1,4 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Todo.Application.Team.Dto;
 using Todo.Domain.Exceptions;
@@ -7,7 +6,7 @@ using Todo.Domain.Repositories;
 
 namespace Todo.Application.Team.Queries.GetTeamById;
 
-internal class GetTeamByIdQueryHandler : IRequestHandler<GetTeamByIdQuery, TeamDto?>
+public class GetTeamByIdQueryHandler : IRequestHandler<GetTeamByIdQuery, TeamDto?>
 {
     private readonly ITeamRepository _teamRepository;
     private readonly IMapper _mapper;
