@@ -9,7 +9,7 @@ using Todo.Domain.Repositories;
 
 namespace Todo.Application.Team.Commands.UpdateTeamTask;
 
-internal class UpdateTaskByTeamCommandHandler : IRequestHandler<UpdateTaskByTeamCommand>
+public class UpdateTaskByTeamCommandHandler : IRequestHandler<UpdateTaskByTeamCommand>
 {
     private readonly ITeamRepository _teamRepository;
     private readonly ITodoRepository _todoRepository;

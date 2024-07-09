@@ -8,7 +8,7 @@ using Todo.Domain.Enums;
 
 namespace Todo.Application.Team.Commands.DeleteUser;
 
-internal class UnassignUserFromTeamCommandHandler : IRequestHandler<UnassignUserFromTeamCommand>
+public class UnassignUserFromTeamCommandHandler : IRequestHandler<UnassignUserFromTeamCommand>
 {
     private readonly ITeamRepository _teamRepository;
     private readonly UserManager<UserEntity> _userManager;

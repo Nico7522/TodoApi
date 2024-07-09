@@ -1,27 +1,30 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Identity;
+using Todo.Domain.Entities;
 using Todo.Domain.Exceptions;
 using Todo.Domain.Repositories;
 
 namespace Todo.Application.Team.Commands.UnassignLeader;
 
-internal class UnassignLeaderFromTeamCommandHandler : IRequestHandler<UnassignLeaderFromTeamCommand>
+public class UnassignLeaderFromTeamCommandHandler : IRequestHandler<UnassignLeaderFromTeamCommand>
 {
     private readonly ITeamRepository _teamRepository;
+    private readonly UserManager<UserEntity> _userManager;
 
-    public UnassignLeaderFromTeamCommandHandler(ITeamRepository teamRepository)
+    public UnassignLeaderFromTeamCommandHandler(ITeamRepository teamRepository, UserManager<UserEntity> userManager)
     {
         _teamRepository = teamRepository;
+        _userManager = userManager;
     }
     public async System.Threading.Tasks.Task Handle(UnassignLeaderFromTeamCommand request, CancellationToken cancellationToken)
     {
         var team = await _teamRepository.GetById(request.TeamId);
         if (team is null) throw new NotFoundException("Team not found");
 
-        var userToDelete = team.Users.FirstOrDefault(u => u.Id == team.LeaderId);
+        var user = await _userManager.FindByIdAsync(team.LeaderId!);
+        if (user is null) throw new NotFoundException("Team leader not found");
 
-        if (userToDelete is null) throw new ApiException("A error has happened, leader has not been removed");
-
-        team.Users.Remove(userToDelete);
+        team.Users.Remove(user);
         team.Leader = null;
 
         await _teamRepository.SaveChanges();
