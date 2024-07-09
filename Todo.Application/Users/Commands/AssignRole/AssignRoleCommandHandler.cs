@@ -8,7 +8,7 @@ using Todo.Domain.Exceptions;
 
 namespace Todo.Application.Users.Commands.AssignRole;
 
-internal class AssignRoleCommandHandler : IRequestHandler<AssignRoleCommand>
+public class AssignRoleCommandHandler : IRequestHandler<AssignRoleCommand>
 {
     private readonly UserManager<UserEntity> _userManager;
     private readonly IValidator<AssignRoleCommand> _validator;
@@ -22,7 +22,6 @@ internal class AssignRoleCommandHandler : IRequestHandler<AssignRoleCommand>
 
     public async System.Threading.Tasks.Task Handle(AssignRoleCommand request, CancellationToken cancellationToken)
     {
-
         var result = _validator.Validate(request);
         if (!result.IsValid) throw new ValidationException(result.Errors);
 

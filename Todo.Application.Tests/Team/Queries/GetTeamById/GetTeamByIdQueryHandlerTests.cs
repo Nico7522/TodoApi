@@ -2,7 +2,6 @@
 using FluentAssertions;
 using Moq;
 using Todo.Application.Team.Dto;
-using Todo.Application.Team.Queries.GetAllTeams;
 using Todo.Domain.Entities;
 using Todo.Domain.Exceptions;
 using Todo.Domain.Repositories;
