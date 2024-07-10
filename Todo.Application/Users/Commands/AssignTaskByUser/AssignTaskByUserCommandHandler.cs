@@ -6,7 +6,7 @@ using Todo.Domain.Repositories;
 
 namespace Todo.Application.Users.Commands.AssignTaskByUser;
 
-internal class AssignTaskByUserCommandHandler : IRequestHandler<AssignTaskByUserCommand>
+public class AssignTaskByUserCommandHandler : IRequestHandler<AssignTaskByUserCommand>
 {
     private readonly UserManager<UserEntity> _userManager;
     private readonly ITodoRepository _todoRepository;

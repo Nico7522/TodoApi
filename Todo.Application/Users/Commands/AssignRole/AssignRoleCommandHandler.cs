@@ -37,10 +37,10 @@ public class AssignRoleCommandHandler : IRequestHandler<AssignRoleCommand>
         if (userRoles.Any())
         {
             var removeRolesResult = await _userManager.RemoveFromRolesAsync(user, userRoles);
-            if (!removeRolesResult.Succeeded) throw new BadRequestException("A error has occured");
+            if (!removeRolesResult.Succeeded) throw new ApiException("A error has occured");
         }
         var addRoleResult = await _userManager.AddToRoleAsync(user, request.Role);
-        if (!addRoleResult.Succeeded) throw new BadRequestException("A error has occured");
+        if (!addRoleResult.Succeeded) throw new ApiException("A error has occured");
 
         var userClaims = await _userManager.GetClaimsAsync(user);
 
@@ -48,12 +48,12 @@ public class AssignRoleCommandHandler : IRequestHandler<AssignRoleCommand>
         if (oldRoleClaim is null)
         {
             var addClaimResult = await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, request.Role));
-            if (!addClaimResult.Succeeded) throw new BadRequestException("Error");
+            if (!addClaimResult.Succeeded) throw new ApiException("A error has occured");
         }
         else
         {
             var replaceClaimResult = await _userManager.ReplaceClaimAsync(user, oldRoleClaim, new Claim(ClaimTypes.Role, request.Role));
-            if (!replaceClaimResult.Succeeded) throw new BadRequestException("Error");
+            if (!replaceClaimResult.Succeeded) throw new ApiException("A error has occured");
         }
 
     }

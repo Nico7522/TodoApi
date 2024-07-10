@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using Todo.Domain.Repositories;
 using Todo.Domain.Entities;
 using FluentAssertions;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Todo.Infrastructure.Services.Tests;
 
@@ -17,10 +20,8 @@ public class TodoServiceTests
     public void Setup()
     {
         var services = new ServiceCollection();
-
         services.AddDbContext<TodoDbContext>(options =>
-            options.UseInMemoryDatabase("TestDb"));
-
+               options.UseInMemoryDatabase("TestDb"));
         services.AddScoped<ITodoRepository, TodoService>();
 
         _serviceProvider = services.BuildServiceProvider();
@@ -54,4 +55,6 @@ public class TodoServiceTests
             addedItem.Title.Should().Be(task.Title);
         }
     }
+
+  
 }
