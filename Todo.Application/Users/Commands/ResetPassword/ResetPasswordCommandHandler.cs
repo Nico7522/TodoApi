@@ -7,7 +7,7 @@ using Todo.Domain.Exceptions;
 
 namespace Todo.Application.Users.Commands.ResetPassword;
 
-internal class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordCommand>
+public class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordCommand>
 {
     private readonly IEmailSender _emailSender;
     private readonly UserManager<UserEntity> _userMananger;

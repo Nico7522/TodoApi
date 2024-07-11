@@ -8,6 +8,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Todo.Domain.Constants;
 
 namespace Todo.Infrastructure.Tests.UserManagerTest;
 
@@ -74,6 +75,53 @@ public class UserManagerTest
             // Assert
             u.Email.Should().Be("Test@gmail.com");
             claims.First().Value.Should().Be("SuperAdmin");
+        }
+
+
+    }
+
+    [Fact()]
+    public async void AddRole_ForRoleAdded_ShouldAddAndRetrieveRoleCorrectly()
+    {
+
+        Setup();
+        // Arrange
+        using (var scope = _serviceProvider.CreateScope())
+        {
+            var scopedServices = scope.ServiceProvider;
+            var userManager = scopedServices.GetRequiredService<UserManager<UserEntity>>();
+            var dbContext = scopedServices.GetRequiredService<TodoDbContext>();
+
+            var user = new UserEntity()
+            {
+                Id = "id",
+                FirstName = "Test",
+                LastName = "Test",
+                Email = "Test@gmail.com",
+                PhoneNumber = "491410952",
+                Birthdate = new DateOnly(2000, 01, 01),
+                UserName = "Test@gmail.com",
+            };
+
+            var result = await userManager.CreateAsync(user);
+            await dbContext.Roles.AddAsync(new(UserRole.User)
+            {
+                NormalizedName = UserRole.User.ToUpper()
+            });
+            await dbContext.SaveChangesAsync();
+            // Check if the user creation was successful
+            if (!result.Succeeded)
+            {
+                throw new Exception("User creation failed: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+            }
+
+
+            var u = await userManager.FindByIdAsync(user.Id);
+            await userManager.AddToRoleAsync(u, "User");
+            var roles = await userManager.GetRolesAsync(u);
+            // Assert
+            roles.Should().HaveCount(1);
+            roles.First().Should().Be("User");
         }
     }
 }

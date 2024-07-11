@@ -27,18 +27,22 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, bool>
     public async Task<bool> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         var entity = _mapper.Map<UserEntity>(request);
+
         var user = await _userManager.FindByEmailAsync(request.Email!);
         if (user is not null) throw new BadRequestException("Bad request");
 
 
         var result = await _userManager.CreateAsync(entity, request.Password);
-        if (!result.Succeeded) throw new BadRequestException("An error has occurred");
+        if (!result.Succeeded) throw new ApiException("An error has occurred");
 
-        await _userManager.AddToRoleAsync(entity, UserRole.User);
+        var addRoleResult = await _userManager.AddToRoleAsync(entity, UserRole.User);
+        if (!addRoleResult.Succeeded) throw new ApiException("An error has occurred");
+
         IList<Claim> baseClaims = await _jwtHelper.SetBaseClaims(entity);
-        var addClaimsResult = await _userManager.AddClaimsAsync(entity, baseClaims);
 
-        if (!addClaimsResult.Succeeded) throw new BadRequestException("An error has occurred");
+        var addClaimsResult = await _userManager.AddClaimsAsync(entity, baseClaims);
+        if (!addClaimsResult.Succeeded) throw new ApiException("An error has occurred");
+
         await _emailSender.SendEmail(entity.Email!, "Account created", $"Welcome, to our team {entity.FirstName} {entity.LastName}");
 
         return true;
