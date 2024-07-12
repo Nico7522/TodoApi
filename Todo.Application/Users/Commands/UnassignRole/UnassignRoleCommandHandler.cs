@@ -7,7 +7,7 @@ using Todo.Domain.Exceptions;
 
 namespace Todo.Application.Users.Commands.UnassignRole;
 
-internal class UnassignRoleCommandHandler : IRequestHandler<UnassignRoleCommand>
+public class UnassignRoleCommandHandler : IRequestHandler<UnassignRoleCommand>
 {
     private readonly UserManager<UserEntity> _userManager;
     private readonly IUserContext _userContext;
@@ -31,7 +31,7 @@ internal class UnassignRoleCommandHandler : IRequestHandler<UnassignRoleCommand>
         if(currentUser!.Role == roles.First()) throw new BadRequestException("You can't achieve this action");
 
         var roleDeletedResult = await _userManager.RemoveFromRolesAsync(user, roles);
-        if (!roleDeletedResult.Succeeded) throw new BadRequestException("Role has not been deleted");
+        if (!roleDeletedResult.Succeeded) throw new ApiException("Role has not been deleted");
 
         var userClaims = await _userManager.GetClaimsAsync(user);
 

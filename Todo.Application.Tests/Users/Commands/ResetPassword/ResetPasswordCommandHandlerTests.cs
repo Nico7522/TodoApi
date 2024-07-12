@@ -1,4 +1,4 @@
-﻿using Mailjet.Client.Resources;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -6,6 +6,7 @@ using Moq;
 using System.Web;
 using Todo.Application.Email.Interfaces;
 using Todo.Domain.Entities;
+using Todo.Domain.Exceptions;
 using Xunit;
 using AsyncTask = System.Threading.Tasks.Task;
 
@@ -64,5 +65,39 @@ public class ResetPasswordCommandHandlerTests
         _userManagerMock.Verify(m => m.FindByEmailAsync(command.Email), Times.Once);
         _userManagerMock.Verify(m => m.GeneratePasswordResetTokenAsync(entity), Times.Once);
         _emailSenderMock.Verify(s => s.SendEmail(entity.Email!, "Reset your password", $"You can reset your password from this url http://localhost:4200/{entity.Id}/{encodedResetToken}", null), Times.Once);
+    }
+
+    [Fact()]
+    public async AsyncTask Handle_ForUsernotFound_ShouldThrowNotFoundException()
+    {
+        // arrange
+        var entity = new UserEntity()
+        {
+            Id = "userId",
+            FirstName = "test",
+            LastName = "test",
+            Email = "test@gmail.com",
+            PasswordHash = "qdqsd4454qsdqd",
+            PhoneNumber = "491414141",
+            Birthdate = new DateOnly(2000, 01, 01),
+            HireDate = new DateOnly(2010, 01, 01),
+        };
+        var resetToken = "resetToken";
+
+        var command = new ResetPasswordCommand("test@gmail.com");
+        _userManagerMock.Setup(m => m.FindByEmailAsync(command.Email)).ReturnsAsync((UserEntity?)null);
+        _userManagerMock.Setup(m => m.GeneratePasswordResetTokenAsync(entity)).ReturnsAsync(resetToken);
+        var encodedResetToken = HttpUtility.UrlEncode(resetToken);
+        _emailSenderMock.Setup(s => s.SendEmail(entity.Email!, "Reset your password", $"You can reset your password from this url http://localhost:4200/{entity.Id}/{encodedResetToken}", null));
+
+        // act
+
+        Func<AsyncTask> act = async() => await _handler.Handle(command, CancellationToken.None);
+
+        // assert
+        await act.Should().ThrowAsync<NotFoundException>().WithMessage("User not found");
+        _userManagerMock.Verify(m => m.FindByEmailAsync(command.Email), Times.Once);
+        _userManagerMock.Verify(m => m.GeneratePasswordResetTokenAsync(entity), Times.Never);
+        _emailSenderMock.Verify(s => s.SendEmail(entity.Email!, "Reset your password", $"You can reset your password from this url http://localhost:4200/{entity.Id}/{encodedResetToken}", null), Times.Never);
     }
 }

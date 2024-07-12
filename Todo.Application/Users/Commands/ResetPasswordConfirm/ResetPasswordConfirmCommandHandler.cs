@@ -1,5 +1,4 @@
-﻿
-using FluentValidation;
+﻿using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using System.Web;
@@ -8,7 +7,7 @@ using Todo.Domain.Exceptions;
 
 namespace Todo.Application.Users.Commands.ResetPasswordConfirm;
 
-internal class ResetPasswordConfirmCommandHandler : IRequestHandler<ResetPasswordConfirmCommand>
+public class ResetPasswordConfirmCommandHandler : IRequestHandler<ResetPasswordConfirmCommand>
 {
     private readonly UserManager<UserEntity> _userManager;
     private readonly IValidator<ResetPasswordConfirmCommand> _validator;
