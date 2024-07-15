@@ -17,6 +17,14 @@ builder.Services.AddScoped<ErrorHandlingMiddleware>();
 //{
 //    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 //});
+builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+{
+    builder.WithOrigins("http://localhost:4200")
+           .AllowAnyMethod()
+           .AllowAnyHeader()
+           .AllowCredentials();
+}));
+
 builder.Services.AddSwaggerGen(options => {
     options.MapType<DateOnly>(() => new OpenApiSchema
     {
@@ -67,6 +75,7 @@ var seeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
 
 await seeder.Seed();
 
+app.UseCors("MyPolicy");
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
@@ -85,3 +94,4 @@ app.MapControllers();
 
 app.Run();
 
+public partial class Program { }

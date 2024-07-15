@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.TestConsole", "Todo.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.Application.Tests", "Todo.Application.Tests\Todo.Application.Tests.csproj", "{13DE5FBA-76D4-4A2B-B0D8-DD0A5D174ABB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Infrastructure.Tests", "Todo.Infrastructure.Tests\Todo.Infrastructure.Tests.csproj", "{A4996B80-ADC9-44B4-9195-DAAF749E3D88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.Infrastructure.Tests", "Todo.Infrastructure.Tests\Todo.Infrastructure.Tests.csproj", "{A4996B80-ADC9-44B4-9195-DAAF749E3D88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Api.Tests", "Todo.Api.Tests\Todo.Api.Tests.csproj", "{DE1967A7-7DCC-4F06-B330-11614B8031BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{A4996B80-ADC9-44B4-9195-DAAF749E3D88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4996B80-ADC9-44B4-9195-DAAF749E3D88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4996B80-ADC9-44B4-9195-DAAF749E3D88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE1967A7-7DCC-4F06-B330-11614B8031BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE1967A7-7DCC-4F06-B330-11614B8031BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE1967A7-7DCC-4F06-B330-11614B8031BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE1967A7-7DCC-4F06-B330-11614B8031BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,7 +7,7 @@ using Todo.Domain.Repositories;
 
 namespace Todo.Application.Users.Queries.GetTasksNumberByUser;
 
-internal class GetTasksNumberByUserQueryHandler : IRequestHandler<GetTasksNumberByUserQuery, int>
+public class GetTasksNumberByUserQueryHandler : IRequestHandler<GetTasksNumberByUserQuery, int>
 {
     private readonly UserManager<UserEntity> _userManager;
 

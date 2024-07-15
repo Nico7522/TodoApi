@@ -334,4 +334,53 @@ public class UnassignRoleCommandHandlerTests
         _userManagerMock.Verify(m => m.GetClaimsAsync(entity), Times.Never);
         _userManagerMock.Verify(m => m.RemoveClaimAsync(entity, roleClaim!), Times.Never);
     }
+
+    [Fact()]
+    public async AsyncTask Handle_ForClaimNotRemoved_ShouldThrowApiException()
+    {
+        // arrange
+        var entity = new UserEntity()
+        {
+            Id = _userId,
+            FirstName = "test",
+            LastName = "test",
+            Email = "test@gmail.com",
+            PasswordHash = "qdqsd4454qsdqd",
+            PhoneNumber = "491414141",
+            Birthdate = new DateOnly(2000, 01, 01),
+            HireDate = new DateOnly(2010, 01, 01),
+        };
+        List<string> userRole = new List<string> { UserRole.Leader };
+        List<Claim> userClaims = new List<Claim>()
+        {
+            new Claim(ClaimTypes.NameIdentifier, entity.Id),
+            new Claim(ClaimTypes.Email, entity.Email!),
+            new Claim(ClaimTypes.Role, UserRole.Leader),
+        };
+
+        var roleClaim = userClaims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
+
+        var currentUser = new CurrentUser(_currentUserId, "test@gmail.com", UserRole.SuperAdmin);
+        var command = new UnassignRoleCommand(_userId);
+
+        _userContextMock.Setup(c => c.GetCurrentUser()).Returns(currentUser);
+        _userManagerMock.Setup(m => m.FindByIdAsync(command.UserId)).ReturnsAsync(entity);
+        _userManagerMock.Setup(m => m.GetRolesAsync(entity)).ReturnsAsync(userRole);
+        _userManagerMock.Setup(m => m.RemoveFromRolesAsync(entity, userRole)).ReturnsAsync(IdentityResult.Success);
+        _userManagerMock.Setup(m => m.GetClaimsAsync(entity)).ReturnsAsync(userClaims);
+        _userManagerMock.Setup(m => m.RemoveClaimAsync(entity, roleClaim!)).ReturnsAsync(IdentityResult.Failed());
+
+        // act
+
+        Func<AsyncTask> act = async () => await _handler.Handle(command, CancellationToken.None);
+
+        // assert
+        await act.Should().ThrowAsync<ApiException>().WithMessage("Error");
+        _userContextMock.Verify(c => c.GetCurrentUser(), Times.Once);
+        _userManagerMock.Verify(m => m.FindByIdAsync(command.UserId), Times.Once);
+        _userManagerMock.Verify(m => m.GetRolesAsync(entity), Times.Once);
+        _userManagerMock.Verify(m => m.RemoveFromRolesAsync(entity, userRole), Times.Once);
+        _userManagerMock.Verify(m => m.GetClaimsAsync(entity), Times.Once);
+        _userManagerMock.Verify(m => m.RemoveClaimAsync(entity, roleClaim!), Times.Once);
+    }
 }

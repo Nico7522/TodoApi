@@ -21,7 +21,7 @@ public class CompleteTaskCommandHandler : IRequestHandler<CompleteTaskCommand>
         var task = await _todoRepository.GetById(request.TaskId);
         if (task is null) throw new NotFoundException("Task not found");
 
-        if(!_authorization.Authorize(task, Domain.Enums.RessourceOperation.Update)) throw new ForbidException("Your not authorized");
+        if (!_authorization.Authorize(task, Domain.Enums.RessourceOperation.Update)) throw new ForbidException("Your not authorized");
         //if (currentUser!.Role == UserRole.User || currentUser.Role == UserRole.Leader)
         //{
         //    if (task.UserId != currentUser.Id) throw new ForbidException("Your not authorized");

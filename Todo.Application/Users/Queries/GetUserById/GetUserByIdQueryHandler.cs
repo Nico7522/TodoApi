@@ -9,7 +9,7 @@ using Todo.Domain.Exceptions;
 
 namespace Todo.Application.Users.Queries.GetUserById;
 
-internal class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, UserDto>
+public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, UserDto>
 {
     private readonly UserManager<UserEntity> _userManager;
     private readonly IMapper _mapper;
@@ -20,7 +20,7 @@ internal class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, UserD
     }
     public async Task<UserDto> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
-        var user = await _userManager.Users.Include(u => u.Tasks).FirstOrDefaultAsync(u => u.Id == request.UserId);
+        var user =  _userManager.Users.Include(u => u.Tasks).FirstOrDefault(u => u.Id == request.UserId);
         if (user is null) throw new NotFoundException("User not found");
 
         var userDto = _mapper.Map<UserDto>(user);

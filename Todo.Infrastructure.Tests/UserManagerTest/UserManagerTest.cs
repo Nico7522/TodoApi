@@ -123,5 +123,50 @@ public class UserManagerTest
             roles.Should().HaveCount(1);
             roles.First().Should().Be("User");
         }
+
+
+
+    }
+
+    [Fact()]
+    public async void Get_ForGetUserTasksCount_ShouldReturnTasksCountCorrectly()
+    {
+
+        Setup();
+        // Arrange
+        using (var scope = _serviceProvider.CreateScope())
+        {
+            var scopedServices = scope.ServiceProvider;
+            var userManager = scopedServices.GetRequiredService<UserManager<UserEntity>>();
+            var dbContext = scopedServices.GetRequiredService<TodoDbContext>();
+
+            var user = new UserEntity()
+            {
+                Id = "id",
+                FirstName = "Test",
+                LastName = "Test",
+                Email = "Test@gmail.com",
+                PhoneNumber = "491410952",
+                Birthdate = new DateOnly(2000, 01, 01),
+                UserName = "Test@gmail.com",
+            };
+            var result = await userManager.CreateAsync(user);
+            await dbContext.SaveChangesAsync();
+            var task1 = new TodoEntity() { Title = "Test", Description = "test" };
+            var task2 = new TodoEntity() { Title = "Test", Description = "test" };
+            var u = await userManager.FindByIdAsync(user.Id);
+            u.Tasks.Add(task1);
+            u.Tasks.Add(task2);
+
+            var userWithTasks = await dbContext.Users.Include(u => u.Tasks).FirstOrDefaultAsync(u => u.Id == user.Id);
+            var tasksCount = userWithTasks.Tasks.Count();
+
+            // Assert
+
+            tasksCount.Should().Be(2);
+        }
+
+
+
     }
 }

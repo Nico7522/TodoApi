@@ -39,7 +39,7 @@ public class UnassignRoleCommandHandler : IRequestHandler<UnassignRoleCommand>
         if(roleClaim is not null)
         {
             var deletedRoleClaimResult = await _userManager.RemoveClaimAsync(user, roleClaim);
-            if (!deletedRoleClaimResult.Succeeded) throw new BadRequestException("Error");
+            if (!deletedRoleClaimResult.Succeeded) throw new ApiException("Error");
         }
     }
 }
