@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using Todo.Domain.Constants;
 
 namespace Todo.Api.Tests;
 
@@ -14,8 +15,8 @@ internal class FakePolicyEvaluator : IPolicyEvaluator
         var claimsPrincipal = new ClaimsPrincipal();
         claimsPrincipal.AddIdentity(new ClaimsIdentity(new[]
         {
-            new Claim(ClaimTypes.NameIdentifier, "e4c3d048-252e-450a-be51-9b2edbf5eda6"),
-            new Claim(ClaimTypes.Role, "User"),
+            new Claim(ClaimTypes.NameIdentifier, "6b475eb4-70c9-440e-94c7-31d415c8c564"),
+            new Claim(ClaimTypes.Role, UserRole.SuperAdmin),
 
         }));
         var ticket = new AuthenticationTicket(claimsPrincipal, "Test");

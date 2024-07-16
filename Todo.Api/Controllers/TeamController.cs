@@ -52,6 +52,7 @@ namespace Todo.Api.Controllers
         }
 
         [HttpPut("{teamId}/close")]
+        [Authorize(Roles = UserRole.SuperAdmin)]
         public async Task<IActionResult> CloseTeam([FromRoute] Guid teamId)
         {
             await _mediator.Send(new CloseTeamCommand(teamId));
@@ -66,7 +67,7 @@ namespace Todo.Api.Controllers
         }
 
         [HttpDelete("{teamId}/user/{userId}")]
-        public async Task<IActionResult> DeleteUser([FromRoute] Guid teamId, [FromRoute] string userId)
+        public async Task<IActionResult> DeleteUserFromTeam([FromRoute] Guid teamId, [FromRoute] string userId)
         {
             await _mediator.Send(new UnassignUserFromTeamCommand(teamId, userId));
             return Ok();
