@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using Todo.Application.Team.Commands.DeleteUser;
+using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -87,7 +88,7 @@ public class UnassignUserFromTeamCommandHandlerTests
 
         // act
 
-        Func<AsyncTask> act = async() => await _handler.Handle(command, CancellationToken.None);
+        Func<AsyncTask> act = async () => await _handler.Handle(command, CancellationToken.None);
 
         // assert
 
@@ -216,4 +217,6 @@ public class UnassignUserFromTeamCommandHandlerTests
         _userManagerMock.Verify(m => m.FindByIdAsync(_userId), Times.Once);
         team.Users.Should().HaveCount(1);
     }
+
+
 }

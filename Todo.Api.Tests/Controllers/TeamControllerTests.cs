@@ -16,14 +16,20 @@ using Todo.Application.Team.Commands.CreateTeam;
 using Newtonsoft.Json;
 using System.Text;
 using Todo.Application.Team.Commands.AddTask;
+using Todo.Domain.Exceptions;
+using MediatR;
+using Todo.Api.Forms.UpdateTaskByTeamForm;
 
 
 namespace Todo.Api.Controllers.Tests;
 
 public class TeamControllerTests : IClassFixture<WebApplicationFactory<Program>>
 {
+    private readonly TeamController _teamController;
     private readonly WebApplicationFactory<Program> _factory;
     private readonly Mock<IAuthorization<TeamEntity>> _authMock = new();
+    private readonly Mock<IMediator> _mediatorMock = new();
+
     public TeamControllerTests(WebApplicationFactory<Program> factory)
     {
         _factory = factory.WithWebHostBuilder(builder =>
@@ -34,6 +40,7 @@ public class TeamControllerTests : IClassFixture<WebApplicationFactory<Program>>
                 services.Replace(ServiceDescriptor.Scoped(typeof(IAuthorization<TeamEntity>), _ => _authMock.Object));
             });
         });
+        _teamController = new TeamController(_mediatorMock.Object);
     }
     [Fact()]
     public async void GetAllActiveTeams_ForValidRequest_Return200OkWithTeams()
@@ -510,5 +517,222 @@ public class TeamControllerTests : IClassFixture<WebApplicationFactory<Program>>
         // assert
 
         result.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
+    }
+
+    [Fact()]
+    public async void UnassignLeaderFromTeam_ForValidRequest_Return200Ok()
+    {
+        // arrange
+
+        var teamId = new Guid("c01dc901-b6b2-403e-52e4-08dc9c1b33a9");
+        var client = _factory.CreateClient();
+
+        // act
+
+        var result = await client.PutAsync($"api/team/{teamId}/unassignleader", null);
+
+        // assert
+
+        result.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+    }
+
+    [Fact()]
+    public async void UnassignLeaderFromTeam_ForInvalidRequestTeamNotFound_Return404NotFound()
+    {
+        // arrange
+
+        var teamId = new Guid("c01dc901-b6b2-403e-52e4-08dc9c1b73a9");
+        var client = _factory.CreateClient();
+
+        // act
+
+        var result = await client.PutAsync($"api/team/{teamId}/unassignleader", null);
+
+        // assert
+
+        result.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
+    }
+
+    [Fact()]
+    public async void UnassignLeaderFromTeam_ForInvalidRequestTeamLeaderNotFound_Return404NotFound()
+    {
+        // arrange
+
+        var teamId = new Guid("c01dc901-b6b2-403e-52e4-08dc9c1b33a9");
+        var client = _factory.CreateClient();
+
+        // act
+        Func<Task> act = async () => await _teamController.UnassignLeaderFromTeam(teamId);
+        var result = await client.PutAsync($"api/team/{teamId}/unassignleader", null);
+        // assert
+
+        result.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
+    }
+
+    [Fact()]
+    public async void AddTaskToTeam_ForValidRequest_Return200Ok()
+    {
+        // arrange
+
+        var teamId = new Guid("2c53d5f8-5cc2-4d51-96f4-08dc91ea9f78");
+        var taskId = new Guid("9382f33f-acf8-431d-55b3-08dca4d8e649");
+        var client = _factory.CreateClient();
+
+        // act
+
+        _authMock.Setup(m => m.Authorize(It.IsAny<TeamEntity>(), Domain.Enums.RessourceOperation.Create)).Returns(true);
+        var result = await client.PostAsync($"api/team/{teamId}/task/{taskId}", null);
+        // assert
+
+        result.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+    }
+
+    [Fact()]
+    public async void AddTaskToTeam_ForInvalidRequestTaskNotFound_Return404NotFound()
+    {
+        // arrange
+
+        var teamId = new Guid("2c53d5f8-5cc2-4d51-96f4-08dc91ea9f78");
+        var taskId = new Guid("9382f33f-acf8-431d-55b3-07dca4d8e649");
+        var client = _factory.CreateClient();
+
+        // act
+
+        _authMock.Setup(m => m.Authorize(It.IsAny<TeamEntity>(), Domain.Enums.RessourceOperation.Create)).Returns(true);
+        var result = await client.PostAsync($"api/team/{teamId}/task/{taskId}", null);
+        // assert
+
+        result.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
+    }
+
+    [Fact()]
+    public async void AddTaskToTeam_ForInvalidRequestTeamNotFound_Return404NotFound()
+    {
+        // arrange
+
+        var teamId = new Guid("2b53d5f8-5cc2-4d51-96f4-08dc91ea9f78");
+        var taskId = new Guid("9382f33f-acf8-431d-55b3-08dca4d8e649");
+        var client = _factory.CreateClient();
+
+        // act
+
+        _authMock.Setup(m => m.Authorize(It.IsAny<TeamEntity>(), Domain.Enums.RessourceOperation.Create)).Returns(true);
+        var result = await client.PostAsync($"api/team/{teamId}/task/{taskId}", null);
+        // assert
+
+        result.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
+    }
+
+    [Fact()]
+    public async void AddTaskToTeam_ForInvalidRequestTeamNotActive_Return400BadRequest()
+    {
+        // arrange
+
+        var teamId = new Guid("ce32b1d7-98bb-410c-505e-08dca59820c4");
+        var taskId = new Guid("9382f33f-acf8-431d-55b3-08dca4d8e649");
+        var client = _factory.CreateClient();
+
+        // act
+
+        _authMock.Setup(m => m.Authorize(It.IsAny<TeamEntity>(), Domain.Enums.RessourceOperation.Create)).Returns(true);
+        var result = await client.PostAsync($"api/team/{teamId}/task/{taskId}", null);
+        // assert
+
+        result.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
+    }
+
+
+    [Fact()]
+    public async void AddTaskToTeam_ForInvalidRequestUnauthorizedAction_Return403Forbiden()
+    {
+        // arrange
+
+        var teamId = new Guid("2c53d5f8-5cc2-4d51-96f4-08dc91ea9f78");
+        var taskId = new Guid("9382f33f-acf8-431d-55b3-08dca4d8e649");
+        var client = _factory.CreateClient();
+
+        // act
+
+        _authMock.Setup(m => m.Authorize(It.IsAny<TeamEntity>(), Domain.Enums.RessourceOperation.Create)).Returns(false);
+        var result = await client.PostAsync($"api/team/{teamId}/task/{taskId}", null);
+        // assert
+
+        result.StatusCode.Should().Be(System.Net.HttpStatusCode.Forbidden);
+    }
+
+    [Fact()]
+    public async void AddTaskToTeam_ForInvalidRequestTaskAlreadyInTeam_Return400BadRequest()
+    {
+        // arrange
+
+        var teamId = new Guid("2c53d5f8-5cc2-4d51-96f4-08dc91ea9f78");
+        var taskId = new Guid("9382f33f-acf8-431d-55b3-08dca4d8e649");
+        var client = _factory.CreateClient();
+
+        // act
+
+        _authMock.Setup(m => m.Authorize(It.IsAny<TeamEntity>(), Domain.Enums.RessourceOperation.Create)).Returns(true);
+        var result = await client.PostAsync($"api/team/{teamId}/task/{taskId}", null);
+        // assert
+
+        result.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
+    }
+
+    [Fact()]
+    public async void AddTaskToTeam_ForInvalidRequestTaskAlreadyAssigned_Return400BadRequest()
+    {
+        // arrange
+
+        var teamId = new Guid("6d11554a-0ef1-4f15-3a1c-08dca5926bf8");
+        var taskId = new Guid("9382f33f-acf8-431d-55b3-08dca4d8e649");
+        var client = _factory.CreateClient();
+
+        // act
+
+        _authMock.Setup(m => m.Authorize(It.IsAny<TeamEntity>(), Domain.Enums.RessourceOperation.Create)).Returns(true);
+        var result = await client.PostAsync($"api/team/{teamId}/task/{taskId}", null);
+        // assert
+
+        result.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
+    }
+
+    [Fact()]
+    public async void UpdateTaskByTeam_ForValidRequest_Return200Ok()
+    {
+        // arrange
+
+        var teamId = new Guid("2c53d5f8-5cc2-4d51-96f4-08dc91ea9f78");
+        var taskId = new Guid("9382f33f-acf8-431d-55b3-08dca4d8e649");
+        var client = _factory.CreateClient();
+        var content = new UpdateTaskByTeamForm() { Description = "Test", Priority = Domain.Enums.Priority.Urgent, Title = "test" };
+        var contentJson = JsonConvert.SerializeObject(content);
+        var stringContent = new StringContent(contentJson, Encoding.UTF8, "application/json");
+        // act
+
+        _authMock.Setup(m => m.Authorize(It.IsAny<TeamEntity>(), Domain.Enums.RessourceOperation.Update)).Returns(true);
+        var result = await client.PutAsync($"api/team/{teamId}/task/{taskId}", stringContent);
+        // assert
+
+        result.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+    }
+
+    [Fact()]
+    public async void UpdateTaskByTeam_ForInvalidRequestTeamNotFound_Return404NotFound()
+    {
+        // arrange
+
+        var teamId = new Guid("2c53d5f8-5cc2-4d51-96f4-08dc91eb9f78");
+        var taskId = new Guid("9382f33f-acf8-431d-55b3-08dca4d8e649");
+        var client = _factory.CreateClient();
+        var content = new UpdateTaskByTeamForm() { Description = "Test", Priority = Domain.Enums.Priority.Urgent, Title = "test" };
+        var contentJson = JsonConvert.SerializeObject(content);
+        var stringContent = new StringContent(contentJson, Encoding.UTF8, "application/json");
+        // act
+
+        _authMock.Setup(m => m.Authorize(It.IsAny<TeamEntity>(), Domain.Enums.RessourceOperation.Update)).Returns(true);
+        var result = await client.PutAsync($"api/team/{teamId}/task/{taskId}", stringContent);
+        // assert
+
+        result.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
     }
 }

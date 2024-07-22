@@ -89,7 +89,7 @@ namespace Todo.Api.Controllers
         }
 
         [HttpPost("{teamId}/task/{taskId}")]
-        public async Task<IActionResult> AddTask([FromRoute] Guid teamId, [FromRoute] Guid taskId)
+        public async Task<IActionResult> AddTaskToTeam([FromRoute] Guid teamId, [FromRoute] Guid taskId)
         {
             await _mediator.Send(new AssignTaskByTeamCommand(taskId, teamId));
             return Ok();
