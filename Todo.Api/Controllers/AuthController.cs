@@ -27,7 +27,8 @@ namespace Todo.Api.Controllers
         public async Task<IActionResult> Login(LoginCommand command)
         {
             string token = await _mediator.Send(command);
-            return Ok(new {token = token});
+            return Ok(new { token = token });
+
         }
     }
 }
