@@ -106,7 +106,6 @@ public class TeamControllerTests : IClassFixture<WebApplicationFactory<Program>>
         // act
 
         var result = await client.GetAsync($"api/team/{id}");
-
         // assert
 
         result.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);

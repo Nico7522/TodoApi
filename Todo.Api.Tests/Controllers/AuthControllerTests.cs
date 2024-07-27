@@ -161,10 +161,48 @@ public class AuthControllerTests : IClassFixture<WebApplicationFactory<Program>>
 
         var response = await client.PostAsync("api/auth/login", stringContent);
         var result = await response.Content.ReadAsStringAsync();
-        Console.WriteLine(result);
 
         // assert
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
         result.Should().NotBeNull();
+    }
+
+    [Fact()]
+    public async void Login_ForInvalidRequestEmailNotFound_Return400BadRequest()
+    {
+        // arrange
+
+        var client = _factory.CreateClient();
+        var content = new LoginCommand() { Email = "nico.daddabbo710@gmail.com", Password = "@Test12345" };
+        var contentJson = JsonConvert.SerializeObject(content);
+        var stringContent = new StringContent(contentJson, Encoding.UTF8, "application/json");
+        // act
+
+        var response = await client.PostAsync("api/auth/login", stringContent);
+        var result = await response.Content.ReadAsStringAsync();
+
+        // assert
+        response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
+        result.Should().Be("\"Bad credentials\"");
+    }
+
+
+    [Fact()]
+    public async void Login_ForInvalidRequestPasswordInvalid_Return400BadRequest()
+    {
+        // arrange
+
+        var client = _factory.CreateClient();
+        var content = new LoginCommand() { Email = "nico.daddabbo7100@gmail.com", Password = "@Test2345" };
+        var contentJson = JsonConvert.SerializeObject(content);
+        var stringContent = new StringContent(contentJson, Encoding.UTF8, "application/json");
+        // act
+
+        var response = await client.PostAsync("api/auth/login", stringContent);
+        var result = await response.Content.ReadAsStringAsync();
+
+        // assert
+        response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
+        result.Should().Be("\"Bad credentials\"");
     }
 }

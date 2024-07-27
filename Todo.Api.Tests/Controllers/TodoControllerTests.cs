@@ -20,6 +20,7 @@ using Todo.Domain.Entities;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Todo.Application.Task.Commands.UpdateTask;
 using Todo.Application.Task.Commands.CreateTask;
+using Azure;
 
 namespace Todo.Api.Controllers.Tests;
 
@@ -80,7 +81,6 @@ public class TodoControllerTests : IClassFixture<WebApplicationFactory<Program>>
 
         // act
         var result = await client.GetAsync($"/api/todo/{id}");
-
         // assert
 
         result.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
