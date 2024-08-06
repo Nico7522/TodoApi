@@ -285,7 +285,7 @@ public class TodoControllerTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact()]
-    public async void UnassignTask_ForValidCommand_Return404NotFound()
+    public async void UnassignTask_ForInvalidCommand_Return404NotFound()
     {
         // arrange
         var id = new Guid("b3232cb2-1b59-4b19-3418-08dc8c7b4fdd");

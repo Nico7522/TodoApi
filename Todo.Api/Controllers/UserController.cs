@@ -57,6 +57,7 @@ namespace Todo.Api.Controllers
             await _mediator.Send(new UnassignRoleCommand(userId));
             return NoContent();
         }
+
         [HttpPost("resetpassword")]
         public async Task<IActionResult> ResetPassword(ResetPasswordCommand command)
         {
