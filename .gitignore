@@ -362,3 +362,8 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /Todo.TestConsole/secrets.json
+
+# Docker
+
+Dockerfile
+docker-compose.yaml
