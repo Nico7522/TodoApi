@@ -22,8 +22,8 @@ public class ConfirmEmailCommandHandler : IRequestHandler<ConfirmEmailCommand>
         if (user is null) throw new NotFoundException("User not found");
 
 
-        var token = HttpUtility.UrlDecode(request.Token);
-        var result = await _userManager.ConfirmEmailAsync(user, token);
+        //var token = HttpUtility.UrlDecode(request.Token);
+        var result = await _userManager.ConfirmEmailAsync(user, request.Token);
         if (!result.Succeeded) throw new BadRequestException("Email could not be confirmed");
     }
 }
