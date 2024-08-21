@@ -13,6 +13,7 @@ using Todo.Domain.Security;
 using Todo.Infrastructure.Authorization.Service;
 using Todo.Infrastructure.Email.EmailProvider;
 using Todo.Infrastructure.Email.EmailService;
+using Todo.Infrastructure.Email.IdentityEmail;
 using Todo.Infrastructure.Persistence;
 using Todo.Infrastructure.Security;
 using Todo.Infrastructure.Seeders;
@@ -32,6 +33,8 @@ public static class ServiceCollectionExtension
         services.AddScoped<IEmailSender, MailJetProvider>();
         services.AddScoped<IAuthorization<TeamEntity>, TeamAuthorization>();
         services.AddScoped<IAuthorization<TodoEntity>, TaskAuthorization>();
+        services.AddScoped<IEmailService, EmailService>();
+
 
 
         services.AddDbContext<TodoDbContext>(options => options.UseSqlServer(configuration["ConnectionStrings:TodoDB"]));

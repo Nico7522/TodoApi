@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Todo.Application.Users.Commands.ConfirmEmail;
 using Todo.Application.Users.Commands.Login;
 using Todo.Application.Users.Commands.Register;
 
@@ -29,6 +30,13 @@ namespace Todo.Api.Controllers
             string token = await _mediator.Send(command);
             return Ok(new { token = token });
 
+        }
+
+        [HttpPost("{userId}/{token}/confirmaccount")]
+        public async Task<IActionResult> ConfirmAccount([FromRoute] string userId, [FromRoute] string token)
+        {
+            await _mediator.Send(new ConfirmEmailCommand(userId, token));
+            return NoContent();
         }
     }
 }

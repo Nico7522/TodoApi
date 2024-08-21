@@ -13,6 +13,7 @@ internal class UserConfig : IEntityTypeConfiguration<UserEntity>
         builder.Property(u => u.FirstName).IsRequired();
         builder.Property(u => u.LastName).IsRequired();
         builder.Property(u => u.HireDate).IsRequired();
+        builder.Property(u => u.IsActive).HasDefaultValue(false);
         builder
        .HasMany(e => e.Tasks)
        .WithOne(e => e.User)
