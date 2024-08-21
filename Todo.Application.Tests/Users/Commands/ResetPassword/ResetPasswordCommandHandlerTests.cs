@@ -17,6 +17,8 @@ public class ResetPasswordCommandHandlerTests
 {
     private readonly Mock<UserManager<UserEntity>> _userManagerMock;
     private readonly Mock<IEmailSender> _emailSenderMock;
+    private readonly Mock<IEmailService> _emailServiceMock;
+
     private readonly ResetPasswordCommandHandler _handler;
     public ResetPasswordCommandHandlerTests()
     {
@@ -31,7 +33,9 @@ public class ResetPasswordCommandHandlerTests
               new Mock<ILogger<UserManager<UserEntity>>>().Object
               );
         _emailSenderMock = new Mock<IEmailSender>();
-        _handler = new ResetPasswordCommandHandler(_emailSenderMock.Object, _userManagerMock.Object);
+
+        _emailServiceMock = new Mock<IEmailService>();
+        _handler = new ResetPasswordCommandHandler(_emailSenderMock.Object, _userManagerMock.Object, _emailServiceMock.Object);
     }
     [Fact()]
     public async AsyncTask Handle_ForValidCommand_ShouldResetPasswordCorrectly()

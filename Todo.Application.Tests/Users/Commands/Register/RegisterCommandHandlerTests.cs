@@ -22,6 +22,8 @@ public class RegisterCommandHandlerTests
     private readonly Mock<IMapper> _mapperMock;
     private readonly Mock<IJwtHelper> _jwtHelperMock;
     private readonly Mock<IEmailSender> _emailSenderMock;
+    private readonly Mock<IEmailService> _emailServiceMock;
+
     private readonly RegisterCommandHandler _handler;
     public RegisterCommandHandlerTests()
     {
@@ -38,7 +40,8 @@ public class RegisterCommandHandlerTests
         _mapperMock = new Mock<IMapper>();
         _jwtHelperMock = new Mock<IJwtHelper>();
         _emailSenderMock = new Mock<IEmailSender>();
-        _handler = new RegisterCommandHandler(_mapperMock.Object, _userManagerMock.Object, _jwtHelperMock.Object, _emailSenderMock.Object);
+        _emailServiceMock = new Mock<IEmailService>();
+        _handler = new RegisterCommandHandler(_mapperMock.Object, _userManagerMock.Object, _jwtHelperMock.Object, _emailSenderMock.Object, _emailServiceMock.Object);
     }
     [Fact()]
     public async AsyncTask Handle_ForValidCommand_ShouldRegisterUserCorrectly()

@@ -14,6 +14,7 @@ using Todo.Application.Team.Commands.CreateTeam;
 using Todo.Application.Users.Commands.Register;
 using Todo.Application.Users.Commands.Login;
 using Azure;
+using System.Web;
 
 namespace Todo.Api.Controllers.Tests;
 
@@ -204,5 +205,67 @@ public class AuthControllerTests : IClassFixture<WebApplicationFactory<Program>>
         // assert
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
         result.Should().Be("\"Bad credentials\"");
+    }
+
+    [Fact()]
+    public async void ConfirmAccount_ForValidRequest_Return204NoContent()
+    {
+        // arrange
+
+        var client = _factory.CreateClient();
+        var userId = "4cd83e6b-923c-42c4-a92f-06d89e0a5630";
+        var token = "CfDJ8KXQTLsQFzZLlK%2bF4p7lK3rAlURk1bDFwtgW8jS6V89i6d4vhGrbNH%2fpLc3kiwlNQCvbQDoUDid07Ih5KgXH4KgvuIrHkvwLZEjykKYrwc1N869EEOeA8CkpWI05Y2inlO61vGCwsq72Jj5iVmkBuLBHhX3DX5MJsQ%2bTjSxdfnAkx%2bf%2fHAeIahFjx8aaa0KmOV41wfZao2osYxU2NMXpASWWqyacFEmx1%2by97WC5vaIZE2256T5YUzZoabRHqqd0DQ%3d%3d";
+        var encodedToken = HttpUtility.UrlEncode(token);
+        // act
+
+        var response = await client.PostAsync($"api/auth/confirmaccount?userId={userId}&token={encodedToken}", null);
+
+
+        // assert
+        response.StatusCode.Should().Be(System.Net.HttpStatusCode.NoContent);
+    }
+
+    [Fact()]
+    public async void ConfirmAccount_ForInvalidRequestUserNotFound_Return404NotFound()
+    {
+        // arrange
+
+        var client = _factory.CreateClient();
+        var userId = "4cd83e6b-923c-42c4-a92f-06d89e0a5630";
+        var token = "CfDJ8KXQTLsQFzZLlK%2bF4p7lK3rAlURk1bDFwtgW8jS6V89i6d4vhGrbNH%2fpLc3kiwlNQCvbQDoUDid07Ih5KgXH4KgvuIrHkvwLZEjykKYrwc1N869EEOeA8CkpWI05Y2inlO61vGCwsq72Jj5iVmkBuLBHhX3DX5MJsQ%2bTjSxdfnAkx%2bf%2fHAeIahFjx8aaa0KmOV41wfZao2osYxU2NMXpASWWqyacFEmx1%2by97WC5vaIZE2256T5YUzZoabRHqqd0DQ%3d%3d";
+        var encodedToken = HttpUtility.UrlEncode(token);
+        // act
+
+        var response = await client.PostAsync($"api/auth/confirmaccount?userId={userId}&token={encodedToken}", null);
+        var result = await response.Content.ReadAsStringAsync();
+
+
+        // assert
+
+        response.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
+        result.Should().Be("\"User not found\"");
+
+    }
+
+    [Fact()]
+    public async void ConfirmAccount_ForInvalidRequestInvalidToken_Return400BadRequest()
+    {
+        // arrange
+
+        var client = _factory.CreateClient();
+        var userId = "6b72df6e-39cb-4e57-8ddc-1b4b298d7a41";
+        var token = "CfDJ8KXQTLsQFzZLlK%2bF4p7lK3rAlURk1bDFwtgW8jS6V89i6d4vhGrbNH%2fpLc3kiwlNQCvbQDoUDid07Ih5KgXH4KgvuIrHkvwLZEjykKYrwc1N869EEOeA8CkpWI05Y2inlO61vGCwsq72Jj5iVmkBuLBHhX3DX5MJsQ%2bTjSxdfnAkx%2bf%2fHAeIahFjx8aaa0KmOV41wfZao2osYxU2NMXpASWWqyacFEmx1%2by97WC5vaIZE2256T5YUzZoabRHqqd0DQ%3d%3d";
+        var encodedToken = HttpUtility.UrlEncode(token);
+        // act
+
+        var response = await client.PostAsync($"api/auth/confirmaccount?userId={userId}&token={encodedToken}", null);
+        var result = await response.Content.ReadAsStringAsync();
+
+
+        // assert
+
+        response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
+        result.Should().Be("\"Email could not be confirmed\"");
+
     }
 }

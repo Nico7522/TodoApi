@@ -32,8 +32,8 @@ namespace Todo.Api.Controllers
 
         }
 
-        [HttpPost("{userId}/{token}/confirmaccount")]
-        public async Task<IActionResult> ConfirmAccount([FromRoute] string userId, [FromRoute] string token)
+        [HttpPost("confirmaccount")]
+        public async Task<IActionResult> ConfirmAccount([FromQuery] string userId, [FromQuery] string token)
         {
             await _mediator.Send(new ConfirmEmailCommand(userId, token));
             return NoContent();
