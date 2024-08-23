@@ -124,4 +124,36 @@ public class LoginCommandHandlerTests
         _userManagerMock.Verify(m => m.CheckPasswordAsync(user, command.Password), Times.Once);
         _jwtHelperMock.Verify(h => h.GenerateToken(user), Times.Never);
     }
+
+    [Fact()]
+    public async AsyncTask Handle_ForBadAccountNotConfirmed_ShouldThrowBadRequestException()
+    {
+        var user = new UserEntity
+        {
+            Id = _userId,
+            Email = "test@gmail.com",
+            PasswordHash = "dqd45qd4q5sd4qsd45",
+            EmailConfirmed = false,
+           
+        };
+        // arrange
+        var command = new LoginCommand();
+        command.Email = "test@gmail.com";
+        command.Password = "@Test12345";
+
+        _userManagerMock.Setup(m => m.FindByEmailAsync(command.Email)).ReturnsAsync(user);
+        _userManagerMock.Setup(m => m.CheckPasswordAsync(user, command.Password)).ReturnsAsync(true);
+        _jwtHelperMock.Setup(h => h.GenerateToken(user)).ReturnsAsync("token");
+
+        // act
+
+        Func<AsyncTask> act = async () => await _handler.Handle(command, CancellationToken.None);
+
+        // assert
+
+        await act.Should().ThrowAsync<BadRequestException>().WithMessage("Account not confirmed");
+        _userManagerMock.Verify(m => m.FindByEmailAsync(command.Email), Times.Once);
+        _userManagerMock.Verify(m => m.CheckPasswordAsync(user, command.Password), Times.Never);
+        _jwtHelperMock.Verify(h => h.GenerateToken(user), Times.Never);
+    }
 }

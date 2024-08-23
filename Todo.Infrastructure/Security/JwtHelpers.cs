@@ -44,6 +44,10 @@ public class JwtHelpers : IJwtHelper
             new Claim(ClaimTypes.NameIdentifier, user.Id),
             new Claim(ClaimTypes.Email, user.Email!),
             new Claim(ClaimTypes.Role, role.First()),
+            new Claim("TeamId", user.TeamId.ToString()!),
+            new Claim("Firstname", user.FirstName),
+            new Claim("Lastname", user.LastName),
+
         };
 
         return claims;

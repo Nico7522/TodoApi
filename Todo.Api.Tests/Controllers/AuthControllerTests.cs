@@ -208,6 +208,25 @@ public class AuthControllerTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact()]
+    public async void Login_ForInvalidRequestAccountNotConfirmed_Return400BadRequest()
+    {
+        // arrange
+
+        var client = _factory.CreateClient();
+        var content = new LoginCommand() { Email = "nico.daddabbo7100@gmail.com", Password = "@Test2345" };
+        var contentJson = JsonConvert.SerializeObject(content);
+        var stringContent = new StringContent(contentJson, Encoding.UTF8, "application/json");
+        // act
+
+        var response = await client.PostAsync("api/auth/login", stringContent);
+        var result = await response.Content.ReadAsStringAsync();
+
+        // assert
+        response.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
+        result.Should().Be("\"Account not confirmed\"");
+    }
+
+    [Fact()]
     public async void ConfirmAccount_ForValidRequest_Return204NoContent()
     {
         // arrange

@@ -5,6 +5,7 @@ using System.Reflection;
 using Todo.Api.Middlewares;
 using Todo.Application.Extensions;
 using Todo.Application.Task.Commands.UpdateTask;
+using Todo.Infrastructure.ChatHub;
 using Todo.Infrastructure.Extensions;
 using Todo.Infrastructure.Seeders;
 
@@ -12,6 +13,7 @@ using Todo.Infrastructure.Seeders;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddSignalR();
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 //builder.Services.AddControllers().AddJsonOptions(options =>
 //{
@@ -91,6 +93,7 @@ app.UseAuthorization();
 
 
 app.MapControllers();
+app.MapHub<Chat>("/Chat");
 
 app.Run();
 
