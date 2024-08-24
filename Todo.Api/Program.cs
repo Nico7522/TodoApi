@@ -1,10 +1,9 @@
-using FluentValidation;
-using FluentValidation.AspNetCore;
+using Microsoft.AspNet.SignalR.Infrastructure;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
+using System.Text.RegularExpressions;
 using Todo.Api.Middlewares;
 using Todo.Application.Extensions;
-using Todo.Application.Task.Commands.UpdateTask;
 using Todo.Infrastructure.ChatHub;
 using Todo.Infrastructure.Extensions;
 using Todo.Infrastructure.Seeders;
@@ -91,6 +90,18 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthorization();
 
+app.MapPost("Join", async (string connectionId, string teamId, string firstname, string lastname, IHubContext<Chat, IChat> context) =>
+{
+    await context.Groups.AddToGroupAsync(connectionId, teamId);
+    await context.Clients.Group(teamId).JoinChatRoom($"{firstname} {lastname} has joined chat");
+    return Results.NoContent();
+});
+
+app.MapPost("SendMessage", async (string teamId, string message, string firstname, string lastname, IHubContext<Chat, IChat> context) =>
+{
+    await context.Clients.Group(teamId).ReceiveMessage(message, firstname, lastname);
+    return Results.NoContent();
+});
 
 app.MapControllers();
 app.MapHub<Chat>("/Chat");
