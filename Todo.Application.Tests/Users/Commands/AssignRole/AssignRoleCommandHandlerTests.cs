@@ -307,7 +307,7 @@ public class AssignRoleCommandHandlerTests
     }
 
     [Fact()]
-    public async AsyncTask Handle_ForClaimNotAdded_ShouldThrowApiExceptionException()
+    public async AsyncTask Handle_ForClaimNotAdded_ShouldThrowApiException()
     {
         // arrange
         var userId = "userId";

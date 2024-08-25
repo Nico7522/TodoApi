@@ -37,7 +37,14 @@ public class UnassignUserFromTeamCommandHandler : IRequestHandler<UnassignUserFr
 
         if (user.TeamId != team.Id) throw new BadRequestException("User is not in team");
 
+        var userClaims = await _userManager.GetClaimsAsync(user);
+        var claimToDelete = userClaims.FirstOrDefault(c => c.Type == "TeamId");
 
+        if (claimToDelete != null)
+        {
+            var addClaimResult = await _userManager.RemoveClaimAsync(user, claimToDelete);
+            if (!addClaimResult.Succeeded) throw new ApiException("A error has occured");
+        }
 
         team.Users.Remove(user);
         await _teamRepository.SaveChanges();

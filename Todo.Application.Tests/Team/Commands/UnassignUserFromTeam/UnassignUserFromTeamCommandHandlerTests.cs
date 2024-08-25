@@ -10,6 +10,8 @@ using Todo.Domain.Exceptions;
 using Todo.Domain.Repositories;
 using Xunit;
 using AsyncTask = System.Threading.Tasks.Task;
+using System.Security.Claims;
+using Todo.Domain.Constants;
 
 
 namespace Todo.Application.Team.Commands.DeleteUser.Tests;
@@ -159,7 +161,7 @@ public class UnassignUserFromTeamCommandHandlerTests
     }
 
     [Fact()]
-    public async AsyncTask Handle_ForUserIsAlsoTeamLeader_ShouldBadRequestException()
+    public async AsyncTask Handle_ForUserIsAlsoTeamLeader_ShouldThrowBadRequestException()
     {
         // arrange
         var user = new UserEntity()
@@ -189,7 +191,7 @@ public class UnassignUserFromTeamCommandHandlerTests
     }
 
     [Fact()]
-    public async AsyncTask Handle_ForUserNotInTeam_ShouldBadRequestException()
+    public async AsyncTask Handle_ForUserNotInTeam_ShouldThrowBadRequestException()
     {
         // arrange
         var user = new UserEntity()
@@ -211,6 +213,49 @@ public class UnassignUserFromTeamCommandHandlerTests
         // assert
 
         await act.Should().ThrowAsync<BadRequestException>().WithMessage("User is not in team");
+        _teamRepositoryMock.Verify(r => r.GetById(_teamId), Times.Once);
+        _teamRepositoryMock.Verify(r => r.SaveChanges(), Times.Never);
+        _teamAuthorizationMock.Verify(a => a.Authorize(team, Domain.Enums.RessourceOperation.Delete), Times.Once);
+        _userManagerMock.Verify(m => m.FindByIdAsync(_userId), Times.Once);
+        team.Users.Should().HaveCount(1);
+    }
+
+    [Fact()]
+    public async AsyncTask Handle_ForClaimNotRemoved_ShouldThrowApiException()
+    {
+        // arrange
+        var team = new TeamEntity { Id = _teamId, Name = "test", Users = new List<UserEntity> { new UserEntity() { Id = _userId } }, IsActive = true };
+        var user = new UserEntity()
+        {
+            Id = _userId,
+            TeamId = team.Id,
+            Team = team
+        };
+        var claims = new List<Claim>() {
+
+                new(ClaimTypes.NameIdentifier, "1"),
+                new(ClaimTypes.Email, "nico.d@gmail.com"),
+                new(ClaimTypes.Role, UserRole.User),
+                new("TeamId", team.Id.ToString()),
+
+
+            };
+        _teamRepositoryMock.Setup(r => r.GetById(_teamId)).ReturnsAsync(team);
+        _userManagerMock.Setup(m => m.FindByIdAsync(_userId)).ReturnsAsync(user);
+        _teamAuthorizationMock.Setup(a => a.Authorize(team, Domain.Enums.RessourceOperation.Delete)).Returns(true);
+        _userManagerMock.Setup(m => m.GetClaimsAsync(user)).ReturnsAsync(claims);
+        _userManagerMock.Setup(m => m.RemoveClaimAsync(user, It.IsAny<Claim>())).ReturnsAsync(IdentityResult.Failed());
+
+        var command = new UnassignUserFromTeamCommand(_teamId, _userId);
+
+        // act
+
+        Func<AsyncTask> act = async () => await _handler.Handle(command, CancellationToken.None);
+
+        // assert
+
+        await act.Should().ThrowAsync<ApiException>().WithMessage("A error has occured");
+        _userManagerMock.Verify(m => m.RemoveClaimAsync(user, It.IsAny<Claim>()), Times.Once());
         _teamRepositoryMock.Verify(r => r.GetById(_teamId), Times.Once);
         _teamRepositoryMock.Verify(r => r.SaveChanges(), Times.Never);
         _teamAuthorizationMock.Verify(a => a.Authorize(team, Domain.Enums.RessourceOperation.Delete), Times.Once);

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using Todo.Domain.AuthorizationInterfaces;
 using Todo.Domain.Entities;
 using Todo.Domain.Exceptions;
@@ -33,7 +34,6 @@ public class AssignUserByTeamCommandHandler : IRequestHandler<AssignUserByTeamCo
 
         if (!team.IsActive) throw new BadRequestException("Team is not active");
 
-        //var user = await _userRepository.GetUserWithTeam(request.UserId);
         var user = _userManager.Users.Include(u => u.Team).FirstOrDefault(u => u.Id == request.UserId);
         if (user is null) throw new NotFoundException("User not found");
 
@@ -46,6 +46,10 @@ public class AssignUserByTeamCommandHandler : IRequestHandler<AssignUserByTeamCo
         {
             if (user.Team.Id != team.Id && user.Team.IsActive) throw new BadRequestException("User already in another team");
         }
+
+        var addClaimResult = await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("TeamId", team.Id.ToString()));
+        if (!addClaimResult.Succeeded) throw new ApiException("A error has occured");
+
 
         team.Users.Add(user);
         await _teamRepository.SaveChanges();

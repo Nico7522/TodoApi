@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
+using System.Security.Claims;
 using Todo.Domain.AuthorizationInterfaces;
 using Todo.Domain.Entities;
 using Todo.Domain.Exceptions;
@@ -325,6 +326,51 @@ public class AssignUserByTeamCommandHandlerTests
         _userManagerMock.Verify(r => r.Users, Times.Once());
         _teamAuthorizationMock.Verify(a => a.Authorize(team, Domain.Enums.RessourceOperation.Create), Times.Once());
         team.Users.Should().HaveCount(1);
+    }
+
+    [Fact()]
+    public async TaskAsync Handle_ForClaimNotAdded_ShouldThrowBadRequestException()
+    {
+        // arrange
+        var team = new TeamEntity()
+        {
+            Id = _teamId,
+            Name = "name",
+            Users = new List<UserEntity> { },
+            IsActive = true,
+        };
+        var user = new UserEntity()
+        {
+            Id = _userId,
+            TeamId = null,
+            Team = null,
+            FirstName = "name",
+            LastName = "name",
+        };
+
+        var userList = new List<UserEntity>() { user };
+        _userManagerMock.Setup(r => r.Users).Returns(userList.AsQueryable());
+
+        _teamAuthorizationMock.Setup(a => a.Authorize(team, Domain.Enums.RessourceOperation.Create)).Returns(true);
+        //_userRepositoryMock.Setup(r => r.GetUserWithTeam(user.Id)).ReturnsAsync(user);
+        _teamRepositoryMock.Setup(r => r.GetById(_teamId)).ReturnsAsync(team);
+        _userManagerMock.Setup(m => m.AddClaimAsync(user, It.IsAny<Claim>())).ReturnsAsync(IdentityResult.Failed());
+
+        var command = new AssignUserByTeamCommand(_teamId, _userId);
+
+        // act
+
+        Func<TaskAsync> act = async() => await _handler.Handle(command, CancellationToken.None);
+
+        // assert
+        await act.Should().ThrowAsync<ApiException>().WithMessage("A error has occured");
+        _teamRepositoryMock.Verify(r => r.GetById(team.Id), Times.Once());
+        _teamRepositoryMock.Verify(r => r.SaveChanges(), Times.Never());
+        //_userRepositoryMock.Verify(r => r.GetUserWithTeam(user.Id), Times.Once());
+        _userManagerMock.Verify(r => r.Users, Times.Once());
+        _userManagerMock.Verify(m => m.AddClaimAsync(user, It.IsAny<Claim>()), Times.Once());
+        _teamAuthorizationMock.Verify(a => a.Authorize(team, Domain.Enums.RessourceOperation.Create), Times.Once());
+        team.Users.Should().HaveCount(0);
     }
 
 
