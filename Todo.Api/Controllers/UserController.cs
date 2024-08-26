@@ -12,6 +12,7 @@ using Todo.Application.Users.Commands.ResetPasswordConfirm;
 using Todo.Application.Users.Commands.UnassignRole;
 using Todo.Application.Users.Dto;
 using Todo.Application.Users.Queries.GetTasksNumberByUser;
+using Todo.Application.Users.Queries.GetTeamByUser;
 using Todo.Application.Users.Queries.GetUserById;
 using Todo.Domain.Constants;
 using Todo.Domain.Entities;
@@ -33,6 +34,13 @@ namespace Todo.Api.Controllers
         {
             var user = await _mediator.Send(new GetUserByIdQuery(userId));
             return Ok(user);
+        }
+
+        [HttpGet("{userId}/team")]
+        public async Task<ActionResult<UserDto>> GetTeamByUser([FromRoute] string userId)
+        {
+            var team = await _mediator.Send(new GetTeamByUserQuery(userId));
+            return Ok(team);
         }
 
         [HttpPost("{userId}/task/{taskId}")]
