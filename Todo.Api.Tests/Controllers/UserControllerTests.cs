@@ -50,7 +50,7 @@ namespace Todo.Api.Controllers.Tests
             });
         }
         [Fact()]
-        public async void GetUserBy_ForValidRequest_Return200OkWithUser()
+        public async void GetUserById_ForValidRequest_Return200OkWithUser()
         {
             // arrange
 
@@ -68,7 +68,7 @@ namespace Todo.Api.Controllers.Tests
         }
 
         [Fact()]
-        public async void GetUserBy_ForInvalidRequest_Return404NotFound()
+        public async void GetUserById_ForInvalidRequest_Return404NotFound()
         {
             // arrange
 
@@ -77,6 +77,56 @@ namespace Todo.Api.Controllers.Tests
             // act
             var userId = "e4c3d048-252e-450a-be51-9b2edbf5edb6";
             var result = await client.GetAsync($"api/user/{userId}");
+
+            // assert
+
+            result.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact()]
+        public async void GetTeamByUser_ForValidRequest_Return200OkWithUserTeam()
+        {
+            // arrange
+
+            var client = _factory.CreateClient();
+
+            // act
+            var userId = "f8ff6f82-f931-4195-ac6c-5d238df5378d";
+            var result = await client.GetAsync($"api/user/{userId}/team");
+            var content = await client.GetFromJsonAsync<TeamDto>($"api/user/{userId}/team");
+
+            // assert
+
+            result.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+            content.Should().NotBeNull();
+        }
+
+        [Fact()]
+        public async void GetTeamByUser_ForValidRequest_Return204NoContent()
+        {
+            // arrange
+
+            var client = _factory.CreateClient();
+
+            // act
+            var userId = "0e03a811-4a2c-498a-b8c8-ef7ce4423869";
+            var result = await client.GetAsync($"api/user/{userId}/team");
+
+            // assert
+
+            result.StatusCode.Should().Be(System.Net.HttpStatusCode.NoContent);
+        }
+
+        [Fact()]
+        public async void GetTeamByUser_ForInvalidRequestUserNotFound_Return404NotFound()
+        {
+            // arrange
+
+            var client = _factory.CreateClient();
+
+            // act
+            var userId = "userid";
+            var result = await client.GetAsync($"api/user/{userId}/team");
 
             // assert
 

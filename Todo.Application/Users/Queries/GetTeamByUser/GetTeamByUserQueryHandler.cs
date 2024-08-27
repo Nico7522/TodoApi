@@ -19,7 +19,7 @@ public class GetTeamByUserQueryHandler : IRequestHandler<GetTeamByUserQuery, Tea
     }
     public async Task<TeamDto> Handle(GetTeamByUserQuery request, CancellationToken cancellationToken)
     {
-       var user = await  _userManager.Users.Include(u => u.Team).ThenInclude(t => t.Tasks).ThenInclude(t => t.User).FirstOrDefaultAsync(u => u.Id == request.UserId);
+       var user = await _userManager.Users.Include(u => u.Team).ThenInclude(t => t.Tasks).ThenInclude(t => t.User).FirstOrDefaultAsync(u => u.Id == request.UserId);
        
         if (user is null) throw new NotFoundException("User not found");
 
