@@ -21,10 +21,10 @@ namespace Todo.Api.Controllers
         }
 
         [HttpPost("joinchatroom/{teamId}")]
-        public async Task<IActionResult> JoinChatRoom([FromQuery] string connectionId , [FromRoute] string teamId, [FromQuery] string firstname, [FromQuery] string lastname)
+        public async Task<IActionResult> JoinChatRoom([FromQuery] string connectionId , [FromRoute] string teamId, [FromQuery] string userId)
         {
             await _hubContext.Groups.AddToGroupAsync(connectionId, teamId);
-            await _hubContext.Clients.Group(teamId).JoinChatRoom($"{firstname} {lastname} has joined chat");
+            await _hubContext.Clients.Group(teamId).JoinChatRoom(userId);
             return NoContent();
         }
 
