@@ -1,6 +1,7 @@
 using Microsoft.AspNet.SignalR.Infrastructure;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using Todo.Api.Middlewares;
 using Todo.Application.Extensions;
@@ -12,7 +13,7 @@ using Todo.Infrastructure.Seeders;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddSignalR();
+builder.Services.AddSignalR().AddJsonProtocol();
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 //builder.Services.AddControllers().AddJsonOptions(options =>
 //{
@@ -61,6 +62,8 @@ builder.Services.AddSwaggerGen(opt =>
         }
     });
 });
+
+
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 builder.Services.AddControllers();

@@ -11,6 +11,7 @@ using Todo.Domain.Entities;
 using Todo.Domain.Repositories;
 using Todo.Domain.Security;
 using Todo.Infrastructure.Authorization.Service;
+using Todo.Infrastructure.ChatHub;
 using Todo.Infrastructure.Email.EmailProvider;
 using Todo.Infrastructure.Email.EmailService;
 using Todo.Infrastructure.Email.IdentityEmail;
@@ -34,6 +35,8 @@ public static class ServiceCollectionExtension
         services.AddScoped<IAuthorization<TeamEntity>, TeamAuthorization>();
         services.AddScoped<IAuthorization<TodoEntity>, TaskAuthorization>();
         services.AddScoped<IEmailService, EmailService>();
+        services.AddSingleton<IUserList, UserList>();
+
 
 
 

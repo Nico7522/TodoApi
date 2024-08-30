@@ -3,7 +3,9 @@ using Microsoft.AspNet.SignalR.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 using Todo.Api.Forms.SendMessageForm;
+using Todo.Api.Forms.UserStatusForm;
 using Todo.Infrastructure.ChatHub;
 
 namespace Todo.Api.Controllers
@@ -14,17 +16,32 @@ namespace Todo.Api.Controllers
     {
 
         private readonly IHubContext<Chat, IChat> _hubContext;
-
-        public HubController(IHubContext<Chat, IChat> hubContext)
+        private IUserList _userList;
+        public HubController(IHubContext<Chat, IChat> hubContext, IUserList userList)
         {
             _hubContext = hubContext;
+            _userList = userList;
         }
 
         [HttpPost("joinchatroom/{teamId}")]
-        public async Task<IActionResult> JoinChatRoom([FromQuery] string connectionId , [FromRoute] string teamId, [FromQuery] string userId)
+        public async Task<IActionResult> JoinChatRoom([FromQuery] string connectionId , [FromRoute] string teamId, [FromQuery] string userId, [FromBody] UserStatusForm form)
         {
             await _hubContext.Groups.AddToGroupAsync(connectionId, teamId);
-            await _hubContext.Clients.Group(teamId).JoinChatRoom(userId);
+
+            _userList.SetOnline(userId, form.IsOnline, form.IsPresent);
+
+            var list = _userList.GetList();
+            await _hubContext.Clients.Group(teamId).JoinChatRoom(list);
+            return NoContent();
+        }
+
+        [HttpPost("leftchatroom/{teamId}")]
+        public async Task<IActionResult> LeftChatRoom([FromRoute] string teamId, [FromQuery] string userId, [FromBody] UserStatusForm form)
+        {
+            _userList.SetOffline(userId, form.IsOnline, form.IsPresent);
+
+            var list = _userList.GetList();
+            await _hubContext.Clients.Group(teamId).LeftChatRoom(list);
             return NoContent();
         }
 
