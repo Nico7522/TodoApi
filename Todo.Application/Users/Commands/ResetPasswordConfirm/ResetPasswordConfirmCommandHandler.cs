@@ -27,7 +27,8 @@ public class ResetPasswordConfirmCommandHandler : IRequestHandler<ResetPasswordC
         var user = await _userManager.FindByIdAsync(request.UserId);
         if (user is null) throw new NotFoundException("User not found");
 
-        var decodedResetToken  = HttpUtility.UrlDecode(request.ResetToken);
+        var decodedResetToken = HttpUtility.UrlDecode(request.ResetToken).Replace(" ", "+");
+
         var result = await _userManager.ResetPasswordAsync(user, decodedResetToken, request.Password);
         if (!result.Succeeded) throw new ApiException("A error has occured");
 

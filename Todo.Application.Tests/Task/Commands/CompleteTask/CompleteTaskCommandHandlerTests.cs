@@ -50,6 +50,7 @@ public class CompleteTaskCommandHandlerTests
         _todoRepositoryMock.Verify(r => r.SaveChanges(), Times.Once);
         taskToComplete.IsComplete.Should().Be(true);
         taskToComplete.Duration.Should().NotBeNull();
+        taskToComplete.ClosingDate.Should().Be(DateOnly.FromDateTime(DateTime.Now));
     }
 
 

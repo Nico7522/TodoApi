@@ -25,9 +25,11 @@ public class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordCommand>
         if (user is null) throw new NotFoundException("User not found");
 
         var resetToken = await _userMananger.GeneratePasswordResetTokenAsync(user);
+
         var encodedResetToken = HttpUtility.UrlEncode(resetToken);
+
         //await _emailSender.SendEmail(user.Email!, "Reset your password", $"You can reset your password from this url http://localhost:4200/{user.Id}/{encodedResetToken}");
-        var link = $"http://localhost:4200/reset-password?userId={user.Id}&token={encodedResetToken}";
+        var link = $"http://localhost:4200/auth/reset-password-confirm?userId={user.Id}&token={encodedResetToken}";
         await _emailService.SendEmailAsync(user.Email!, "Reset your password", $"You can change your password here : <a href='{link}'>clicking here</a>;.", true);
     }
 }

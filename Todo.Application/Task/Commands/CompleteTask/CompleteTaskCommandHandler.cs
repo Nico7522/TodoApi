@@ -32,6 +32,7 @@ public class CompleteTaskCommandHandler : IRequestHandler<CompleteTaskCommand>
 
         task.IsComplete = true;
         task.Duration = time;
+        task.ClosingDate = DateOnly.FromDateTime(DateTime.Now);
         await _todoRepository.SaveChanges();
     }
 }

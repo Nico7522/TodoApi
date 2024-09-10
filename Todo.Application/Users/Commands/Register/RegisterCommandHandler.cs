@@ -49,7 +49,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, bool>
 
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(entity);
         var encodedToken = HttpUtility.UrlEncode(token);
-        var confirmationLink = $"http://localhost:4200/confirmaccount?userId={entity.Id}&token={encodedToken}";
+        var confirmationLink = $"http://localhost:4200/auth/confirmaccount?userId={entity.Id}&token={encodedToken}";
         await _emailService.SendEmailAsync(entity.Email!, "Confirm Your Email", $"Please confirm your account by <a href='{confirmationLink}'>clicking here</a>;.", true);
 
 

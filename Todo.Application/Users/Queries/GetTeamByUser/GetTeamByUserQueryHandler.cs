@@ -28,6 +28,7 @@ public class GetTeamByUserQueryHandler : IRequestHandler<GetTeamByUserQuery, Tea
 
         var results = _mapper.Map<TeamDto>(user.Team);
 
+
         return results;
     }
 }
