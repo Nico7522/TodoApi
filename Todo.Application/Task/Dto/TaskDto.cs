@@ -10,6 +10,7 @@ public class TaskDto
     public string Description { get; set; } = default!;
     public DateOnly CreationDate { get; set; }
     public DateOnly? ClosingDate { get; set; }
+    public TimeOnly Duration { get; set; }
     public Priority Priority { get; set; }
     public bool IsComplete { get; set; }
     public string? UserId { get; set; }
