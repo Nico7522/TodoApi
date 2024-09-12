@@ -21,4 +21,9 @@ public class Chat: Hub<IChat>
         await Clients.Group(teamId).ReceiveMessage(message, firstname, lastname);
     }
 
+    public async Task SendPresence(List<UserStatus> userList)
+    {
+        await Clients.All.SendPresence(userList);
+    }
+
 }

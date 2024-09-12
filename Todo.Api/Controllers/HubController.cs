@@ -51,5 +51,15 @@ namespace Todo.Api.Controllers
             await _hubContext.Clients.Group(teamId).ReceiveMessage(form.Message, form.Firstname, form.Lastname);
             return NoContent();
         }
+
+        [HttpPost("{userId}/setpresence")]
+        public async Task<IActionResult> SetPresence([FromRoute] string userId)
+        {
+            _userList.SetPresence(userId);
+            var list = _userList.GetList();
+            await _hubContext.Clients.All.SendPresence(list);
+            return NoContent();
+
+        }
     }
 }

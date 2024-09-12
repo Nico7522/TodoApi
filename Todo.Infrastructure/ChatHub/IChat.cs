@@ -9,4 +9,6 @@ public interface IChat
 
     Task LeftChatRoom(List<UserStatus> userList);
     Task ReceiveMessage(string message, string firstname, string lastname);
+
+    Task SendPresence(List<UserStatus> userList);
 }

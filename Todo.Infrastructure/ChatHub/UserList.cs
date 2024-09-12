@@ -11,11 +11,10 @@ public class UserList : IUserList
     public void SetOnline(string userId, bool isOnline, bool isPresent)
     {
         var user = _userList.FirstOrDefault(u => u.Id == userId);
-        if (user is null) _userList.Add(new UserStatus() { Id = userId, IsOnline = isOnline, IsPresent = isPresent });
+        if (user is null) _userList.Add(new UserStatus() { Id = userId, IsOnline = true, IsPresent = false });
 
         if (user is not null)
         {
-            user.IsPresent = isPresent;
             user.IsOnline = isOnline;
         }
     }
@@ -25,8 +24,17 @@ public class UserList : IUserList
         var user = _userList.FirstOrDefault(u => u.Id == userId);
         if(user is not null)
         {
-            user.IsPresent = isPresent;
-            user.IsOnline = isOnline;
+            user.IsOnline = false;
+        };
+    }
+
+    public void SetPresence(string userId)
+    {
+        var user = _userList.FirstOrDefault(u => u.Id == userId);
+        if (user is null) _userList.Add(new UserStatus() { Id = userId, IsOnline = false, IsPresent = true });
+        if (user is not null)
+        {
+            user.IsPresent = true;
         };
     }
 
