@@ -24,11 +24,11 @@ namespace Todo.Api.Controllers
         }
 
         [HttpPost("joinchatroom/{teamId}")]
-        public async Task<IActionResult> JoinChatRoom([FromQuery] string connectionId , [FromRoute] string teamId, [FromQuery] string userId, [FromBody] UserStatusForm form)
+        public async Task<IActionResult> JoinChatRoom([FromQuery] string connectionId , [FromRoute] string teamId, [FromQuery] string userId)
         {
             await _hubContext.Groups.AddToGroupAsync(connectionId, teamId);
 
-            _userList.SetOnline(userId, form.IsOnline, form.IsPresent);
+            _userList.SetOnline(userId);
 
             var list = _userList.GetList();
             await _hubContext.Clients.Group(teamId).JoinChatRoom(list);
@@ -36,9 +36,9 @@ namespace Todo.Api.Controllers
         }
 
         [HttpPost("leftchatroom/{teamId}")]
-        public async Task<IActionResult> LeftChatRoom([FromRoute] string teamId, [FromQuery] string userId, [FromBody] UserStatusForm form)
+        public async Task<IActionResult> LeftChatRoom([FromRoute] string teamId, [FromQuery] string userId)
         {
-            _userList.SetOffline(userId, form.IsOnline, form.IsPresent);
+            _userList.SetOffline(userId);
 
             var list = _userList.GetList();
             await _hubContext.Clients.Group(teamId).LeftChatRoom(list);

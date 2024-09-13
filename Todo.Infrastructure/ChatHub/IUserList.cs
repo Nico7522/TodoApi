@@ -4,8 +4,8 @@ namespace Todo.Infrastructure.ChatHub;
 
 public interface IUserList
 {
-    void SetOnline(string userId, bool isOnline, bool isPresent);
-    void SetOffline(string userId, bool isOnline, bool isPresent);
+    void SetOnline(string userId);
+    void SetOffline(string userId);
 
     void SetPresence(string userId);
 
