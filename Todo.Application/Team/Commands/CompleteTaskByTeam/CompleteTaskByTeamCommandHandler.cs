@@ -26,16 +26,16 @@ public class CompleteTaskByTeamCommandHandler : IRequestHandler<CompleteTaskByTe
         var team = await _teamRepository.GetById(request.TeamId);
         if (team is null) throw new NotFoundException("Team not found");
 
-        var task = await _todoRepository.GetById(request.TaskId);
-        if (task is null) throw new NotFoundException("Task not found");
+        var task = team.Tasks.FirstOrDefault(t => t.Id == request.TaskId);
+        if (task is null) throw new NotFoundException("Task not in team");
 
-        if (task.IsComplete) throw new BadRequestException("Task is already complete");
-
-        if (task.TeamId != team.Id) throw new BadRequestException("Task not in team");
+        if (task.IsComplete) throw new BadRequestException("Task is already completed");
 
         if(!_authorization.Authorize(team, RessourceOperation.Update)) throw new ForbidException("Your not authorized");
 
         task.IsComplete = true;
+        task.Duration = new TimeOnly().AddMinutes(request.Duration);
+        task.ClosingDate = DateOnly.FromDateTime(DateTime.Now);
         await _teamRepository.SaveChanges();
     }
 }

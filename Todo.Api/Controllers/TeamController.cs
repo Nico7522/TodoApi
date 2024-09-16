@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Todo.Api.Forms.CompleteTaskByTeamForm;
 using Todo.Api.Forms.UpdateTaskByTeamForm;
 using Todo.Application.Team.Commands.AddTask;
 using Todo.Application.Team.Commands.AddUser;
@@ -104,14 +105,14 @@ namespace Todo.Api.Controllers
         }
 
         [HttpPut("{teamId}/task/{taskId}/complete")]
-        public async Task<IActionResult> CompleteTaskByTeam([FromRoute] Guid teamId, [FromRoute] Guid taskId)
+        public async Task<IActionResult> CompleteTaskByTeam([FromRoute] Guid teamId, [FromRoute] Guid taskId, [FromBody] CompleteTaskByTeamForm form)
         {
-            await _mediator.Send(new CompleteTaskByTeamCommand(teamId, taskId));
-            return Ok();
+            await _mediator.Send(new CompleteTaskByTeamCommand(teamId, taskId, form.Duration));
+            return NoContent();
         }
 
         [HttpDelete("{teamId}/task/{taskId}")]
-        public async Task<IActionResult> UnassignTaskFromTeam([FromRoute] Guid teamId, [FromRoute,] Guid taskId)
+        public async Task<IActionResult> UnassignTaskFromTeam([FromRoute] Guid teamId, [FromRoute] Guid taskId)
         {
             await _mediator.Send(new UnassignTaskFromTeamCommand(teamId, taskId));
             return NoContent();

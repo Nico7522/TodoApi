@@ -18,6 +18,7 @@ using System.Text;
 using MediatR;
 using Todo.Api.Forms.UpdateTaskByTeamForm;
 using Todo.Application.Team.Commands.UnassignTaskFromTeam;
+using Todo.Api.Forms.CompleteTaskByTeamForm;
 
 
 namespace Todo.Api.Controllers.Tests;
@@ -823,7 +824,7 @@ public class TeamControllerTests : IClassFixture<WebApplicationFactory<Program>>
         var taskId = new Guid("63199241-decd-4cce-a30a-08dcc1d13e72");
         var client = _factory.CreateClient();
         var content = new UnassignTaskFromTeamCommand(teamId, taskId);
-     
+
         // act
 
         _authMock.Setup(m => m.Authorize(It.IsAny<TeamEntity>(), Domain.Enums.RessourceOperation.Delete)).Returns(true);
@@ -885,6 +886,112 @@ public class TeamControllerTests : IClassFixture<WebApplicationFactory<Program>>
 
         _authMock.Setup(m => m.Authorize(It.IsAny<TeamEntity>(), Domain.Enums.RessourceOperation.Delete)).Returns(false);
         var result = await client.DeleteAsync($"api/team/{teamId}/task/{taskId}");
+        // assert
+
+        result.StatusCode.Should().Be(System.Net.HttpStatusCode.Forbidden);
+    }
+
+    [Fact()]
+    public async void CompleteTaskByTeam_ForValidRequest_Return204NoContent()
+    {
+        // arrange
+
+        var teamId = new Guid("0f42c786-9d05-439d-4c0b-08dcc35177cb");
+        var taskId = new Guid("63199241-decd-4cce-a30a-08dcc1d13e72");
+        var client = _factory.CreateClient();
+        var content = new CompleteTaskByTeamForm() { Duration = 10};
+
+        // act
+
+        _authMock.Setup(m => m.Authorize(It.IsAny<TeamEntity>(), Domain.Enums.RessourceOperation.Update)).Returns(true);
+        var contentJson = JsonConvert.SerializeObject(content);
+        var stringContent = new StringContent(contentJson, Encoding.UTF8, "application/json");
+        var result = await client.PutAsync($"api/team/{teamId}/task/{taskId}/complete", stringContent);
+        // assert
+
+        result.StatusCode.Should().Be(System.Net.HttpStatusCode.NoContent);
+    }
+
+    [Fact()]
+    public async void CompleteTaskByTeam_ForInalidRequestTeamNotFound_Return404NotFound()
+    {
+        // arrange
+
+        var teamId = new Guid("0f42c786-9d05-439d-4c0b-08dcc35177cd");
+        var taskId = new Guid("63199241-decd-4cce-a30a-08dcc1d13e72");
+        var client = _factory.CreateClient();
+        var content = new CompleteTaskByTeamForm() { Duration = 10 };
+
+        // act
+
+        _authMock.Setup(m => m.Authorize(It.IsAny<TeamEntity>(), Domain.Enums.RessourceOperation.Update)).Returns(true);
+        var contentJson = JsonConvert.SerializeObject(content);
+        var stringContent = new StringContent(contentJson, Encoding.UTF8, "application/json");
+        var result = await client.PutAsync($"api/team/{teamId}/task/{taskId}/complete", stringContent);
+        // assert
+
+        result.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
+    }
+
+
+    [Fact()]
+    public async void CompleteTaskByTeam_ForInvalidRequestTaskNotIntTeam_Return404NotFound()
+    {
+        // arrange
+
+        var teamId = new Guid("0f42c786-9d05-439d-4c0b-08dcc35177cb");
+        var taskId = new Guid("63199241-decd-4cce-a30a-08dcc1d13e73");
+        var client = _factory.CreateClient();
+        var content = new CompleteTaskByTeamForm() { Duration = 10 };
+
+        // act
+
+        _authMock.Setup(m => m.Authorize(It.IsAny<TeamEntity>(), Domain.Enums.RessourceOperation.Update)).Returns(true);
+        var contentJson = JsonConvert.SerializeObject(content);
+        var stringContent = new StringContent(contentJson, Encoding.UTF8, "application/json");
+        var result = await client.PutAsync($"api/team/{teamId}/task/{taskId}/complete", stringContent);
+        // assert
+
+        result.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
+    }
+
+    [Fact()]
+    public async void CompleteTaskByTeam_ForInvalidRequestTaskIsAlreadyCompleted_Return400BadRequest()
+    {
+        // arrange
+
+        var teamId = new Guid("0f42c786-9d05-439d-4c0b-08dcc35177cb");
+        var taskId = new Guid("63199241-decd-4cce-a30a-08dcc1d13e72");
+        var client = _factory.CreateClient();
+        var content = new CompleteTaskByTeamForm() { Duration = 10 };
+
+        // act
+
+        _authMock.Setup(m => m.Authorize(It.IsAny<TeamEntity>(), Domain.Enums.RessourceOperation.Update)).Returns(true);
+        var contentJson = JsonConvert.SerializeObject(content);
+        var stringContent = new StringContent(contentJson, Encoding.UTF8, "application/json");
+        var result = await client.PutAsync($"api/team/{teamId}/task/{taskId}/complete", stringContent);
+        // assert
+
+        result.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
+    }
+
+    [Fact()]
+    public async void CompleteTaskByTeam_ForInvalidRequestNotAuthorized_Return403Forbidden()
+    {
+        // arrange
+
+        var teamId = new Guid("0f42c786-9d05-439d-4c0b-08dcc35177cb");
+        var taskId = new Guid("63199241-decd-4cce-a30a-08dcc1d13e72");
+        var client = _factory.CreateClient();
+        var content = new CompleteTaskByTeamForm() { Duration = 10 };
+
+        // act
+
+        _authMock.Setup(m => m.Authorize(It.IsAny<TeamEntity>(), Domain.Enums.RessourceOperation.Update)).Returns(false);
+        var contentJson = JsonConvert.SerializeObject(content);
+        var stringContent = new StringContent(contentJson, Encoding.UTF8, "application/json");
+        var result = await client.PutAsync($"api/team/{teamId}/task/{taskId}/complete", stringContent);
         // assert
 
         result.StatusCode.Should().Be(System.Net.HttpStatusCode.Forbidden);
