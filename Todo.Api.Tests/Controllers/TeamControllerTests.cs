@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using Todo.Api.Controllers;
+using FluentAssertions;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -16,6 +17,7 @@ using Newtonsoft.Json;
 using System.Text;
 using MediatR;
 using Todo.Api.Forms.UpdateTaskByTeamForm;
+using Todo.Application.Team.Commands.UnassignTaskFromTeam;
 
 
 namespace Todo.Api.Controllers.Tests;
@@ -773,7 +775,7 @@ public class TeamControllerTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact()]
-    public async void UpdateTaskByTeam_ForInvalidRequestNotAuthorized_Return401Forbiden()
+    public async void UpdateTaskByTeam_ForInvalidRequestNotAuthorized_Return401Forbidden()
     {
         // arrange
 
@@ -810,5 +812,81 @@ public class TeamControllerTests : IClassFixture<WebApplicationFactory<Program>>
         // assert
 
         result.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
+    }
+
+    [Fact()]
+    public async void UnassignTaskFromTeam_ForValidRequest_Return204NoContent()
+    {
+        // arrange
+
+        var teamId = new Guid("0f42c786-9d05-439d-4c0b-08dcc35177cb");
+        var taskId = new Guid("63199241-decd-4cce-a30a-08dcc1d13e72");
+        var client = _factory.CreateClient();
+        var content = new UnassignTaskFromTeamCommand(teamId, taskId);
+     
+        // act
+
+        _authMock.Setup(m => m.Authorize(It.IsAny<TeamEntity>(), Domain.Enums.RessourceOperation.Delete)).Returns(true);
+        var result = await client.DeleteAsync($"api/team/{teamId}/task/{taskId}");
+        // assert
+
+        result.StatusCode.Should().Be(System.Net.HttpStatusCode.NoContent);
+    }
+
+    [Fact()]
+    public async void UnassignTaskFromTeam_ForInvalidRequestTeamNotFound_Return404notFound()
+    {
+        // arrange
+
+        var teamId = new Guid("0f42c786-9d05-439d-4c0b-08dcc35177cf");
+        var taskId = new Guid("63199241-decd-4cce-a30a-08dcc1d13e72");
+        var client = _factory.CreateClient();
+        var content = new UnassignTaskFromTeamCommand(teamId, taskId);
+
+        // act
+
+        _authMock.Setup(m => m.Authorize(It.IsAny<TeamEntity>(), Domain.Enums.RessourceOperation.Delete)).Returns(true);
+        var result = await client.DeleteAsync($"api/team/{teamId}/task/{taskId}");
+        // assert
+
+        result.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
+    }
+
+    [Fact()]
+    public async void UnassignTaskFromTeam_ForInvalidRequestTaskNotInTeam_Return404notFound()
+    {
+        // arrange
+
+        var teamId = new Guid("0f42c786-9d05-439d-4c0b-08dcc35177cb");
+        var taskId = new Guid("63199241-decd-4cce-a30a-08dcc1d13e73");
+        var client = _factory.CreateClient();
+        var content = new UnassignTaskFromTeamCommand(teamId, taskId);
+
+        // act
+
+        _authMock.Setup(m => m.Authorize(It.IsAny<TeamEntity>(), Domain.Enums.RessourceOperation.Delete)).Returns(true);
+        var result = await client.DeleteAsync($"api/team/{teamId}/task/{taskId}");
+        // assert
+
+        result.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
+    }
+
+    [Fact()]
+    public async void UnassignTaskFromTeam_ForInvalidRequestNotAuthorized_Return401Forbidden()
+    {
+        // arrange
+
+        var teamId = new Guid("0f42c786-9d05-439d-4c0b-08dcc35177cb");
+        var taskId = new Guid("92986c5a-6b77-4e14-7b96-08dca4d88c66");
+        var client = _factory.CreateClient();
+        var content = new UnassignTaskFromTeamCommand(teamId, taskId);
+
+        // act
+
+        _authMock.Setup(m => m.Authorize(It.IsAny<TeamEntity>(), Domain.Enums.RessourceOperation.Delete)).Returns(false);
+        var result = await client.DeleteAsync($"api/team/{teamId}/task/{taskId}");
+        // assert
+
+        result.StatusCode.Should().Be(System.Net.HttpStatusCode.Forbidden);
     }
 }

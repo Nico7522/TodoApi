@@ -10,6 +10,7 @@ using Todo.Application.Team.Commands.CloseTeam;
 using Todo.Application.Team.Commands.CreateTeam;
 using Todo.Application.Team.Commands.DeleteUser;
 using Todo.Application.Team.Commands.UnassignLeader;
+using Todo.Application.Team.Commands.UnassignTaskFromTeam;
 using Todo.Application.Team.Commands.UpdateTeamTask;
 using Todo.Application.Team.Dto;
 using Todo.Application.Team.Queries.GetAllTeams;
@@ -107,6 +108,13 @@ namespace Todo.Api.Controllers
         {
             await _mediator.Send(new CompleteTaskByTeamCommand(teamId, taskId));
             return Ok();
+        }
+
+        [HttpDelete("{teamId}/task/{taskId}")]
+        public async Task<IActionResult> UnassignTaskFromTeam([FromRoute] Guid teamId, [FromRoute,] Guid taskId)
+        {
+            await _mediator.Send(new UnassignTaskFromTeamCommand(teamId, taskId));
+            return NoContent();
         }
  
 

@@ -35,7 +35,6 @@ public class CompleteTaskByTeamCommandHandler : IRequestHandler<CompleteTaskByTe
 
         if(!_authorization.Authorize(team, RessourceOperation.Update)) throw new ForbidException("Your not authorized");
 
-
         task.IsComplete = true;
         await _teamRepository.SaveChanges();
     }
